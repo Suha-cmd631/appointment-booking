@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BOOK N MEET - Notifications</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f7fafd;
+    color:#17283d;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+.navbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #e5ebf2;
+    display:flex;
+    align-items:center;
+}
+
+.nav-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-mark{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+}
+
+.logo-name{
+    font-size:22px;
+    font-weight:800;
+    color:#12345b;
+}
+
+.logo-name span{
+    color:#1da79c;
+}
+
+.nav-links{
+    display:flex;
+    gap:27px;
+    color:#536579;
+    font-size:14px;
+    font-weight:600;
+}
+
+.nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-icon,
+.notification-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    font-size:19px;
+}
+
+.user-icon{
+    background:#eaf6f6;
+}
+
+.notification-icon{
+    background:#f3f6fa;
+}
+
+.notification-dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#e74c3c;
+    border-radius:50%;
+    top:7px;
+    right:7px;
+    border:2px solid white;
+}
+
+.login,
+.signup{
+    padding:10px 18px;
+    border-radius:9px;
+    font-weight:700;
+}
+
+.login{
+    background:white;
+    border:1px solid #cbd7e4;
+}
+
+.signup{
+    background:#12345b;
+    color:white;
+    border:1px solid #12345b;
+}
+
+.container{
+    width:min(900px,92%);
+    margin:45px auto 80px;
+}
+
+.heading h1{
+    color:#12345b;
+    font-size:32px;
+}
+
+.heading p{
+    color:#6d7c8e;
+    margin-top:7px;
+}
+
+.notification{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:15px;
+    padding:20px;
+    margin-top:17px;
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+}
+
+.notification.unread{
+    border-left:4px solid #1d9c96;
+}
+
+.icon{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:#eaf6f6;
+    display:grid;
+    place-items:center;
+    font-size:22px;
+}
+
+.content{
+    flex:1;
+}
+
+.content h3{
+    color:#12345b;
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.content p{
+    color:#6d7c8e;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.time{
+    color:#9ba8b5;
+    font-size:11px;
+    margin-top:7px;
+}
+
+.mark{
+    border:0;
+    background:#eaf6f6;
+    color:#147e79;
+    padding:7px 10px;
+    border-radius:7px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+footer{
+    background:#102d4d;
+    color:white;
+    padding:30px;
+    text-align:center;
+}
+
+footer p{
+    color:#c5d4e3;
+    font-size:13px;
+}
+
+@media(max-width:750px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .notification{
+        flex-wrap:wrap;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="nav-inner">
+
+<a href="first.html" class="logo">
+
+<div class="logo-mark">✚</div>
+
+<div class="logo-name">
+BOOK <span>N</span> MEET
+</div>
+
+</a>
+
+<nav class="nav-links">
+
+<a href="first.html">Home</a>
+<a href="hospitals.html">Hospitals</a>
+<a href="first.html#doctors">Doctors</a>
+<a href="#">Appointments</a>
+
+</nav>
+
+<div class="nav-actions">
+
+<a href="profile.html" class="user-icon">
+👤
+</a>
+
+<a href="notifications.html" class="notification-icon">
+🔔
+<span class="notification-dot"></span>
+</a>
+
+<button class="login">Login</button>
+<button class="signup">Sign Up</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<div class="heading">
+
+<h1>Notifications</h1>
+
+<p>
+Stay updated about your appointments and bookings.
+</p>
+
+</div>
+
+
+<div class="notification unread">
+
+<div class="icon">
+📅
+</div>
+
+<div class="content">
+
+<h3>
+Appointment Confirmed
+</h3>
+
+<p>
+Your appointment with <strong>Dr. Ananya Rao</strong>
+at <strong>Trinity Hospital</strong> has been confirmed.
+</p>
+
+<div class="time">
+Today · 10:30 AM
+</div>
+
+</div>
+
+<button class="mark" onclick="markRead(this)">
+Mark read
+</button>
+
+</div>
+
+
+<div class="notification unread">
+
+<div class="icon">
+⏰
+</div>
+
+<div class="content">
+
+<h3>
+Appointment Reminder
+</h3>
+
+<p>
+Your ENT appointment with
+<strong>Dr. Vikram Rao</strong>
+is scheduled for tomorrow at
+<strong>11:00 AM</strong>.
+</p>
+
+<div class="time">
+Yesterday · 6:00 PM
+</div>
+
+</div>
+
+<button class="mark" onclick="markRead(this)">
+Mark read
+</button>
+
+</div>
+
+
+<div class="notification">
+
+<div class="icon">
+🏥
+</div>
+
+<div class="content">
+
+<h3>
+New Hospital Available
+</h3>
+
+<p>
+Neokidz ENT has added new specialist doctors
+to the appointment booking system.
+</p>
+
+<div class="time">
+2 days ago
+</div>
+
+</div>
+
+</div>
+
+
+<div class="notification">
+
+<div class="icon">
+✓
+</div>
+
+<div class="content">
+
+<h3>
+Appointment Completed
+</h3>
+
+<p>
+Your appointment at Gowthami Hospital
+has been marked as completed.
+</p>
+
+<div class="time">
+5 days ago
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+
+<footer>
+
+<p>
+© 2026 BOOK N MEET. Hospital Appointment Booking Platform.
+</p>
+
+</footer>
+
+
+<script>
+
+function markRead(button){
+
+    const notification =
+        button.parentElement;
+
+    notification.classList.remove("unread");
+
+    button.remove();
+
+}
+
+</script>
+
+</body>
+</html>

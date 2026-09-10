@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOOK N MEET - Find Healthcare</title>
+
+<style>
+    /* =====================================================
+   GENERAL PAGE ANIMATIONS
+===================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.hero,
+.section,
+.search-box,
+.hospital-card,
+.doctor-card {
+    animation: fadeUp 0.8s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =====================================================
+   HOW IT WORKS SECTION
+===================================================== */
+
+.how-it-works {
+    width: min(1180px, 92%);
+    margin: 70px auto;
+    text-align: center;
+}
+
+.how-heading {
+    margin-bottom: 40px;
+}
+
+.how-heading h2 {
+    color: #12345b;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.how-heading p {
+    color: #718194;
+    font-size: 14px;
+}
+
+
+/* Cards container */
+
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    position: relative;
+}
+
+
+/* Connecting line */
+
+.steps-container::before {
+    content: "";
+    position: absolute;
+
+    top: 48px;
+    left: 10%;
+    right: 10%;
+
+    height: 2px;
+
+    background: #dce9ee;
+
+    z-index: 0;
+}
+
+
+/* Individual card */
+
+.step-card {
+    background: white;
+
+    border: 1px solid #e4ebf1;
+
+    border-radius: 17px;
+
+    padding: 25px 18px;
+
+    position: relative;
+
+    z-index: 1;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease,
+        border-color .35s ease;
+
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+
+/* Card appears when visible */
+
+.step-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* Different delays */
+
+.step-card:nth-child(1) {
+    transition-delay: .1s;
+}
+
+.step-card:nth-child(2) {
+    transition-delay: .2s;
+}
+
+.step-card:nth-child(3) {
+    transition-delay: .3s;
+}
+
+.step-card:nth-child(4) {
+    transition-delay: .4s;
+}
+
+.step-card:nth-child(5) {
+    transition-delay: .5s;
+}
+
+
+/* Hover */
+
+.step-card:hover {
+
+    transform:
+        translateY(-10px);
+
+    border-color: #1fa8a0;
+
+    box-shadow:
+        0 15px 35px
+        rgba(18,52,91,.12);
+}
+
+
+/* Step number */
+
+.step-number {
+
+    width: 55px;
+    height: 55px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1fa8a0,
+            #2d78c8
+        );
+
+    color: white;
+
+    display: grid;
+
+    place-items: center;
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 8px 20px
+        rgba(31,168,160,.2);
+
+    transition: .35s;
+}
+
+
+.step-card:hover .step-number {
+
+    transform:
+        rotate(10deg)
+        scale(1.1);
+
+}
+
+
+/* Icon */
+
+.step-icon {
+
+    font-size: 30px;
+
+    margin-bottom: 12px;
+
+    transition: .35s;
+}
+
+
+.step-card:hover .step-icon {
+
+    transform:
+        scale(1.15)
+        translateY(-3px);
+
+}
+
+
+/* Text */
+
+.step-card h3 {
+
+    color: #12345b;
+
+    font-size: 16px;
+
+    margin-bottom: 9px;
+}
+
+
+.step-card p {
+
+    color: #718194;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =====================================================
+   SECTION TITLE ANIMATION
+===================================================== */
+
+.section-title {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.section-title h2 {
+
+    color: #12345b;
+
+    font-size: 30px;
+
+    margin-bottom: 8px;
+}
+
+.section-title p {
+
+    color: #718194;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   DOCTOR CARD ANIMATION
+===================================================== */
+
+.doctor-card {
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+.doctor-card:hover {
+
+    transform:
+        translateY(-8px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(18,52,91,.12);
+}
+
+
+/* =====================================================
+   SEARCH ANIMATION
+===================================================== */
+
+.search-box {
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+.search-box:focus-within {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(31,168,160,.12);
+}
+
+
+/* =====================================================
+   BUTTON ANIMATION
+===================================================== */
+
+button,
+.btn {
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+button:hover,
+.btn:hover {
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =====================================================
+   FLOATING EFFECT
+===================================================== */
+
+.floating {
+
+    animation:
+        floating
+        4s
+        ease-in-out
+        infinite;
+}
+
+@keyframes floating {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:1000px) {
+
+    .steps-container {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .steps-container::before {
+
+        display: none;
+    }
+
+}
+
+
+@media(max-width:600px) {
+
+    .steps-container {
+
+        grid-template-columns: 1fr;
+    }
+
+    .how-heading h2 {
+
+        font-size: 25px;
+    }
+
+    .step-card {
+
+        padding: 25px;
+    }
+
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f7fafd;
+    color:#17283d;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+/* NAVBAR */
+.navbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #e5ebf2;
+    display:flex;
+    align-items:center;
+}
+
+.nav-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-mark{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+}
+
+.logo-name{
+    font-size:22px;
+    font-weight:800;
+    color:#12345b;
+}
+
+.logo-name span{
+    color:#1da79c;
+}
+
+.nav-links{
+    display:flex;
+    gap:27px;
+    color:#536579;
+    font-size:14px;
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:#1d9c96;
+}
+
+.nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-icon,
+.notification-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    font-size:19px;
+    cursor:pointer;
+}
+
+.user-icon{
+    background:#eaf6f6;
+}
+
+.notification-icon{
+    background:#f3f6fa;
+}
+
+.user-icon:hover,
+.notification-icon:hover{
+    transform:translateY(-2px);
+}
+
+.notification-dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#e74c3c;
+    border-radius:50%;
+    top:7px;
+    right:7px;
+    border:2px solid white;
+}
+
+.login,
+.signup{
+    padding:10px 18px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.login{
+    background:white;
+    border:1px solid #cbd7e4;
+    color:#12345b;
+}
+
+.signup{
+    background:#12345b;
+    border:1px solid #12345b;
+    color:white;
+}
+
+/* HERO */
+.hero{
+    width:min(1180px,92%);
+    margin:35px auto;
+    min-height:390px;
+    border-radius:25px;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    align-items:center;
+    background:
+        linear-gradient(90deg,rgba(10,42,70,.94),rgba(10,42,70,.62),rgba(10,42,70,.15)),
+        url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1400&q=80");
+    background-size:cover;
+    background-position:center;
+}
+
+.hero-content{
+    width:600px;
+    padding:50px;
+    color:white;
+}
+
+.hero-content h1{
+    font-size:44px;
+    line-height:1.15;
+    margin-bottom:16px;
+}
+
+.hero-content p{
+    font-size:17px;
+    line-height:1.6;
+    color:#e5eef5;
+}
+
+/* SEARCH */
+.search-box{
+    width:min(1080px,88%);
+    margin:-65px auto 45px;
+    position:relative;
+    z-index:2;
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 12px 35px rgba(20,54,82,.13);
+}
+
+.search-title{
+    font-size:20px;
+    font-weight:800;
+    color:#12345b;
+    margin-bottom:18px;
+}
+
+.search-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr 1fr 1fr;
+    gap:13px;
+}
+
+.input-group label{
+    display:block;
+    font-size:12px;
+    color:#637386;
+    font-weight:700;
+    margin-bottom:7px;
+}
+
+.input-group select,
+.input-group input{
+    width:100%;
+    height:46px;
+    border:1px solid #d6e0e9;
+    border-radius:9px;
+    padding:0 12px;
+    color:#31475d;
+    background:white;
+    outline:none;
+}
+
+.search-btn{
+    width:100%;
+    height:46px;
+    margin-top:19px;
+    border:0;
+    border-radius:9px;
+    background:#12345b;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.search-btn:hover{
+    background:#1d9c96;
+}
+
+/* SECTION */
+.section{
+    width:min(1100px,92%);
+    margin:45px auto;
+}
+
+.section-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.section-heading h2{
+    color:#12345b;
+    font-size:27px;
+}
+
+.view-all{
+    color:#168e89;
+    font-size:14px;
+    font-weight:700;
+}
+
+/* HOSPITAL CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:17px;
+    overflow:hidden;
+    box-shadow:0 7px 22px rgba(24,55,84,.05);
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+.card-img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:18px;
+}
+
+.card-content h3{
+    color:#12345b;
+    margin-bottom:8px;
+}
+
+.location{
+    color:#748394;
+    font-size:13px;
+    margin-bottom:12px;
+}
+
+.rating{
+    color:#e59b18;
+    font-weight:700;
+    font-size:14px;
+}
+
+.card-btn{
+    display:block;
+    margin-top:15px;
+    padding:10px;
+    text-align:center;
+    border-radius:8px;
+    background:#eaf6f6;
+    color:#147e79;
+    font-weight:700;
+    font-size:13px;
+}
+
+/* DOCTORS */
+.doctor-img{
+    width:100%;
+    height:210px;
+    object-fit:cover;
+}
+
+.speciality{
+    color:#6b7c8e;
+    font-size:13px;
+    margin-top:5px;
+}
+
+/* FOOTER */
+footer{
+    margin-top:70px;
+    background:#102d4d;
+    color:white;
+    padding:30px 0;
+}
+
+.footer-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    text-align:center;
+}
+
+.footer-inner p{
+    color:#c5d4e3;
+    font-size:13px;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .hero-content{
+        width:100%;
+        padding:35px;
+    }
+
+    .hero-content h1{
+        font-size:34px;
+    }
+
+    .search-grid{
+        grid-template-columns:1fr;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="nav-inner">
+
+<a href="first.html" class="logo">
+<div class="logo-mark">✚</div>
+<div class="logo-name">BOOK <span>N</span> MEET</div>
+</a>
+
+<nav class="nav-links">
+<a href="first.html">Home</a>
+<a href="hospitals.html">Hospitals</a>
+<a href="#doctors">Doctors</a>
+<a href="#">Appointments</a>
+</nav>
+
+<div class="nav-actions">
+
+<a href="profile.html" class="user-icon" title="My Profile">
+👤
+</a>
+
+<a href="notifications.html" class="notification-icon" title="Notifications">
+🔔
+<span class="notification-dot"></span>
+</a>
+
+<!-- <button class="login" onclick="window.location.href='login.html'">
+    Login
+</button>
+
+<button class="signup" onclick="window.location.href='signup.html'">
+    Sign Up
+</button> -->
+
+</div>
+
+</div>
+</header>
+
+
+<section class="hero">
+
+<div class="hero-content">
+
+<h1>Find the right healthcare for you</h1>
+
+<p>
+Search hospitals and doctors based on your speciality,
+date and age. Book your appointment easily with
+BOOK N MEET.
+</p>
+
+</div>
+
+</section>
+
+
+<section class="search-box">
+
+<div class="search-title">
+Find Hospitals & Doctors
+</div>
+
+<div class="search-grid">
+
+<div class="input-group">
+
+<label>SELECT SPECIALITY</label>
+
+<select id="speciality">
+
+<option value="">Select Speciality</option>
+<option>Cardiology</option>
+<option>Dermatology</option>
+<option>ENT</option>
+<option>Neurology</option>
+<option>Orthopedics</option>
+<option>Pediatrics</option>
+<option>General Medicine</option>
+<option>Gynecology</option>
+<option>Ophthalmology</option>
+
+</select>
+
+</div>
+
+
+<div class="input-group">
+
+<label>DATE</label>
+
+<input type="date" id="date" required>
+
+</div>
+
+
+<div class="input-group">
+
+<label>AGE</label>
+
+<input type="number" id="age" placeholder="Enter age" min="1" max="120">
+
+</div>
+
+
+<div class="input-group">
+
+<label>&nbsp;</label>
+
+<button class="search-btn" onclick="searchHospitals()">
+Search Hospitals
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<div class="section-heading">
+
+<h2>Top Rated Hospitals</h2>
+
+<a href="hospitals.html" class="view-all">
+View All →
+</a>
+
+</div>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<img
+class="card-img"
+src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=700&q=80">
+
+<div class="card-content">
+
+<h3>Trinity Hospital</h3>
+
+<div class="location">
+📍 Tadepalligudem
+</div>
+
+<div class="rating">
+★★★★★ 4.8
+</div>
+
+<a href="hospitals.html?hospital=trinity" class="card-btn">
+View Hospital
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<img
+class="card-img"
+src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=700&q=80">
+
+<div class="card-content">
+
+<h3>Gowthami Hospital</h3>
+
+<div class="location">
+📍 Tadepalligudem
+</div>
+
+<div class="rating">
+★★★★★ 4.7
+</div>
+
+<a href="hospitals.html?hospital=gowthami" class="card-btn">
+View Hospital
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<img
+class="card-img"
+src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=700&q=80">
+
+<div class="card-content">
+
+<h3>Neokidz ENT</h3>
+
+<div class="location">
+📍 Tadepalligudem
+</div>
+
+<div class="rating">
+★★★★★ 4.6
+</div>
+
+<a href="hospitals.html?hospital=neokidz" class="card-btn">
+View Hospital
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section" id="doctors">
+
+<div class="section-heading">
+
+<h2>Top Doctors</h2>
+
+</div>
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<img
+class="doctor-img"
+src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=700&q=80">
+
+<div class="card-content">
+
+<h3>Dr. Ananya Rao</h3>
+
+<div class="speciality">
+Cardiologist
+</div>
+
+<div class="rating">
+★★★★★ 4.9
+</div>
+
+<a href="hospitals.html?hospital=trinity" class="card-btn">
+View Doctor
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<img
+class="doctor-img"
+src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=700&q=80">
+
+<div class="card-content">
+
+<h3>Dr. Priya Sharma</h3>
+
+<div class="speciality">
+Dermatologist
+</div>
+
+<div class="rating">
+★★★★★ 4.8
+</div>
+
+<a href="hospitals.html?hospital=gowthami" class="card-btn">
+View Doctor
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<img
+class="doctor-img"
+src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=700&q=80">
+
+<div class="card-content">
+
+<h3>Dr. Vikram Rao</h3>
+
+<div class="speciality">
+ENT Specialist
+</div>
+
+<div class="rating">
+★★★★★ 4.7
+</div>
+
+<a href="hospitals.html?hospital=neokidz" class="card-btn">
+View Doctor
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- =====================================================
+     HOW IT WORKS
+===================================================== -->
+
+<section class="how-it-works">
+
+    <div class="how-heading">
+
+        <h2>
+            How to Book an Appointment
+        </h2>
+
+        <p>
+            Getting the right healthcare is simple with BOOK N MEET.
+        </p>
+
+    </div>
+
+
+    <div class="steps-container">
+
+
+        <!-- STEP 1 -->
+
+        <div class="step-card">
+
+            <div class="step-number">
+                1
+            </div>
+
+            <div class="step-icon">
+                👤
+            </div>
+
+            <h3>
+                Create an Account
+            </h3>
+
+            <p>
+                Create your BOOK N MEET account
+                using your name, email, contact
+                number and role.
+            </p>
+
+        </div>
+
+
+
+        <!-- STEP 2 -->
+
+        <div class="step-card">
+
+            <div class="step-number">
+                2
+            </div>
+
+            <div class="step-icon">
+                🔍
+            </div>
+
+            <h3>
+                Search Hospitals
+            </h3>
+
+            <p>
+                Search hospitals based on
+                hospital name, speciality,
+                doctor or location.
+            </p>
+
+        </div>
+
+
+
+        <!-- STEP 3 -->
+
+        <div class="step-card">
+
+            <div class="step-number">
+                3
+            </div>
+
+            <div class="step-icon">
+                👨‍⚕️
+            </div>
+
+            <h3>
+                Select Doctor
+            </h3>
+
+            <p>
+                View available doctors,
+                their specialities and
+                hospital details.
+            </p>
+
+        </div>
+
+
+
+        <!-- STEP 4 -->
+
+        <div class="step-card">
+
+            <div class="step-number">
+                4
+            </div>
+
+            <div class="step-icon">
+                📅
+            </div>
+
+            <h3>
+                Choose Slot
+            </h3>
+
+            <p>
+                Select a convenient date
+                and available appointment
+                time slot.
+            </p>
+
+        </div>
+
+
+
+        <!-- STEP 5 -->
+
+        <div class="step-card">
+
+            <div class="step-number">
+                5
+            </div>
+
+            <div class="step-icon">
+                ✅
+            </div>
+
+            <h3>
+                Confirm Booking
+            </h3>
+
+            <p>
+                Confirm your appointment
+                and receive notification
+                about your booking.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+<footer>
+
+<div class="footer-inner">
+<p>© 2026 BOOK N MEET. Hospital Appointment Booking Platform.</p>
+</div>
+
+</footer>
+
+<script>
+
+/* =====================================================
+   SCROLL REVEAL ANIMATION
+===================================================== */
+// Disable all past dates
+const dateInput = document.getElementById("date");
+
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+
+const todayString = `${year}-${month}-${day}`;
+
+dateInput.min = todayString;
+const stepCards =
+    document.querySelectorAll(".step-card");
+
+
+const observer =
+    new IntersectionObserver(
+
+        function(entries) {
+
+            entries.forEach(function(entry) {
+
+                if(entry.isIntersecting) {
+
+                    entry.target.classList.add(
+                        "show"
+                    );
+
+                }
+
+            });
+
+        },
+
+        {
+            threshold: 0.15
+        }
+
+    );
+
+
+stepCards.forEach(function(card) {
+
+    observer.observe(card);
+
+});
+
+
+/* =====================================================
+   GENERAL SCROLL ANIMATION
+===================================================== */
+
+const animatedElements =
+    document.querySelectorAll(
+        ".doctor-card, .hospital-card, .section-title"
+    );
+
+
+const generalObserver =
+    new IntersectionObserver(
+
+        function(entries) {
+
+            entries.forEach(function(entry) {
+
+                if(entry.isIntersecting) {
+
+                    entry.target.style.opacity = "1";
+
+                    entry.target.style.transform =
+                        "translateY(0)";
+
+                }
+
+            });
+
+        },
+
+        {
+            threshold: 0.15
+        }
+
+    );
+
+
+animatedElements.forEach(function(element) {
+
+    element.style.opacity = "0";
+
+    element.style.transform =
+        "translateY(30px)";
+
+    element.style.transition =
+        "opacity .7s ease, transform .7s ease";
+
+    generalObserver.observe(element);
+
+});
+
+</script>
+<script>
+
+function searchHospitals(){
+
+    const speciality =
+        document.getElementById("speciality").value;
+
+    const date =
+        document.getElementById("date").value;
+
+    const age =
+        document.getElementById("age").value;
+
+    if(!speciality){
+        alert("Please select a speciality.");
+        return;
+    }
+
+    if(!date){
+        alert("Please select a date.");
+        return;
+    }
+
+    if(!age){
+        alert("Please enter your age.");
+        return;
+    }
+
+    window.location.href =
+        "hospitals.html?speciality=" +
+        encodeURIComponent(speciality) +
+        "&date=" +
+        encodeURIComponent(date) +
+        "&age=" +
+        encodeURIComponent(age) +
+        "&searched=true";
+}
+
+function showLogin(){
+
+    window.location("login.html");
+}
+
+function showSignup(){
+
+    alert("Sign Up page will be connected here.");
+
+}
+
+</script>
+
+</body>
+</html>

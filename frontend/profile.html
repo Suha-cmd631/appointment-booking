@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BOOK N MEET - My Profile</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f7fafd;
+    color:#17283d;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+.navbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #e5ebf2;
+    display:flex;
+    align-items:center;
+}
+
+.nav-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-mark{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+}
+
+.logo-name{
+    font-size:22px;
+    font-weight:800;
+    color:#12345b;
+}
+
+.logo-name span{
+    color:#1da79c;
+}
+
+.nav-links{
+    display:flex;
+    gap:27px;
+    color:#536579;
+    font-size:14px;
+    font-weight:600;
+}
+
+.nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-icon,
+.notification-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    font-size:19px;
+}
+
+.user-icon{
+    background:#eaf6f6;
+}
+
+.notification-icon{
+    background:#f3f6fa;
+}
+
+.notification-dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#e74c3c;
+    border-radius:50%;
+    top:7px;
+    right:7px;
+    border:2px solid white;
+}
+
+.login,
+.signup{
+    padding:10px 18px;
+    border-radius:9px;
+    font-weight:700;
+}
+
+.login{
+    background:white;
+    border:1px solid #cbd7e4;
+}
+
+.signup{
+    background:#12345b;
+    color:white;
+    border:1px solid #12345b;
+}
+
+.container{
+    width:min(1050px,92%);
+    margin:45px auto 70px;
+}
+
+.heading h1{
+    color:#12345b;
+    font-size:32px;
+}
+
+.heading p{
+    color:#6d7c8e;
+    margin-top:7px;
+}
+
+.profile-card{
+    margin-top:25px;
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:18px;
+    padding:28px;
+    display:flex;
+    align-items:center;
+    gap:22px;
+}
+
+.profile-image{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:#eaf6f6;
+    display:grid;
+    place-items:center;
+    font-size:48px;
+}
+
+.profile-info{
+    flex:1;
+}
+
+.profile-info h2{
+    color:#12345b;
+    margin-bottom:8px;
+}
+
+.profile-info p{
+    color:#6d7c8e;
+    font-size:14px;
+    margin:5px 0;
+}
+
+.edit-btn{
+    border:0;
+    background:#eaf6f6;
+    color:#147e79;
+    padding:10px 17px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.details{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-top:22px;
+}
+
+.detail{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:13px;
+    padding:18px;
+}
+
+.detail small{
+    display:block;
+    color:#718194;
+    font-size:11px;
+    margin-bottom:7px;
+    font-weight:700;
+}
+
+.detail strong{
+    color:#12345b;
+}
+
+.history-title{
+    margin:35px 0 18px;
+    color:#12345b;
+}
+
+.history{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:13px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.history-info h3{
+    color:#12345b;
+    font-size:16px;
+}
+
+.history-info p{
+    color:#6d7c8e;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.status{
+    background:#eaf7ee;
+    color:#24854a;
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+}
+
+footer{
+    background:#102d4d;
+    color:white;
+    padding:30px;
+    text-align:center;
+}
+
+footer p{
+    color:#c5d4e3;
+    font-size:13px;
+}
+
+@media(max-width:750px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .profile-card{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .details{
+        grid-template-columns:1fr;
+    }
+
+    .history{
+        gap:15px;
+        align-items:flex-start;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="nav-inner">
+
+<a href="first.html" class="logo">
+
+<div class="logo-mark">✚</div>
+
+<div class="logo-name">
+BOOK <span>N</span> MEET
+</div>
+
+</a>
+
+<nav class="nav-links">
+<a href="first.html">Home</a>
+<a href="hospitals.html">Hospitals</a>
+<a href="first.html#doctors">Doctors</a>
+<a href="#">Appointments</a>
+</nav>
+
+<div class="nav-actions">
+
+<a href="profile.html" class="user-icon">
+👤
+</a>
+
+<a href="notifications.html" class="notification-icon">
+🔔
+<span class="notification-dot"></span>
+</a>
+
+<button class="login">Login</button>
+<button class="signup">Sign Up</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<div class="heading">
+
+<h1>My Profile</h1>
+
+<p>
+Manage your personal details and appointment history.
+</p>
+
+</div>
+
+
+<div class="profile-card">
+
+<div class="profile-image">
+👤
+</div>
+
+<div class="profile-info">
+
+<h2>Dharani</h2>
+
+<p>✉ dharani@example.com</p>
+
+<p>📱 +91 XXXXX XXXXX</p>
+
+</div>
+
+<button class="edit-btn" onclick="editProfile()">
+Edit Profile
+</button>
+
+</div>
+
+
+<div class="details">
+
+<div class="detail">
+<small>FULL NAME</small>
+<strong>Dharani</strong>
+</div>
+
+<div class="detail">
+<small>EMAIL</small>
+<strong>dharani@example.com</strong>
+</div>
+
+<div class="detail">
+<small>PHONE</small>
+<strong>+91 XXXXX XXXXX</strong>
+</div>
+
+<div class="detail">
+<small>AGE</small>
+<strong>21</strong>
+</div>
+
+<div class="detail">
+<small>CITY</small>
+<strong>Tadepalligudem</strong>
+</div>
+
+<div class="detail">
+<small>MEMBER SINCE</small>
+<strong>2026</strong>
+</div>
+
+</div>
+
+
+<h2 class="history-title">
+Appointment History
+</h2>
+
+
+<div class="history">
+
+<div class="history-info">
+
+<h3>Trinity Hospital</h3>
+
+<p>
+Dr. Ananya Rao · Cardiology
+</p>
+
+<p>
+15 August 2026 · 10:30 AM
+</p>
+
+</div>
+
+<div class="status">
+Completed
+</div>
+
+</div>
+
+
+<div class="history">
+
+<div class="history-info">
+
+<h3>Gowthami Hospital</h3>
+
+<p>
+Dr. Priya Sharma · Dermatology
+</p>
+
+<p>
+05 July 2026 · 3:00 PM
+</p>
+
+</div>
+
+<div class="status">
+Completed
+</div>
+
+</div>
+
+
+<div class="history">
+
+<div class="history-info">
+
+<h3>Neokidz ENT</h3>
+
+<p>
+Dr. Vikram Rao · ENT Specialist
+</p>
+
+<p>
+20 August 2026 · 11:00 AM
+</p>
+
+</div>
+
+<div class="status">
+Upcoming
+</div>
+
+</div>
+
+</main>
+
+
+<footer>
+
+<p>
+© 2026 BOOK N MEET. Hospital Appointment Booking Platform.
+</p>
+
+</footer>
+
+
+<script>
+
+function editProfile(){
+
+alert("Profile editing will be connected to the registration system.");
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOOK N MEET - Hospitals</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f7fafd;
+    color:#17283d;
+}
+
+a{text-decoration:none;color:inherit}
+
+.navbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #e5ebf2;
+    display:flex;
+    align-items:center;
+}
+
+.nav-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{display:flex;align-items:center;gap:10px}
+
+.logo-mark{
+    width:42px;height:42px;border-radius:12px;
+    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
+    color:white;display:grid;place-items:center;font-size:23px;
+}
+
+.logo-name{font-size:22px;font-weight:800;color:#12345b}
+.logo-name span{color:#1da79c}
+
+.nav-links{
+    display:flex;gap:27px;color:#536579;
+    font-size:14px;font-weight:600;
+}
+
+.nav-links a:hover{color:#1d9c96}
+
+.nav-actions{display:flex;align-items:center;gap:10px}
+
+.user-icon,.notification-icon{
+    width:40px;height:40px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;font-size:19px;
+}
+
+.user-icon{background:#eaf6f6}
+.notification-icon{background:#f3f6fa}
+
+.notification-dot{
+    position:absolute;width:8px;height:8px;background:#e74c3c;
+    border-radius:50%;top:7px;right:7px;border:2px solid white;
+}
+
+/* MAIN */
+.container{
+    width:min(1100px,92%);
+    margin:45px auto 70px;
+}
+
+.heading{margin-bottom:28px}
+.heading h1{font-size:32px;color:#12345b}
+.heading p{color:#6d7c8e;margin-top:7px}
+
+/* HOSPITAL LIST */
+.hospital{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:22px;
+    box-shadow:0 7px 22px rgba(24,55,84,.05);
+}
+
+.hospital-top{display:flex;gap:22px}
+
+.hospital-image{
+    width:230px;height:160px;
+    object-fit:cover;border-radius:13px;
+}
+
+.hospital-info{flex:1}
+.hospital-info h2{color:#12345b;margin-bottom:8px}
+.hospital-info p{color:#6d7c8e;font-size:14px;margin:7px 0}
+
+.rating{color:#e39a17 !important;font-weight:700}
+
+.specialities{
+    display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;
+}
+
+.speciality{
+    padding:7px 10px;background:#eaf6f6;color:#147e79;
+    border-radius:7px;font-size:12px;font-weight:700;
+}
+
+.visit-btn{
+    margin-top:17px;padding:11px 20px;
+    background:#12345b;color:white;border:0;
+    border-radius:8px;cursor:pointer;font-weight:700;
+}
+
+.visit-btn:hover{background:#1d9c96}
+
+.book-hospital-btn{
+    margin-top:17px;
+    margin-left:8px;
+    padding:11px 20px;
+    background:#1d9c96;
+    color:white;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.book-hospital-btn:hover{background:#147e79}
+
+.search-info{
+    background:#eaf6f6;
+    color:#147e79;
+    border:1px solid #cfe9e7;
+    border-radius:10px;
+    padding:12px 15px;
+    margin-bottom:22px;
+    font-size:14px;
+    font-weight:700;
+}
+
+/* DETAILS */
+#hospitalDetails{display:none}
+
+.back-btn{
+    border:1px solid #cbd7e4;
+    background:white;color:#12345b;
+    padding:10px 17px;border-radius:8px;
+    cursor:pointer;font-weight:700;margin-bottom:22px;
+}
+
+.back-btn:hover{background:#eef6f8}
+
+.detail-card{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 7px 22px rgba(24,55,84,.05);
+}
+
+.detail-header{
+    display:flex;
+    gap:25px;
+    align-items:flex-start;
+    padding-bottom:25px;
+    border-bottom:1px solid #e5ebf2;
+}
+
+.detail-image{
+    width:310px;height:210px;
+    object-fit:cover;border-radius:14px;
+}
+
+.detail-info{flex:1}
+.detail-info h2{font-size:28px;color:#12345b;margin-bottom:10px}
+.detail-info p{color:#68798b;font-size:14px;line-height:1.6;margin:6px 0}
+
+.detail-rating{
+    color:#e39a17;
+    font-size:17px;
+    font-weight:700;
+    margin:10px 0;
+}
+
+.detail-section{margin-top:25px}
+.detail-section h3{color:#12345b;margin-bottom:14px}
+
+.speciality-large{
+    display:inline-block;
+    padding:9px 13px;
+    background:#eaf6f6;
+    color:#147e79;
+    border-radius:8px;
+    margin:0 7px 7px 0;
+    font-size:13px;
+    font-weight:700;
+}
+
+/* DOCTOR CARDS */
+.doctor{
+    display:flex;
+    gap:18px;
+    padding:18px;
+    border:1px solid #e5ebf2;
+    border-radius:14px;
+    margin-bottom:14px;
+    align-items:flex-start;
+}
+
+.doctor img{
+    width:82px;height:82px;
+    border-radius:50%;object-fit:cover;
+}
+
+.doctor-info{flex:1}
+.doctor-info h4{color:#12345b;font-size:17px;margin-bottom:5px}
+.doctor-speciality{color:#1d9c96 !important;font-weight:700}
+.doctor-info p{color:#6d7c8e;font-size:13px;margin:4px 0}
+
+.doctor-rating{color:#e39a17 !important;font-weight:700}
+
+.review{
+    margin-top:9px;
+    padding:9px 11px;
+    background:#f7fafd;
+    border-left:3px solid #1d9c96;
+    border-radius:6px;
+    color:#68798b !important;
+    font-style:italic;
+}
+.doctor-book-btn{
+    margin-top:12px;
+    padding:10px 18px;
+    background:#1d9c96;
+    color:white;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
+
+.doctor-book-btn:hover{
+    background:#147e79;
+}
+
+.footer-inner{
+    width:min(1180px,92%);margin:auto;text-align:center;
+}
+
+.footer-inner p{color:#c5d4e3;font-size:13px}
+
+/* MOBILE */
+@media(max-width:800px){
+    .nav-links{display:none}
+    .hospital-top,.detail-header{flex-direction:column}
+    .hospital-image,.detail-image{width:100%;height:220px}
+    .doctor{flex-wrap:wrap}
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="nav-inner">
+
+<a href="first.html" class="logo">
+    <div class="logo-mark">✚</div>
+    <div class="logo-name">BOOK <span>N</span> MEET</div>
+</a>
+
+<nav class="nav-links">
+    <a href="first.html">Home</a>
+    <a href="hospitals.html">Hospitals</a>
+    <a href="first.html#doctors">Doctors</a>
+    <a href="#">Appointments</a>
+</nav>
+
+<div class="nav-actions">
+    <a href="profile.html" class="user-icon" title="My Profile">👤</a>
+    <a href="notifications.html" class="notification-icon" title="Notifications">
+        🔔
+        <span class="notification-dot"></span>
+    </a>
+</div>
+
+</div>
+</header>
+
+<main class="container">
+
+<!-- ALL HOSPITALS -->
+<section id="hospitalList">
+
+<div class="heading">
+    <h1 id="listTitle">Available Hospitals</h1>
+    <p id="listDescription">Explore hospitals and view their doctors, specialities, ratings and reviews.</p>
+</div>
+
+<div id="searchInfo" class="search-info" style="display:none;"></div>
+
+<!-- TRINITY -->
+<div class="hospital">
+
+<div class="hospital-top">
+<img class="hospital-image"
+src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80">
+
+<div class="hospital-info">
+<h2>Trinity Hospital</h2>
+<p>📍 Tadepalligudem</p>
+<p class="rating">★★★★★ 4.8</p>
+<p>A multi-speciality hospital providing quality healthcare and experienced doctors.</p>
+
+<div class="specialities">
+<span class="speciality">Cardiology</span>
+<span class="speciality">Neurology</span>
+<span class="speciality">General Medicine</span>
+<span class="speciality">Orthopedics</span>
+</div>
+
+<button class="visit-btn" onclick="visitHospital('trinity')">Visit Hospital</button>
+<!-- <button class="book-hospital-btn search-book-btn"
+        data-hospital="trinity"
+        onclick="bookHospital('Trinity Hospital')"
+        style="display:none;">Book Now</button> -->
+</div>
+</div>
+</div>
+
+<!-- GOWTHAMI -->
+<div class="hospital">
+
+<div class="hospital-top">
+<img class="hospital-image"
+src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80">
+
+<div class="hospital-info">
+<h2>Gowthami Hospital</h2>
+<p>📍 Tadepalligudem</p>
+<p class="rating">★★★★★ 4.7</p>
+<p>Modern healthcare facilities with specialists across multiple departments.</p>
+
+<div class="specialities">
+<span class="speciality">Dermatology</span>
+<span class="speciality">Gynecology</span>
+<span class="speciality">Pediatrics</span>
+<span class="speciality">General Medicine</span>
+</div>
+
+<button class="visit-btn" onclick="visitHospital('gowthami')">Visit Hospital</button>
+<!-- <button class="book-hospital-btn search-book-btn"
+        data-hospital="gowthami"
+        onclick="bookHospital('Gowthami Hospital')"
+        style="display:none;">Book Now</button> -->
+</div>
+</div>
+</div>
+
+<!-- NEOKIDZ -->
+<div class="hospital">
+
+<div class="hospital-top">
+<img class="hospital-image"
+src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=800&q=80">
+
+<div class="hospital-info">
+<h2>Neokidz ENT</h2>
+<p>📍 Tadepalligudem</p>
+<p class="rating">★★★★★ 4.6</p>
+<p>Specialized healthcare services with a focus on ENT and children's healthcare.</p>
+
+<div class="specialities">
+<span class="speciality">ENT</span>
+<span class="speciality">Pediatrics</span>
+<span class="speciality">Ophthalmology</span>
+</div>
+
+<button class="visit-btn" onclick="visitHospital('neokidz')">Visit Hospital</button>
+<!-- <button class="book-hospital-btn search-book-btn"
+        data-hospital="neokidz"
+        onclick="bookHospital('Neokidz ENT')"
+        style="display:none;">Book Now</button> -->
+</div>
+</div>
+</div>
+
+</section>
+
+
+<!-- HOSPITAL DETAILS -->
+<section id="hospitalDetails">
+
+<button class="back-btn" onclick="showHospitalList()">← Back to Hospitals</button>
+
+<div class="detail-card">
+
+<div class="detail-header">
+    <img id="detailImage" class="detail-image" src="">
+
+    <div class="detail-info">
+        <h2 id="detailName"></h2>
+        <p id="detailLocation"></p>
+        <div id="detailRating" class="detail-rating"></div>
+        <p id="detailDescription"></p>
+    </div>
+</div>
+
+<div class="detail-section">
+    <h3>Specialities Available</h3>
+    <div id="detailSpecialities"></div>
+</div>
+
+<div class="detail-section">
+    <h3>Doctors & Reviews</h3>
+    <div id="doctorList"></div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="footer-inner">
+<p>© 2026 BOOK N MEET. Hospital Appointment Booking Platform.</p>
+</div>
+</footer>
+
+<script>
+
+const hospitals = {
+
+    trinity: {
+        name: "Trinity Hospital",
+        location: "📍 Tadepalligudem",
+        rating: "★★★★★ 4.8",
+        description: "A multi-speciality hospital providing quality healthcare and experienced doctors.",
+        image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80",
+        specialities: ["Cardiology","Neurology","General Medicine","Orthopedics"],
+        doctors: [
+            {
+                name:"Dr. Ananya Rao",
+                speciality:"Cardiologist",
+                experience:"12 years experience",
+                rating:"★★★★★ 4.9",
+                review:"Very attentive and explains the treatment clearly. Patients appreciate her caring approach.",
+                image:"https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                name:"Dr. Rahul Verma",
+                speciality:"Neurologist",
+                experience:"10 years experience",
+                rating:"★★★★★ 4.8",
+                review:"Professional doctor with excellent communication and detailed diagnosis.",
+                image:"https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                name:"Dr. Kiran Kumar",
+                speciality:"Orthopedic Specialist",
+                experience:"9 years experience",
+                rating:"★★★★★ 4.7",
+                review:"Patients appreciate the practical advice and friendly consultation.",
+                image:"https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80"
+            }
+        ]
+    },
+
+    gowthami: {
+        name: "Gowthami Hospital",
+        location: "📍 Tadepalligudem",
+        rating: "★★★★★ 4.7",
+        description: "Modern healthcare facilities with specialists across multiple departments.",
+        image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80",
+        specialities: ["Dermatology","Gynecology","Pediatrics","General Medicine"],
+        doctors: [
+            {
+                name:"Dr. Priya Sharma",
+                speciality:"Dermatologist",
+                experience:"11 years experience",
+                rating:"★★★★★ 4.8",
+                review:"Known for careful diagnosis and clear skin-care guidance.",
+                image:"https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                name:"Dr. Sneha Reddy",
+                speciality:"Pediatrician",
+                experience:"8 years experience",
+                rating:"★★★★★ 4.7",
+                review:"Friendly with children and provides clear instructions to parents.",
+                image:"https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                name:"Dr. Meera Rao",
+                speciality:"Gynecologist",
+                experience:"10 years experience",
+                rating:"★★★★★ 4.8",
+                review:"Patients value her supportive consultation and detailed explanations.",
+                image:"https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=300&q=80"
+            }
+        ]
+    },
+
+    neokidz: {
+        name: "Neokidz ENT",
+        location: "📍 Tadepalligudem",
+        rating: "★★★★★ 4.6",
+        description: "Specialized healthcare services with a focus on ENT and children's healthcare.",
+        image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=800&q=80",
+        specialities: ["ENT","Pediatrics","Ophthalmology"],
+        doctors: [
+            {
+                name:"Dr. Vikram Rao",
+                speciality:"ENT Specialist",
+                experience:"9 years experience",
+                rating:"★★★★★ 4.7",
+                review:"Patients appreciate his detailed explanations and efficient treatment.",
+                image:"https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                name:"Dr. Arjun Kumar",
+                speciality:"Pediatrician",
+                experience:"7 years experience",
+                rating:"★★★★★ 4.6",
+                review:"A patient and friendly doctor who makes children comfortable.",
+                image:"https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=300&q=80"
+            },
+            {
+                name:"Dr. Nisha Patel",
+                speciality:"Ophthalmologist",
+                experience:"8 years experience",
+                rating:"★★★★★ 4.7",
+                review:"Known for careful eye examinations and easy-to-understand advice.",
+                image:"https://images.unsplash.com/photo-1618498082410-b4aa22193b38?auto=format&fit=crop&w=300&q=80"
+            }
+        ]
+    }
+};
+
+
+// function applySearchResults(){
+
+//     const params = new URLSearchParams(window.location.search);
+//     const speciality = params.get("speciality");
+//     const searched = params.get("searched") === "true";
+
+//     const hospitalCards = document.querySelectorAll("#hospitalList .hospital");
+//     const bookButtons = document.querySelectorAll(".search-book-btn");
+
+//     // Normal visit to hospitals.html: show every hospital and no Book Now buttons.
+//     if(!searched || !speciality){
+//         hospitalCards.forEach(card => card.style.display = "block");
+//         bookButtons.forEach(btn => btn.style.display = "none");
+
+//         document.getElementById("listTitle").textContent = "Available Hospitals";
+//         document.getElementById("listDescription").textContent =
+//             "Explore hospitals and view their doctors, specialities, ratings and reviews.";
+//         document.getElementById("searchInfo").style.display = "none";
+//         return;
+//     }
+
+//     let found = 0;
+
+//     hospitalCards.forEach(card => {
+
+//         const id = card.querySelector(".search-book-btn").dataset.hospital;
+//         const hospital = hospitals[id];
+
+//         if(hospital.specialities.includes(speciality)){
+//             card.style.display = "block";
+//             found++;
+//         }else{
+//             card.style.display = "none";
+//         }
+//     });
+
+//     bookButtons.forEach(btn => {
+//         const card = btn.closest(".hospital");
+//         btn.style.display = card.style.display === "none" ? "none" : "inline-block";
+//     });
+
+//     document.getElementById("listTitle").textContent =
+//         speciality + " Hospitals";
+
+//     document.getElementById("listDescription").textContent =
+//         "Hospitals offering " + speciality + " services.";
+
+//     const searchInfo = document.getElementById("searchInfo");
+//     searchInfo.style.display = "block";
+
+//     const date = params.get("date");
+//     const age = params.get("age");
+
+//     searchInfo.textContent =
+//         "Search results for " + speciality +
+//         (date ? " • Date: " + date : "") +
+//         (age ? " • Age: " + age : "");
+
+//     if(found === 0){
+//         searchInfo.textContent =
+//             "No hospitals found for " + speciality + ".";
+//     }
+
+//     window.scrollTo({top:0, behavior:"smooth"});
+// }
+
+function applySearchResults(){
+
+    const params = new URLSearchParams(window.location.search);
+
+    const speciality = params.get("speciality");
+    const searched = params.get("searched") === "true";
+
+    const hospitalCards =
+        document.querySelectorAll("#hospitalList .hospital");
+
+    /* Normal visit to hospitals.html */
+    if(!searched || !speciality){
+
+        hospitalCards.forEach(function(card){
+            card.style.display = "block";
+        });
+
+        document.getElementById("listTitle").textContent =
+            "Available Hospitals";
+
+        document.getElementById("listDescription").textContent =
+            "Explore hospitals and view their doctors, specialities, ratings and reviews.";
+
+        document.getElementById("searchInfo").style.display = "none";
+
+        return;
+    }
+
+
+    let found = 0;
+
+    hospitalCards.forEach(function(card){
+
+        /*
+         * Read all speciality names displayed
+         * inside this hospital card.
+         */
+        const specialityElements =
+            card.querySelectorAll(".speciality");
+
+        let hospitalHasSpeciality = false;
+
+        specialityElements.forEach(function(element){
+
+            const hospitalSpeciality =
+                element.textContent.trim().toLowerCase();
+
+            if(
+                hospitalSpeciality ===
+                speciality.trim().toLowerCase()
+            ){
+                hospitalHasSpeciality = true;
+            }
+
+        });
+
+
+        if(hospitalHasSpeciality){
+
+            card.style.display = "block";
+            found++;
+
+        }else{
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    /* Update heading */
+
+    document.getElementById("listTitle").textContent =
+        speciality + " Hospitals";
+
+    document.getElementById("listDescription").textContent =
+        "Hospitals offering " + speciality + " services.";
+
+
+    /* Search information */
+
+    const searchInfo =
+        document.getElementById("searchInfo");
+
+    searchInfo.style.display = "block";
+
+
+    const date = params.get("date");
+    const age = params.get("age");
+
+
+    if(found > 0){
+
+        searchInfo.textContent =
+            "Search results for " +
+            speciality +
+            (date ? " • Date: " + date : "") +
+            (age ? " • Age: " + age : "");
+
+    }else{
+
+        searchInfo.textContent =
+            "No hospitals found for " +
+            speciality +
+            ".";
+
+    }
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+function bookHospital(hospitalName){
+    const params = new URLSearchParams(window.location.search);
+
+    const speciality = params.get("speciality") || "";
+    const date = params.get("date") || "";
+    const age = params.get("age") || "";
+
+    window.location.href =
+        "booking.html?hospital=" +
+        encodeURIComponent(hospitalName) +
+        "&speciality=" +
+        encodeURIComponent(speciality) +
+        "&date=" +
+        encodeURIComponent(date) +
+        "&age=" +
+        encodeURIComponent(age);
+}
+
+// function visitHospital(id){
+
+//     const hospital = hospitals[id];
+
+//     document.getElementById("hospitalList").style.display = "none";
+//     document.getElementById("hospitalDetails").style.display = "block";
+
+//     document.getElementById("detailImage").src = hospital.image;
+//     document.getElementById("detailName").textContent = hospital.name;
+//     document.getElementById("detailLocation").textContent = hospital.location;
+//     document.getElementById("detailRating").textContent = hospital.rating;
+//     document.getElementById("detailDescription").textContent = hospital.description;
+
+//     document.getElementById("detailSpecialities").innerHTML =
+//         hospital.specialities.map(function(s){
+//             return '<span class="speciality-large">' + s + '</span>';
+//         }).join("");
+
+//     document.getElementById("doctorList").innerHTML =
+//         hospital.doctors.map(function(doctor){
+//             return `
+//                 <div class="doctor">
+//                     <img src="${doctor.image}" alt="${doctor.name}">
+//                     <div class="doctor-info">
+//                         <h4>${doctor.name}</h4>
+//                         <p class="doctor-speciality">${doctor.speciality}</p>
+//                         <p>${doctor.experience}</p>
+//                         <p class="doctor-rating">${doctor.rating}</p>
+//                         <p class="review">"${doctor.review}"</p>
+//                          <button class="doctor-book-btn"
+//                         onclick="bookDoctor('${hospital.name}', '${doctor.name}', '${doctor.speciality}')">
+//                         Book Now
+//                     </button>
+//                     </div>
+//                 </div>
+//             `;
+//         }).join("");
+
+//     window.scrollTo({top:0,behavior:"smooth"});
+// }
+function visitHospital(id){
+
+    const hospital = hospitals[id];
+
+    /* Get speciality entered in the search */
+    const params = new URLSearchParams(window.location.search);
+    const searched = params.get("searched") === "true";
+    const selectedSpeciality = params.get("speciality") || "";
+
+    document.getElementById("hospitalList").style.display = "none";
+    document.getElementById("hospitalDetails").style.display = "block";
+
+    /* Hospital details */
+    document.getElementById("detailImage").src = hospital.image;
+    document.getElementById("detailName").textContent = hospital.name;
+    document.getElementById("detailLocation").textContent = hospital.location;
+    document.getElementById("detailRating").textContent = hospital.rating;
+    document.getElementById("detailDescription").textContent = hospital.description;
+
+
+    /* ------------------------------------------------
+       SHOW SPECIALITIES
+    ------------------------------------------------ */
+
+    document.getElementById("detailSpecialities").innerHTML =
+        hospital.specialities.map(function(s){
+
+            return '<span class="speciality-large">' +
+                   s +
+                   '</span>';
+
+        }).join("");
+
+
+    /* ------------------------------------------------
+       FILTER DOCTORS
+    ------------------------------------------------ */
+
+    let doctorsToShow = hospital.doctors;
+
+    /*
+       If the user came through Search Hospitals,
+       show only doctors matching the searched speciality.
+    */
+    if(searched && selectedSpeciality){
+
+        doctorsToShow = hospital.doctors.filter(function(doctor){
+
+            const doctorSpeciality =
+                doctor.speciality.toLowerCase();
+
+            const searchedSpeciality =
+                selectedSpeciality.toLowerCase();
+
+            /*
+              Handles:
+              Pediatrics -> Pediatrician
+              Cardiology -> Cardiologist
+              Neurology -> Neurologist
+              Dermatology -> Dermatologist
+              Gynecology -> Gynecologist
+              Ophthalmology -> Ophthalmologist
+              Orthopedics -> Orthopedic Specialist
+              ENT -> ENT Specialist
+            */
+
+            return (
+                doctorSpeciality.includes(searchedSpeciality) ||
+                searchedSpeciality.includes(
+                    doctorSpeciality.replace(" specialist","")
+                ) ||
+                (
+                    searchedSpeciality === "pediatrics" &&
+                    doctorSpeciality.includes("pediatric")
+                ) ||
+                (
+                    searchedSpeciality === "cardiology" &&
+                    doctorSpeciality.includes("cardiolog")
+                ) ||
+                (
+                    searchedSpeciality === "neurology" &&
+                    doctorSpeciality.includes("neurolog")
+                ) ||
+                (
+                    searchedSpeciality === "dermatology" &&
+                    doctorSpeciality.includes("dermatolog")
+                ) ||
+                (
+                    searchedSpeciality === "gynecology" &&
+                    doctorSpeciality.includes("gynecolog")
+                ) ||
+                (
+                    searchedSpeciality === "ophthalmology" &&
+                    doctorSpeciality.includes("ophthalmolog")
+                ) ||
+                (
+                    searchedSpeciality === "orthopedics" &&
+                    doctorSpeciality.includes("orthopedic")
+                ) ||
+                (
+                    searchedSpeciality === "ent" &&
+                    doctorSpeciality.includes("ent")
+                )
+            );
+
+        });
+
+    }
+
+
+    /* ------------------------------------------------
+       DISPLAY DOCTORS
+    ------------------------------------------------ */
+
+    if(doctorsToShow.length === 0){
+
+        document.getElementById("doctorList").innerHTML =
+            "<p style='color:#718194;'>No doctors available for " +
+            selectedSpeciality +
+            " at this hospital.</p>";
+
+    }else{
+
+        document.getElementById("doctorList").innerHTML =
+            doctorsToShow.map(function(doctor){
+
+                return `
+                    <div class="doctor">
+
+                        <img
+                            src="${doctor.image}"
+                            alt="${doctor.name}"
+                        >
+
+                        <div class="doctor-info">
+
+                            <h4>${doctor.name}</h4>
+
+                            <p class="doctor-speciality">
+                                ${doctor.speciality}
+                            </p>
+
+                            <p>
+                                ${doctor.experience}
+                            </p>
+
+                            <p class="doctor-rating">
+                                ${doctor.rating}
+                            </p>
+
+                            <p class="review">
+                                "${doctor.review}"
+                            </p>
+
+                            <button
+                                class="doctor-book-btn"
+                                onclick="bookDoctor(
+                                    '${hospital.name}',
+                                    '${doctor.name}',
+                                    '${doctor.speciality}'
+                                )"
+                            >
+                                Book Now
+                            </button>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+function bookDoctor(hospitalName, doctorName, doctorSpeciality){
+
+    const params = new URLSearchParams(window.location.search);
+
+    const speciality = params.get("speciality") || doctorSpeciality;
+    const date = params.get("date") || "";
+    const age = params.get("age") || "";
+
+    window.location.href =
+        "booking.html?hospital=" +
+        encodeURIComponent(hospitalName) +
+        "&doctor=" +
+        encodeURIComponent(doctorName) +
+        "&speciality=" +
+        encodeURIComponent(speciality) +
+        "&date=" +
+        encodeURIComponent(date) +
+        "&age=" +
+        encodeURIComponent(age);
+}
+function showHospitalList(){
+
+    document.getElementById("hospitalDetails").style.display = "none";
+    document.getElementById("hospitalList").style.display = "block";
+
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+
+applySearchResults();
+
+</script>
+
+</body>
+</html>
