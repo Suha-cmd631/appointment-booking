@@ -23,6 +23,41 @@ a{
     display:flex;
     align-items:center;
 }
+.user-icon,
+.notification-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    cursor:pointer;
+}
+.user-icon img,
+.notification-icon img{
+    width:24px;
+    height:24px;
+    object-fit:contain;
+    display:block;
+}
+
+.notification-icon img{
+    width:25px;
+    height:25px;
+}
+.user-icon{
+    background:#eaf6f6;
+}
+
+.notification-icon{
+    background:#f3f6fa;
+}
+
+.user-icon:hover,
+.notification-icon:hover{
+    transform:translateY(-2px);
+}
 
 .nav-inner{
     width:min(1180px,92%);
