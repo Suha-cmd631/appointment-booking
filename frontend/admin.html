@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOOK N MEET - Hospital Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f5f9fc;
+    color:#12345b;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+button,input{
+    font:inherit;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+    height:76px;
+    background:#ffffff;
+    border-bottom:1px solid #dfe7ee;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 30px;
+
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+/* Logo */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-size:20px;
+    font-weight:800;
+    color:#12345b;
+}
+
+.logo-icon{
+    width:40px;
+    height:40px;
+
+    border-radius:10px;
+
+    background:linear-gradient(
+        135deg,
+        #1d9c96,
+        #2687c6
+    );
+
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:27px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#1d9c96;
+}
+
+/* Navigation */
+
+.nav{
+    display:flex;
+    align-items:center;
+    gap:30px;
+
+    margin-left:370px;
+}
+
+.nav a{
+    font-size:14px;
+    color:#173d62;
+    font-weight:500;
+
+    padding:8px 0;
+
+    transition:.2s;
+}
+
+.nav a:hover,
+.nav a.active{
+    color:#1d9c96;
+}
+
+/* Header right */
+
+.header-right{
+    margin-left:auto;
+margin-right: 130px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header-button{
+    width:42px;
+    height:42px;
+
+    border:0;
+    border-radius:11px;
+
+    background:#edf8f7;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    font-size:19px;
+}
+
+.profile-button{
+    /* width:42px;
+    height:42px;
+
+    border:0;
+    border-radius:50%;
+
+    background:#edf8f7;
+
+    color:#12345b;
+
+    font-weight:800;
+
+    cursor:pointer; */
+      width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: linear-gradient(
+        135deg,
+        #1d9c96,
+        #12345b
+    );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.staff-info{
+    margin-left:4px;
+    
+}
+
+.staff-name{
+    font-size:12px;
+    font-weight:700;
+    color:#12345b;
+    margin-top: 10px;
+}
+
+.staff-hospital{
+    font-size:10px;
+    color:#71859a;
+    margin-top:3px;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+    max-width:1400px;
+    margin:auto;
+
+    padding:34px 30px 50px;
+}
+
+/* ================= TITLE ================= */
+
+.page-title{
+    font-size:29px;
+    font-weight:800;
+
+    margin-bottom:5px;
+}
+
+.page-subtitle{
+    font-size:13px;
+    color:#70859a;
+
+    margin-bottom:24px;
+}
+
+/* ================= STATS ================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.stat-card{
+    background:#fff;
+
+    border:1px solid #dce6ee;
+    border-radius:14px;
+
+    padding:19px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    box-shadow:0 3px 12px rgba(18,52,91,.04);
+}
+
+.stat-label{
+    font-size:12px;
+    color:#71859a;
+}
+
+.stat-value{
+    font-size:29px;
+    font-weight:800;
+
+    margin-top:6px;
+}
+
+.stat-icon{
+    width:45px;
+    height:45px;
+
+    border-radius:12px;
+
+    background:#eaf7f6;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:21px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    background:#fff;
+
+    border:1px solid #dce6ee;
+    border-radius:14px;
+
+    box-shadow:0 3px 12px rgba(18,52,91,.04);
+}
+
+.appointment-card{
+    margin-top:19px;
+}
+
+.card-header{
+    padding:18px 20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    border-bottom:1px solid #e5edf2;
+}
+
+.card-header h2{
+    font-size:16px;
+}
+
+.view-all{
+    display:inline-block;
+
+    background:#12345b;
+    color:#fff;
+
+    padding:9px 14px;
+
+    border-radius:8px;
+
+    font-size:11px;
+    font-weight:700;
+
+    border:0;
+
+    cursor:pointer;
+}
+
+.view-all:hover{
+    background:#1d9c96;
+}
+
+/* ================= TABLE ================= */
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f8fafc;
+
+    color:#73869a;
+
+    text-align:left;
+
+    padding:12px 14px;
+
+    font-size:10px;
+    text-transform:uppercase;
+}
+
+td{
+    padding:14px;
+
+    border-top:1px solid #edf1f4;
+
+    color:#38536d;
+
+    font-size:12px;
+}
+
+tr:hover td{
+    background:#fbfdfe;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+    display:inline-flex;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    font-size:10px;
+    font-weight:700;
+}
+
+.pending{
+    background:#fff3d8;
+    color:#986700;
+}
+
+.upcoming{
+    background:#dff7f5;
+    color:#087f79;
+}
+
+.completed{
+    background:#e3f6e8;
+    color:#18743a;
+}
+
+.missed{
+    background:#ffe3e3;
+    color:#c62828;
+}
+
+.canceled{
+    background:#ececec;
+    color:#666;
+}
+
+/* ================= BOTTOM ================= */
+
+.bottom-grid{
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:18px;
+
+    margin-top:19px;
+}
+
+.bottom-card{
+    background:#fff;
+
+    border:1px solid #dce6ee;
+    border-radius:14px;
+
+    padding:20px;
+
+    box-shadow:0 3px 12px rgba(18,52,91,.04);
+}
+
+.bottom-card h2{
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.progress-text{
+    color:#60778e;
+    font-size:11px;
+    margin-bottom:9px;
+}
+
+.progress{
+    width:100%;
+    height:8px;
+
+    background:#e7eef3;
+
+    border-radius:20px;
+
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+
+    background:#1d9c96;
+
+    width:0%;
+
+    transition:.3s;
+}
+
+.waiting-number{
+    font-size:30px;
+    font-weight:800;
+}
+
+.waiting-label{
+    color:#71859a;
+    font-size:11px;
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+    padding:45px 20px;
+
+    text-align:center;
+
+    color:#7a8da0;
+}
+
+.empty-icon{
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.empty h3{
+    font-size:16px;
+    color:#12345b;
+    margin-bottom:5px;
+}
+
+.empty p{
+    font-size:12px;
+}
+
+/* ================= SEARCH ================= */
+
+.search-box{
+    width:260px;
+
+    padding:10px 14px;
+
+    border:1px solid #d9e4ec;
+    border-radius:9px;
+
+    background:#f8fbfd;
+
+    outline:none;
+
+    font-size:12px;
+}
+
+.search-box:focus{
+    border-color:#1d9c96;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1050px){
+
+    .nav{
+        margin-left:35px;
+        gap:20px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .bottom-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:800px){
+
+    .header{
+        padding:0 18px;
+    }
+
+    .nav{
+        display:none;
+    }
+
+    .main{
+        padding:25px 18px 40px;
+    }
+
+    .staff-info{
+        display:none;
+    }
+
+    .search-box{
+        width:200px;
+    }
+}
+
+@media(max-width:600px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        padding:0 14px;
+    }
+
+    .logo{
+        font-size:17px;
+    }
+
+    .logo-icon{
+        width:37px;
+        height:37px;
+    }
+
+    .search-box{
+        display:none;
+    }
+
+    .page-title{
+        font-size:24px;
+    }
+}
+.login,
+.signup{
+    padding:10px 18px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.login{
+    background:white;
+    border:1px solid #cbd7e4;
+    color:#12345b;
+   margin-left: 100px;
+    margin-bottom: 5px;
+}
+.login:hover{
+    color:#1d9c96;
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     PATIENT-DASHBOARD STYLE HEADER
+===================================================== -->
+
+<header class="header">
+
+    <!-- LOGO -->
+
+    <a href="admin.html" class="logo">
+
+        <div class="logo-icon">
+            +
+        </div>
+
+        <div>
+            BOOK <span>N</span> MEET
+        </div>
+
+    </a>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="nav">
+
+        <a
+            href="admin.html"
+            class="active"
+        >
+            Home
+        </a>
+
+        <a href="appointments.html">
+            Appointments
+        </a>
+
+        <a href="doctors.html">
+            Doctors
+        </a>
+
+        <a href="patients.html">
+            Patients
+        </a>
+
+        <a href="doctor-schedule.html">
+            Schedule
+        </a>
+
+    </nav>
+
+
+    <!-- RIGHT SIDE -->
+
+    <div class="header-right">
+
+        <a
+            href="admin-notifications.html"
+            class="header-button"
+            title="Notifications"
+        >
+            🔔
+        </a>
+
+        <button
+            class="profile-button"
+            id="profileButton"
+            title="Profile"
+        >
+            U
+        </button>
+
+        <div class="staff-info">
+
+            <div
+                class="staff-name"
+                id="staffName"
+            >
+                Staff
+            </div>
+
+            <div
+                class="staff-hospital"
+                id="staffHospital"
+            >
+                Hospital
+            </div>
+             
+        </div>
+     <button class="login" onclick="window.location.href='landing.html'">
+    Logout
+</button>
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN DASHBOARD
+===================================================== -->
+
+<main class="main">
+
+    <h1 class="page-title">
+        Dashboard
+    </h1>
+
+    <p class="page-subtitle">
+        Hospital overview and today's activity.
+    </p>
+
+
+    <!-- SEARCH -->
+
+    <div style="margin-bottom:18px;">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="search-box"
+            placeholder="Search today's appointments..."
+        >
+
+    </div>
+
+
+    <!-- =================================================
+         STAT CARDS
+    ================================================= -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Today's Appointments
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="todayAppointments"
+                >
+                    0
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                🗓️
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Pending Requests
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="pendingRequests"
+                >
+                    0
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                ⏳
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Available Doctors
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="availableDoctors"
+                >
+                    0
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                🧑‍⚕️
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div>
+
+                <div class="stat-label">
+                    Waiting Patients
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="waitingPatients"
+                >
+                    0
+                </div>
+
+            </div>
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         TODAY'S APPOINTMENTS
+    ================================================= -->
+
+    <section class="card appointment-card">
+
+        <div class="card-header">
+
+            <h2>
+                Today's Appointments
+            </h2>
+
+            <a
+                href="appointments.html"
+                class="view-all"
+            >
+                View All
+            </a>
+
+        </div>
+
+        <div
+            class="table-container"
+            id="appointmentContainer"
+        >
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         BOTTOM CARDS
+    ================================================= -->
+
+    <section class="bottom-grid">
+
+        <div class="bottom-card">
+
+            <h2>
+                Doctor Availability
+            </h2>
+
+            <div
+                class="progress-text"
+                id="doctorAvailability"
+            >
+                0 of 0 doctors available
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    id="doctorProgress"
+                >
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="bottom-card">
+
+            <h2>
+                Waiting Room
+            </h2>
+
+            <div
+                class="waiting-number"
+                id="waitingRoomNumber"
+            >
+                0
+            </div>
+
+            <div class="waiting-label">
+                Patients waiting today
+            </div>
+
+        </div>
+
+
+        <div class="bottom-card">
+
+            <h2>
+                Quick Actions
+            </h2>
+
+            <div
+                style="
+                    display:flex;
+                    gap:8px;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <a
+                    href="doctor-schedule.html"
+                    class="view-all"
+                >
+                    Schedules
+                </a>
+
+                <a
+                    href="appointments.html"
+                    class="view-all"
+                >
+                    Appointments
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+/* =========================================================
+   CURRENT STAFF
+========================================================= */
+
+const currentUser =
+    JSON.parse(
+        localStorage.getItem(
+            "bookNMeetCurrentUser"
+        ) || "null"
+    );
+
+
+/* =========================================================
+   STAFF LOGIN CHECK
+========================================================= */
+
+if(
+    !currentUser ||
+    currentUser.role !== "staff"
+){
+
+    window.location.href =
+        "first.html";
+
+}
+
+
+/* =========================================================
+   CURRENT HOSPITAL
+========================================================= */
+
+const currentHospital =
+    currentUser?.hospital || "";
+
+
+/* =========================================================
+   HEADER DATA
+========================================================= */
+
+document.getElementById(
+    "staffName"
+).textContent =
+    currentUser?.name || "Staff";
+
+
+document.getElementById(
+    "staffHospital"
+).textContent =
+    currentHospital || "Hospital";
+
+
+/* =========================================================
+   PROFILE INITIAL
+========================================================= */
+
+function getInitials(name){
+
+    if(!name){
+        return "U";
+    }
+
+    return name
+        .trim()
+        .split(/\s+/)
+        .slice(0,2)
+        .map(
+            word =>
+                word.charAt(0)
+        )
+        .join("")
+        .toUpperCase();
+
+}
+
+document.getElementById(
+    "profileButton"
+).textContent =
+    getInitials(
+        currentUser?.name
+    );
+
+
+/* =========================================================
+   STORAGE HELPERS
+========================================================= */
+
+function getBookings(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            "bookNMeetBookings"
+        ) || "[]"
+    );
+
+}
+
+
+function getDoctors(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            "bookNMeetDoctors"
+        ) || "[]"
+    );
+
+}
+
+
+/* =========================================================
+   NORMALIZE STATUS
+========================================================= */
+
+function normalizeStatus(status){
+
+    if(status === "Confirmed"){
+        return "Upcoming";
+    }
+
+    return status || "Pending";
+
+}
+
+
+/* =========================================================
+   STATUS CLASS
+========================================================= */
+
+function statusClass(status){
+
+    return normalizeStatus(status)
+        .toLowerCase()
+        .replace(/\s+/g,"");
+
+}
+
+
+/* =========================================================
+   TODAY YYYY-MM-DD
+========================================================= */
+
+function getToday(){
+
+    const date =
+        new Date();
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2,"0");
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    ).replace(
+        /[&<>"']/g,
+        function(character){
+
+            return {
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#39;"
+            }[character];
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GET HOSPITAL APPOINTMENTS
+========================================================= */
+
+function getHospitalAppointments(){
+
+    const hospital =
+        currentHospital
+            .trim()
+            .toLowerCase();
+
+
+    return getBookings()
+        .filter(
+            booking =>
+                String(
+                    booking.hospital || ""
+                )
+                .trim()
+                .toLowerCase()
+                ===
+                hospital
+        );
+
+}
+
+
+/* =========================================================
+   GET HOSPITAL DOCTORS
+========================================================= */
+
+function getHospitalDoctors(){
+
+    const hospital =
+        currentHospital
+            .trim()
+            .toLowerCase();
+
+
+    return getDoctors()
+        .filter(
+            doctor =>
+                String(
+                    doctor.hospital || ""
+                )
+                .trim()
+                .toLowerCase()
+                ===
+                hospital
+        );
+
+}
+
+
+/* =========================================================
+   LOAD DASHBOARD
+========================================================= */
+
+function loadDashboard(){
+
+    const appointments =
+        getHospitalAppointments();
+
+
+    const doctors =
+        getHospitalDoctors();
+
+
+    const today =
+        getToday();
+
+
+    /* TODAY'S APPOINTMENTS */
+
+    const todayAppointments =
+        appointments.filter(
+            appointment =>
+                appointment.date === today
+        );
+
+
+    document.getElementById(
+        "todayAppointments"
+    ).textContent =
+        todayAppointments.length;
+
+
+    /* PENDING REQUESTS */
+
+    const pending =
+        appointments.filter(
+            appointment =>
+                normalizeStatus(
+                    appointment.status
+                )
+                ===
+                "Pending"
+        );
+
+
+    document.getElementById(
+        "pendingRequests"
+    ).textContent =
+        pending.length;
+
+
+    /* AVAILABLE DOCTORS */
+
+    const available =
+        doctors.filter(
+            doctor =>
+                doctor.available !== false
+        );
+
+
+    document.getElementById(
+        "availableDoctors"
+    ).textContent =
+        available.length;
+
+
+    /* WAITING PATIENTS */
+
+    const waiting =
+        todayAppointments.filter(
+            appointment =>
+                normalizeStatus(
+                    appointment.status
+                )
+                ===
+                "Upcoming"
+        );
+
+
+    document.getElementById(
+        "waitingPatients"
+    ).textContent =
+        waiting.length;
+
+
+    document.getElementById(
+        "waitingRoomNumber"
+    ).textContent =
+        waiting.length;
+
+
+    /* DOCTOR AVAILABILITY */
+
+    const totalDoctors =
+        doctors.length;
+
+    const availableDoctors =
+        available.length;
+
+
+    document.getElementById(
+        "doctorAvailability"
+    ).textContent =
+        availableDoctors +
+        " of " +
+        totalDoctors +
+        " doctors available";
+
+
+    const percentage =
+        totalDoctors > 0
+        ?
+        (
+            availableDoctors /
+            totalDoctors
+        ) * 100
+        :
+        0;
+
+
+    document.getElementById(
+        "doctorProgress"
+    ).style.width =
+        percentage + "%";
+
+
+    /* TABLE */
+
+    renderAppointments(
+        todayAppointments
+    );
+
+}
+
+
+/* =========================================================
+   RENDER TABLE
+========================================================= */
+
+function renderAppointments(
+    appointments
+){
+
+    const container =
+        document.getElementById(
+            "appointmentContainer"
+        );
+
+
+    if(
+        appointments.length === 0
+    ){
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🗓️
+                </div>
+
+                <h3>
+                    No appointments today
+                </h3>
+
+                <p>
+                    Patient bookings for
+                    ${escapeHTML(
+                        currentHospital ||
+                        "this hospital"
+                    )}
+                    will appear here automatically.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    appointments.sort(
+        function(a,b){
+
+            return String(
+                a.slot || ""
+            ).localeCompare(
+                String(
+                    b.slot || ""
+                )
+            );
+
+        }
+    );
+
+
+    let rows = "";
+
+
+    appointments
+        .slice(0,10)
+        .forEach(
+            appointment => {
+
+                const status =
+                    normalizeStatus(
+                        appointment.status
+                    );
+
+
+                rows += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(
+                                appointment.patientName ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                appointment.doctor ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                appointment.slot ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                appointment.speciality ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="status ${statusClass(status)}"
+                            >
+                                ${escapeHTML(status)}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+    container.innerHTML = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Time</th>
+                    <th>Speciality</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+                ${rows}
+            </tbody>
+
+        </table>
+
+    `;
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document.getElementById(
+    "searchInput"
+).addEventListener(
+    "input",
+    function(){
+
+        const value =
+            this.value
+                .trim()
+                .toLowerCase();
+
+
+        document
+            .querySelectorAll(
+                "#appointmentContainer tbody tr"
+            )
+            .forEach(
+                row => {
+
+                    row.style.display =
+                        row.textContent
+                            .toLowerCase()
+                            .includes(value)
+                        ?
+                        ""
+                        :
+                        "none";
+
+                }
+            );
+
+    }
+);
+
+
+/* =========================================================
+   PROFILE BUTTON
+========================================================= */
+
+document.getElementById(
+    "profileButton"
+).addEventListener(
+    "click",
+    function(){
+
+        window.location.href =
+            "settings.html";
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+loadDashboard();
+
+
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+setInterval(
+    loadDashboard,
+    2000
+);
+
+</script>
+
+</body>
+</html>

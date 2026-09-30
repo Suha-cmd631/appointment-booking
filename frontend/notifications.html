@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,16 +15,410 @@
 }
 
 body{
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Arial, sans-serif;
     background:#f7fafd;
-    color:#17283d;
+    color:#12345b;
 }
 
-a{
+/* ================= HEADER ================= */
+
+header{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #dce5ed;
+
+    display:flex;
+    align-items:center;
+    padding:0 23px;
+
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+/* LOGO */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:22px;
+    font-weight:800;
+    color:#12345b;
+}
+
+.logo-icon{
+    width:39px;
+    height:39px;
+
+    border-radius:11px;
+
+    background:linear-gradient(
+        135deg,
+        #1d9c96,
+        #267fc0
+    );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#1d9c96;
+}
+
+/* NAVIGATION */
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:28px;
+
+    margin-left:auto;
+}
+
+nav a{
     text-decoration:none;
-    color:inherit;
+    color:#12345b;
+    font-size:14px;
+    font-weight:500;
 }
 
+nav a:hover{
+    color:#1d9c96;
+    text-decoration:none;
+}
+
+/* HEADER ICONS */
+
+.header-actions{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-left:25px;
+}
+
+.icon-btn{
+    width:40px;
+    height:40px;
+
+    border:1px solid #e0e8ee;
+    border-radius:11px;
+
+    background:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:19px;
+
+    cursor:pointer;
+
+    text-decoration:none;
+}
+
+.icon-btn.profile{
+    background:#eaf7f6;
+}
+
+.icon-btn.notification{
+    background:#fff8f0;
+    position:relative;
+}
+
+/* notification count */
+
+.notification-count{
+    position:absolute;
+
+    top:-4px;
+    right:-4px;
+
+    min-width:17px;
+    height:17px;
+
+    padding:0 4px;
+
+    border-radius:20px;
+
+    background:#e53935;
+    color:white;
+
+    font-size:10px;
+    font-weight:bold;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ================= MAIN ================= */
+
+.container{
+    max-width:675px;
+    margin:40px auto 70px;
+    padding:0 20px;
+}
+
+.page-title{
+    font-size:30px;
+    font-weight:800;
+    margin-bottom:7px;
+}
+
+.page-subtitle{
+    color:#58718c;
+    font-size:15px;
+    margin-bottom:16px;
+}
+
+/* ================= NOTIFICATION CARD ================= */
+
+.notification-card{
+
+    background:white;
+
+    border:1px solid #dce5ed;
+
+    border-radius:15px;
+
+    margin-bottom:16px;
+
+    padding:18px 20px;
+
+    display:flex;
+    align-items:flex-start;
+
+    gap:15px;
+
+    position:relative;
+
+    transition:0.25s;
+
+    animation:fadeIn .3s ease;
+}
+
+.notification-card:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 7px 22px rgba(18,52,91,0.07);
+}
+
+/* unread notification */
+
+.notification-card.unread{
+    border-left:3px solid #1d9c96;
+}
+
+/* icon */
+
+.notification-icon{
+
+    width:45px;
+    height:45px;
+
+    min-width:45px;
+
+    border-radius:12px;
+
+    background:#eaf7f6;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:21px;
+}
+
+/* different icons */
+
+.notification-card.pending .notification-icon{
+    background:#fff5dc;
+}
+
+.notification-card.upcoming .notification-icon{
+    background:#e4f7f5;
+}
+
+.notification-card.completed .notification-icon{
+    background:#e5f7ea;
+}
+
+.notification-card.missed .notification-icon{
+    background:#ffe8e8;
+}
+
+.notification-card.canceled .notification-icon{
+    background:#eeeeee;
+}
+
+/* content */
+
+.notification-content{
+    flex:1;
+    padding-right:65px;
+}
+
+.notification-title{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.notification-description{
+    font-size:13px;
+    color:#536d87;
+    line-height:1.5;
+}
+
+.notification-time{
+    font-size:11px;
+    color:#8294a6;
+    margin-top:7px;
+}
+
+/* mark read */
+
+.mark-read{
+    position:absolute;
+
+    right:12px;
+    top:18px;
+
+    border:none;
+
+    background:#eaf7f6;
+
+    color:#087f79;
+
+    border-radius:8px;
+
+    padding:6px 10px;
+
+    font-size:10px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.mark-read:hover{
+    background:#d5efed;
+}
+
+/* ================= EMPTY ================= */
+
+.empty-state{
+
+    background:white;
+
+    border:1px solid #dce5ed;
+
+    border-radius:15px;
+
+    padding:55px 25px;
+
+    text-align:center;
+
+    color:#657b91;
+}
+
+.empty-icon{
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+.empty-state h3{
+    color:#12345b;
+    margin-bottom:7px;
+}
+
+.empty-state p{
+    font-size:13px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:800px){
+
+    nav{
+        gap:14px;
+    }
+
+    nav a{
+        font-size:13px;
+    }
+
+    .container{
+        max-width:100%;
+    }
+}
+
+@media(max-width:650px){
+
+    header{
+        padding:0 14px;
+    }
+
+    .logo{
+        font-size:17px;
+    }
+
+    .logo-icon{
+        width:34px;
+        height:34px;
+        font-size:23px;
+    }
+
+    nav{
+        display:none;
+    }
+
+    .header-actions{
+        margin-left:auto;
+    }
+
+    .container{
+        margin-top:28px;
+    }
+
+    .page-title{
+        font-size:26px;
+    }
+
+    .notification-content{
+        padding-right:0;
+    }
+
+    .mark-read{
+        position:static;
+        margin-top:10px;
+    }
+
+    .notification-card{
+        flex-wrap:wrap;
+    }
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(6px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+/* NAVBAR */
 .navbar{
     height:76px;
     background:white;
@@ -57,12 +450,14 @@ a{
     display:grid;
     place-items:center;
     font-size:23px;
+    text-decoration: none;
 }
 
 .logo-name{
     font-size:22px;
     font-weight:800;
     color:#12345b;
+      text-decoration: none;
 }
 
 .logo-name span{
@@ -75,6 +470,11 @@ a{
     color:#536579;
     font-size:14px;
     font-weight:600;
+    margin-right: 400px;
+}
+
+.nav-links a:hover{
+    color:#1d9c96;
 }
 
 .nav-actions{
@@ -92,7 +492,20 @@ a{
     align-items:center;
     justify-content:center;
     position:relative;
-    font-size:19px;
+    cursor:pointer;
+}
+
+.user-icon img,
+.notification-icon img{
+    width:24px;
+    height:24px;
+    object-fit:contain;
+    display:block;
+}
+
+.notification-icon img{
+    width:25px;
+    height:25px;
 }
 
 .user-icon{
@@ -101,6 +514,11 @@ a{
 
 .notification-icon{
     background:#f3f6fa;
+}
+
+.user-icon:hover,
+.notification-icon:hover{
+    transform:translateY(-2px);
 }
 
 .notification-dot{
@@ -113,321 +531,711 @@ a{
     right:7px;
     border:2px solid white;
 }
-
+a{
+      text-decoration: none;
+      color: black;
+      /* margin-right: 100px; */
+}
 .login,
 .signup{
     padding:10px 18px;
     border-radius:9px;
     font-weight:700;
+    cursor:pointer;
 }
 
 .login{
     background:white;
     border:1px solid #cbd7e4;
-}
-
-.signup{
-    background:#12345b;
-    color:white;
-    border:1px solid #12345b;
-}
-
-.container{
-    width:min(900px,92%);
-    margin:45px auto 80px;
-}
-
-.heading h1{
     color:#12345b;
-    font-size:32px;
 }
-
-.heading p{
-    color:#6d7c8e;
-    margin-top:7px;
+.login:hover{
+    color:#1d9c96;
 }
-
-.notification{
-    background:white;
-    border:1px solid #e4ebf1;
-    border-radius:15px;
-    padding:20px;
-    margin-top:17px;
-    display:flex;
-    gap:16px;
-    align-items:flex-start;
-}
-
-.notification.unread{
-    border-left:4px solid #1d9c96;
-}
-
-.icon{
-    width:48px;
-    height:48px;
-    border-radius:12px;
-    background:#eaf6f6;
-    display:grid;
-    place-items:center;
-    font-size:22px;
-}
-
-.content{
-    flex:1;
-}
-
-.content h3{
-    color:#12345b;
-    font-size:16px;
-    margin-bottom:6px;
-}
-
-.content p{
-    color:#6d7c8e;
-    font-size:13px;
-    line-height:1.6;
-}
-
-.time{
-    color:#9ba8b5;
-    font-size:11px;
-    margin-top:7px;
-}
-
-.mark{
-    border:0;
-    background:#eaf6f6;
-    color:#147e79;
-    padding:7px 10px;
-    border-radius:7px;
-    font-size:11px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-footer{
-    background:#102d4d;
-    color:white;
-    padding:30px;
-    text-align:center;
-}
-
-footer p{
-    color:#c5d4e3;
-    font-size:13px;
-}
-
-@media(max-width:750px){
-
-    .nav-links{
-        display:none;
-    }
-
-    .notification{
-        flex-wrap:wrap;
-    }
-
-}
-
 </style>
 </head>
 
 <body>
+
+<!-- ================= HEADER ================= -->
 
 <header class="navbar">
 
 <div class="nav-inner">
 
 <a href="first.html" class="logo">
-
 <div class="logo-mark">✚</div>
-
-<div class="logo-name">
-BOOK <span>N</span> MEET
-</div>
-
+<div class="logo-name">BOOK <span>N</span> MEET</div>
 </a>
 
 <nav class="nav-links">
-
 <a href="first.html">Home</a>
 <a href="hospitals.html">Hospitals</a>
-<a href="first.html#doctors">Doctors</a>
-<a href="#">Appointments</a>
-
+<!-- <a href="#doctors">Doctors</a>
+<a href="#">Appointments</a> -->
 </nav>
 
 <div class="nav-actions">
 
-<a href="profile.html" class="user-icon">
-👤
+<a href="profile.html" class="user-icon" title="My Profile">
+    <img src="images/profile.png" alt="Profile">
 </a>
 
-<a href="notifications.html" class="notification-icon">
-🔔
-<span class="notification-dot"></span>
+<a href="notifications.html" class="notification-icon" title="Notifications">
+    <img src="images/notification.png" alt="Notifications">
+    <span class="notification-dot"></span>
 </a>
 
-<button class="login">Login</button>
-<button class="signup">Sign Up</button>
+ <button class="login" onclick="window.location.href='landing.html'">
+    Logout
+</button>
 
 </div>
 
 </div>
-
 </header>
 
 
+<!-- ================= MAIN ================= -->
+
 <main class="container">
 
-<div class="heading">
+    <h1 class="page-title">
+        Notifications
+    </h1>
 
-<h1>Notifications</h1>
-
-<p>
-Stay updated about your appointments and bookings.
-</p>
-
-</div>
+    <p class="page-subtitle">
+        Stay updated about your appointments and bookings.
+    </p>
 
 
-<div class="notification unread">
+    <div id="notificationContainer">
 
-<div class="icon">
-📅
-</div>
+        <!-- Notifications generated by JavaScript -->
 
-<div class="content">
-
-<h3>
-Appointment Confirmed
-</h3>
-
-<p>
-Your appointment with <strong>Dr. Ananya Rao</strong>
-at <strong>Trinity Hospital</strong> has been confirmed.
-</p>
-
-<div class="time">
-Today · 10:30 AM
-</div>
-
-</div>
-
-<button class="mark" onclick="markRead(this)">
-Mark read
-</button>
-
-</div>
-
-
-<div class="notification unread">
-
-<div class="icon">
-⏰
-</div>
-
-<div class="content">
-
-<h3>
-Appointment Reminder
-</h3>
-
-<p>
-Your ENT appointment with
-<strong>Dr. Vikram Rao</strong>
-is scheduled for tomorrow at
-<strong>11:00 AM</strong>.
-</p>
-
-<div class="time">
-Yesterday · 6:00 PM
-</div>
-
-</div>
-
-<button class="mark" onclick="markRead(this)">
-Mark read
-</button>
-
-</div>
-
-
-<div class="notification">
-
-<div class="icon">
-🏥
-</div>
-
-<div class="content">
-
-<h3>
-New Hospital Available
-</h3>
-
-<p>
-Neokidz ENT has added new specialist doctors
-to the appointment booking system.
-</p>
-
-<div class="time">
-2 days ago
-</div>
-
-</div>
-
-</div>
-
-
-<div class="notification">
-
-<div class="icon">
-✓
-</div>
-
-<div class="content">
-
-<h3>
-Appointment Completed
-</h3>
-
-<p>
-Your appointment at Gowthami Hospital
-has been marked as completed.
-</p>
-
-<div class="time">
-5 days ago
-</div>
-
-</div>
-
-</div>
+    </div>
 
 </main>
 
 
-<footer>
-
-<p>
-© 2026 BOOK N MEET. Hospital Appointment Booking Platform.
-</p>
-
-</footer>
-
-
 <script>
 
-function markRead(button){
+/* =====================================================
+   CURRENT USER
+===================================================== */
 
-    const notification =
-        button.parentElement;
+let currentUser =
+    JSON.parse(
+        localStorage.getItem(
+            "bookNMeetCurrentUser"
+        )
+    );
 
-    notification.classList.remove("unread");
 
-    button.remove();
+/* =====================================================
+   READ NOTIFICATIONS
+===================================================== */
+
+let readNotifications =
+    JSON.parse(
+        localStorage.getItem(
+            "bookNMeetReadNotifications"
+        )
+    ) || [];
+
+
+/* =====================================================
+   GET BOOKINGS
+===================================================== */
+
+function getBookings(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            "bookNMeetBookings"
+        )
+    ) || [];
 
 }
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(dateString){
+
+    if(!dateString){
+        return "";
+    }
+
+    const date =
+        new Date(dateString);
+
+    if(isNaN(date.getTime())){
+        return dateString;
+    }
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day:"numeric",
+            month:"short",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   NOTIFICATION ID
+===================================================== */
+
+function getNotificationId(
+    booking,
+    type
+){
+
+    return (
+        String(booking.id)
+        + "_"
+        + type
+    );
+
+}
+
+
+/* =====================================================
+   CREATE NOTIFICATION
+===================================================== */
+
+function createNotification(
+    booking,
+    type,
+    title,
+    description,
+    icon
+){
+
+    const notificationId =
+        getNotificationId(
+            booking,
+            type
+        );
+
+
+    const isRead =
+        readNotifications.includes(
+            notificationId
+        );
+
+
+    const card =
+        document.createElement("div");
+
+
+    card.className =
+        "notification-card " +
+        type.toLowerCase();
+
+
+    if(!isRead){
+
+        card.classList.add(
+            "unread"
+        );
+
+    }
+
+
+    card.innerHTML = `
+
+        <div class="notification-icon">
+            ${icon}
+        </div>
+
+        <div class="notification-content">
+
+            <div class="notification-title">
+                ${title}
+            </div>
+
+            <div class="notification-description">
+                ${description}
+            </div>
+
+            <div class="notification-time">
+                Appointment: ${formatDate(booking.date)}
+                ${booking.slot ? " • " + booking.slot : ""}
+            </div>
+
+            ${
+                !isRead
+                ?
+                `
+                <button
+                    class="mark-read"
+                    onclick="
+                        markAsRead('${notificationId}')
+                    "
+                >
+                    Mark read
+                </button>
+                `
+                :
+                ""
+            }
+
+        </div>
+    `;
+
+
+    return card;
+
+}
+
+
+/* =====================================================
+   LOAD NOTIFICATIONS
+===================================================== */
+
+function loadNotifications(){
+
+    const container =
+        document.getElementById(
+            "notificationContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if(!currentUser){
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    👤
+                </div>
+
+                <h3>
+                    Please log in
+                </h3>
+
+                <p>
+                    Log in to view your appointment notifications.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const bookings =
+        getBookings();
+
+
+    const userEmail =
+        currentUser.email
+            ? currentUser.email
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const userBookings =
+        bookings.filter(
+            booking => {
+
+                if(!booking.email){
+                    return false;
+                }
+
+                return (
+                    booking.email
+                        .trim()
+                        .toLowerCase()
+                    ===
+                    userEmail
+                );
+
+            }
+        );
+
+
+    if(userBookings.length === 0){
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🔔
+                </div>
+
+                <h3>
+                    No notifications yet
+                </h3>
+
+                <p>
+                    Your appointment updates will appear here.
+                </p>
+
+            </div>
+
+        `;
+
+        updateNotificationCount();
+
+        return;
+
+    }
+
+
+    let notifications = [];
+
+
+    /*
+       Generate notifications according
+       to current appointment status.
+    */
+
+    userBookings.forEach(
+        booking => {
+
+            const status =
+                booking.status ||
+                "Pending";
+
+
+            /* ================= PENDING ================= */
+
+            if(status === "Pending"){
+
+                notifications.push({
+
+                    booking:booking,
+
+                    type:"pending",
+
+                    title:"Appointment Pending",
+
+                    description:
+                        `Your appointment with
+                        <strong>${booking.doctor}</strong>
+                        at <strong>${booking.hospital}</strong>
+                        is waiting for confirmation.`,
+
+                    icon:"⏳"
+
+                });
+
+            }
+
+
+            /* ================= UPCOMING ================= */
+
+            else if(
+                status === "Upcoming" ||
+                status === "Confirmed"
+            ){
+
+                notifications.push({
+
+                    booking:booking,
+
+                    type:"upcoming",
+
+                    title:"Appointment Upcoming",
+
+                    description:
+                        `Your appointment with
+                        <strong>${booking.doctor}</strong>
+                        at <strong>${booking.hospital}</strong>
+                        has been confirmed and is upcoming.`,
+
+                    icon:"📅"
+
+                });
+
+            }
+
+
+            /* ================= COMPLETED ================= */
+
+            else if(
+                status === "Completed"
+            ){
+
+                notifications.push({
+
+                    booking:booking,
+
+                    type:"completed",
+
+                    title:"Appointment Completed",
+
+                    description:
+                        `Your appointment with
+                        <strong>${booking.doctor}</strong>
+                        at <strong>${booking.hospital}</strong>
+                        has been marked as completed.`,
+
+                    icon:"✓"
+
+                });
+
+            }
+
+
+            /* ================= MISSED ================= */
+
+            else if(
+                status === "Missed"
+            ){
+
+                notifications.push({
+
+                    booking:booking,
+
+                    type:"missed",
+
+                    title:"Appointment Missed",
+
+                    description:
+                        `Your appointment with
+                        <strong>${booking.doctor}</strong>
+                        at <strong>${booking.hospital}</strong>
+                        was marked as missed.`,
+
+                    icon:"⚠️"
+
+                });
+
+            }
+
+
+            /* ================= CANCELED ================= */
+
+            else if(
+                status === "Canceled"
+            ){
+
+                notifications.push({
+
+                    booking:booking,
+
+                    type:"canceled",
+
+                    title:"Appointment Canceled",
+
+                    description:
+                        `Your appointment with
+                        <strong>${booking.doctor}</strong>
+                        at <strong>${booking.hospital}</strong>
+                        has been canceled.`,
+
+                    icon:"✕"
+
+                });
+
+            }
+
+        }
+    );
+
+
+    /*
+       Newest booking first
+    */
+
+    notifications.reverse();
+
+
+    notifications.forEach(
+        notification => {
+
+            const card =
+                createNotification(
+                    notification.booking,
+                    notification.type,
+                    notification.title,
+                    notification.description,
+                    notification.icon
+                );
+
+
+            container.appendChild(card);
+
+        }
+    );
+
+
+    updateNotificationCount();
+
+}
+
+
+/* =====================================================
+   MARK NOTIFICATION AS READ
+===================================================== */
+
+function markAsRead(
+    notificationId
+){
+
+    if(
+        !readNotifications.includes(
+            notificationId
+        )
+    ){
+
+        readNotifications.push(
+            notificationId
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "bookNMeetReadNotifications",
+        JSON.stringify(
+            readNotifications
+        )
+    );
+
+
+    loadNotifications();
+
+}
+
+
+/* =====================================================
+   NOTIFICATION COUNT
+===================================================== */
+
+function updateNotificationCount(){
+
+    const countElement =
+        document.getElementById(
+            "notificationCount"
+        );
+
+
+    if(!currentUser){
+
+        countElement.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    const bookings =
+        getBookings();
+
+
+    const userEmail =
+        currentUser.email
+            ? currentUser.email
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const userBookings =
+        bookings.filter(
+            booking =>
+                booking.email &&
+                booking.email
+                    .trim()
+                    .toLowerCase()
+                ===
+                userEmail
+        );
+
+
+    let unreadCount = 0;
+
+
+    userBookings.forEach(
+        booking => {
+
+            const status =
+                booking.status ||
+                "Pending";
+
+
+            const id =
+                getNotificationId(
+                    booking,
+                    status.toLowerCase()
+                );
+
+
+            if(
+                !readNotifications.includes(id)
+            ){
+
+                unreadCount++;
+
+            }
+
+        }
+    );
+
+
+    if(unreadCount > 0){
+
+        countElement.textContent =
+            unreadCount;
+
+        countElement.style.display =
+            "flex";
+
+    }
+    else{
+
+        countElement.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+loadNotifications();
+
+
+/*
+   Automatically refresh.
+
+   So when admin changes:
+
+   Pending → Upcoming
+   Upcoming → Completed
+   Upcoming → Missed
+   Upcoming → Canceled
+
+   the notification page updates.
+*/
+
+setInterval(
+    loadNotifications,
+    2000
+);
 
 </script>
 

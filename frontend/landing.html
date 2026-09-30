@@ -818,6 +818,7 @@
     password: suPassword.value,
     role: suRole.value,
     hospital: suRole.value === 'staff' ? suHospital.value : null
+    
 };
 
 accounts.push(newAccount);
@@ -847,30 +848,69 @@ localStorage.setItem("bookNMeetUsers", JSON.stringify(accounts));
   const liPassword = document.getElementById('liPassword');
   const loginMsg = document.getElementById('loginMsg');
 
+  // document.getElementById('loginForm').addEventListener('submit', (e) => {
+  //   e.preventDefault();
+  //   const email = liEmail.value.trim().toLowerCase();
+  //   const password = liPassword.value;
+
+  //   const account = accounts.find(a => a.email === email);
+  //   if(!account){
+  //     loginMsg.textContent = 'No account found with this email.';
+  //     loginMsg.className = 'form-msg error';
+  //     return;
+  //   }
+  //   if(account.password !== password){
+  //     loginMsg.textContent = 'Incorrect password.';
+  //     loginMsg.className = 'form-msg error';
+  //     return;
+  //   }
+
+  //   loginMsg.textContent = 'Login successful! Redirecting…';
+  //   loginMsg.className = 'form-msg success';
+
+  //   setTimeout(() => {
+  //     window.location.href = account.role === 'staff' ? 'admin-dash.html' : 'first.html';
+  //   }, 500);
+  // });
+
   document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
+
     const email = liEmail.value.trim().toLowerCase();
     const password = liPassword.value;
 
-    const account = accounts.find(a => a.email === email);
-    if(!account){
-      loginMsg.textContent = 'No account found with this email.';
-      loginMsg.className = 'form-msg error';
-      return;
-    }
-    if(account.password !== password){
-      loginMsg.textContent = 'Incorrect password.';
-      loginMsg.className = 'form-msg error';
-      return;
+    const account = accounts.find(a => 
+        a.email.trim().toLowerCase() === email
+    );
+
+    if (!account) {
+        loginMsg.textContent = 'No account found with this email.';
+        loginMsg.className = 'form-msg error';
+        return;
     }
 
-    loginMsg.textContent = 'Login successful! Redirecting…';
+    if (account.password !== password) {
+        loginMsg.textContent = 'Incorrect password.';
+        loginMsg.className = 'form-msg error';
+        return;
+    }
+
+    loginMsg.textContent = 'Login successful! Redirecting...';
     loginMsg.className = 'form-msg success';
 
+    // Save currently logged-in user
+    localStorage.setItem("bookNMeetCurrentUser", JSON.stringify(account));
+
     setTimeout(() => {
-      window.location.href = account.role === 'staff' ? 'admin-dash.html' : 'first.html';
+
+        if (account.role === "staff") {
+            window.location.href = "admin.html";
+        } else {
+            window.location.href = "first.html";
+        }
+
     }, 500);
-  });
+});
 
   // ---------- Story panel auto-rotation ----------
   const slides = Array.from(document.querySelectorAll('.story-slide'));

@@ -3,11 +3,21 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>BOOK N MEET - My Profile</title>
 
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+>
+
 <style>
+
+/* =====================================================
+   RESET
+===================================================== */
 
 *{
     margin:0;
@@ -15,17 +25,995 @@
     box-sizing:border-box;
 }
 
+
+/* =====================================================
+   BODY
+===================================================== */
+
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f7fafd;
-    color:#17283d;
+
+    font-family:"Inter",sans-serif;
+
+    background:#f5f9fc;
+
+    color:#12345b;
+
+    min-height:100vh;
+
 }
 
-a{
-    text-decoration:none;
-    color:inherit;
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+
+    height:80px;
+
+    background:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 45px;
+
+    box-shadow:
+        0 4px 20px rgba(18,52,91,0.08);
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
 }
 
+
+.logo{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    color:#12345b;
+
+}
+
+
+.logo span{
+
+    color:#1d9c96;
+
+}
+
+
+.header-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+.header-title{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:22px;
+
+    font-weight:600;
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.logout-btn{
+
+    border:none;
+
+    background:#fff0f0;
+
+    color:#c62828;
+
+    padding:10px 18px;
+
+    border-radius:9px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+}
+
+
+.logout-btn:hover{
+
+    background:#c62828;
+
+    color:white;
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.main{
+
+    width:92%;
+
+    max-width:1250px;
+
+    margin:35px auto 60px;
+
+}
+
+
+/* =====================================================
+   PROFILE HERO
+===================================================== */
+
+.profile-hero{
+
+    background:
+        linear-gradient(
+            135deg,
+            #12345b,
+            #1d9c96
+        );
+
+    border-radius:22px;
+
+    padding:30px;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+        0 10px 30px rgba(18,52,91,0.15);
+
+}
+
+
+.profile-avatar{
+
+    width:85px;
+
+    height:85px;
+
+    border-radius:50%;
+
+    background:white;
+
+    color:#1d9c96;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:32px;
+
+    font-weight:700;
+
+    flex-shrink:0;
+
+}
+
+
+.profile-hero h1{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:28px;
+
+    margin-bottom:6px;
+
+}
+
+
+.profile-hero p{
+
+    opacity:0.9;
+
+    font-size:14px;
+
+}
+
+
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+
+.profile-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:28px;
+
+    box-shadow:
+        0 7px 25px rgba(18,52,91,0.08);
+
+    margin-bottom:30px;
+
+}
+
+
+.card-heading{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+
+.card-heading h2{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:22px;
+
+}
+
+
+/* =====================================================
+   EDIT BUTTON
+===================================================== */
+
+.edit-profile-btn{
+
+    border:none;
+
+    background:#e9f8f7;
+
+    color:#147f7a;
+
+    padding:11px 18px;
+
+    border-radius:9px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+}
+
+
+.edit-profile-btn:hover{
+
+    background:#1d9c96;
+
+    color:white;
+
+}
+
+
+/* =====================================================
+   DETAILS GRID
+===================================================== */
+
+.details-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:18px;
+
+}
+
+
+.detail-box{
+
+    background:#f7fafc;
+
+    border:1px solid #e3ebf1;
+
+    border-radius:13px;
+
+    padding:18px;
+
+}
+
+
+.detail-box span{
+
+    display:block;
+
+    color:#7b8c9c;
+
+    font-size:12px;
+
+    margin-bottom:7px;
+
+}
+
+
+.detail-box strong{
+
+    display:block;
+
+    color:#12345b;
+
+    font-size:15px;
+
+    word-break:break-word;
+
+}
+
+
+/* =====================================================
+   APPOINTMENT SECTION
+===================================================== */
+
+.history-section{
+
+    margin-top:10px;
+
+}
+
+
+.history-heading{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:18px;
+
+}
+
+
+.history-heading h2{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:24px;
+
+}
+
+
+.appointment-count{
+
+    background:#e9f8f7;
+
+    color:#147f7a;
+
+    padding:7px 14px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+/* =====================================================
+   APPOINTMENT CARD
+===================================================== */
+
+.appointment-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    margin-bottom:18px;
+
+    box-shadow:
+        0 6px 22px rgba(18,52,91,0.08);
+
+    border-left:5px solid #1d9c96;
+
+}
+
+
+.appointment-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+
+.hospital-name{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:19px;
+
+    color:#12345b;
+
+    margin-bottom:6px;
+
+}
+
+
+.doctor-name{
+
+    color:#1d9c96;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.appointment-status{
+
+    padding:7px 15px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+}
+
+
+.appointment-status.pending{
+
+    background:#fff3cd;
+
+    color:#856404;
+
+}
+
+
+.appointment-status.confirmed{
+
+    background:#dff7f3;
+
+    color:#13756f;
+
+}
+
+
+.appointment-status.completed{
+
+    background:#e2f5e9;
+
+    color:#237642;
+
+}
+
+
+.appointment-status.canceled{
+
+    background:#ffe5e5;
+
+    color:#c62828;
+
+}
+
+
+/* =====================================================
+   APPOINTMENT DETAILS
+===================================================== */
+
+.appointment-details{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:15px;
+
+    border-top:1px solid #edf1f4;
+
+    padding-top:18px;
+
+}
+
+
+.appointment-detail{
+
+    background:#f8fafc;
+
+    padding:12px;
+
+    border-radius:10px;
+
+}
+
+
+.appointment-detail span{
+
+    display:block;
+
+    color:#7b8c9c;
+
+    font-size:11px;
+
+    margin-bottom:5px;
+
+}
+
+
+.appointment-detail strong{
+
+    display:block;
+
+    color:#12345b;
+
+    font-size:13px;
+
+}
+
+
+/* =====================================================
+   EMPTY APPOINTMENTS
+===================================================== */
+
+.no-appointments{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:60px 25px;
+
+    text-align:center;
+
+    box-shadow:
+        0 6px 22px rgba(18,52,91,0.08);
+
+}
+
+
+.empty-icon{
+
+    font-size:45px;
+
+    margin-bottom:15px;
+
+}
+
+
+.no-appointments h3{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:20px;
+
+    margin-bottom:8px;
+
+}
+
+
+.no-appointments p{
+
+    color:#718397;
+
+    font-size:14px;
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(18,52,91,0.55);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    z-index:1000;
+
+}
+
+
+.modal.show{
+
+    display:flex;
+
+}
+
+
+.modal-content{
+
+    width:100%;
+
+    max-width:520px;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    position:relative;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.2);
+
+}
+
+
+.modal-content h2{
+
+    font-family:"Space Grotesk",sans-serif;
+
+    margin-bottom:25px;
+
+    font-size:24px;
+
+}
+
+
+.close-btn{
+
+    position:absolute;
+
+    right:18px;
+
+    top:15px;
+
+    width:35px;
+
+    height:35px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f1f4f6;
+
+    color:#12345b;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+}
+
+
+.form-group{
+
+    margin-bottom:17px;
+
+}
+
+
+.form-group label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#45627d;
+
+    margin-bottom:7px;
+
+}
+
+
+.form-group input{
+
+    width:100%;
+
+    height:45px;
+
+    border:1px solid #d5e1ea;
+
+    border-radius:10px;
+
+    padding:0 14px;
+
+    font-size:14px;
+
+    outline:none;
+
+    transition:0.2s;
+
+}
+
+
+.form-group input:focus{
+
+    border-color:#1d9c96;
+
+    box-shadow:
+        0 0 0 3px rgba(29,156,150,0.1);
+
+}
+
+
+/* =====================================================
+   SAVE BUTTON
+===================================================== */
+
+.save-profile-btn{
+
+    width:100%;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d9c96,
+            #157d79
+        );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    margin-top:8px;
+
+}
+
+
+.save-profile-btn:hover{
+
+    box-shadow:
+        0 7px 18px rgba(29,156,150,0.25);
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.profile-message{
+
+    position:fixed;
+
+    right:25px;
+
+    bottom:25px;
+
+    background:#12345b;
+
+    color:white;
+
+    padding:14px 20px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    display:none;
+
+    z-index:2000;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.15);
+
+}
+
+
+.profile-message.show{
+
+    display:block;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:900px){
+
+    .details-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+
+    .appointment-details{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+
+@media(max-width:650px){
+
+    .header{
+
+        padding:0 18px;
+
+    }
+
+
+    .header-title{
+
+        display:none;
+
+    }
+
+
+    .logo{
+
+        font-size:23px;
+
+    }
+
+
+    .main{
+
+        width:94%;
+
+        margin-top:20px;
+
+    }
+
+
+    .profile-hero{
+
+        padding:22px;
+
+    }
+
+
+    .profile-avatar{
+
+        width:65px;
+
+        height:65px;
+
+        font-size:24px;
+
+    }
+
+
+    .profile-hero h1{
+
+        font-size:21px;
+
+    }
+
+
+    .details-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .appointment-details{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .card-heading{
+
+        align-items:flex-start;
+
+        gap:15px;
+
+        flex-direction:column;
+
+    }
+
+
+    .appointment-top{
+
+        flex-direction:column;
+
+    }
+
+}
+.status.pending {
+    background: #fff4d6;
+    color: #9a6700;
+}
+
+.status.upcoming {
+    background: #dff7f5;
+    color: #087f79;
+}
+
+.status.completed {
+    background: #dff5e5;
+    color: #16803c;
+}
+
+.status.missed {
+    background: #ffe4e4;
+    color: #c62828;
+}
+
+.status.canceled {
+    background: #eeeeee;
+    color: #666;
+}
+/* NAVBAR */
 .navbar{
     height:76px;
     background:white;
@@ -57,12 +1045,14 @@ a{
     display:grid;
     place-items:center;
     font-size:23px;
+    text-decoration: none;
 }
 
 .logo-name{
     font-size:22px;
     font-weight:800;
     color:#12345b;
+      text-decoration: none;
 }
 
 .logo-name span{
@@ -75,6 +1065,10 @@ a{
     color:#536579;
     font-size:14px;
     font-weight:600;
+}
+
+.nav-links a:hover{
+    color:#1d9c96;
 }
 
 .nav-actions{
@@ -92,7 +1086,20 @@ a{
     align-items:center;
     justify-content:center;
     position:relative;
-    font-size:19px;
+    cursor:pointer;
+}
+
+.user-icon img,
+.notification-icon img{
+    width:24px;
+    height:24px;
+    object-fit:contain;
+    display:block;
+}
+
+.notification-icon img{
+    width:25px;
+    height:25px;
 }
 
 .user-icon{
@@ -101,6 +1108,11 @@ a{
 
 .notification-icon{
     background:#f3f6fa;
+}
+
+.user-icon:hover,
+.notification-icon:hover{
+    transform:translateY(-2px);
 }
 
 .notification-dot{
@@ -113,392 +1125,1087 @@ a{
     right:7px;
     border:2px solid white;
 }
-
+a{
+      text-decoration: none;
+      color: black;
+}
 .login,
 .signup{
     padding:10px 18px;
     border-radius:9px;
     font-weight:700;
+    cursor:pointer;
 }
 
 .login{
     background:white;
     border:1px solid #cbd7e4;
-}
-
-.signup{
-    background:#12345b;
-    color:white;
-    border:1px solid #12345b;
-}
-
-.container{
-    width:min(1050px,92%);
-    margin:45px auto 70px;
-}
-
-.heading h1{
-    color:#12345b;
-    font-size:32px;
-}
-
-.heading p{
-    color:#6d7c8e;
-    margin-top:7px;
-}
-
-.profile-card{
-    margin-top:25px;
-    background:white;
-    border:1px solid #e4ebf1;
-    border-radius:18px;
-    padding:28px;
-    display:flex;
-    align-items:center;
-    gap:22px;
-}
-
-.profile-image{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    background:#eaf6f6;
-    display:grid;
-    place-items:center;
-    font-size:48px;
-}
-
-.profile-info{
-    flex:1;
-}
-
-.profile-info h2{
-    color:#12345b;
-    margin-bottom:8px;
-}
-
-.profile-info p{
-    color:#6d7c8e;
-    font-size:14px;
-    margin:5px 0;
-}
-
-.edit-btn{
-    border:0;
-    background:#eaf6f6;
-    color:#147e79;
-    padding:10px 17px;
-    border-radius:8px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-.details{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:16px;
-    margin-top:22px;
-}
-
-.detail{
-    background:white;
-    border:1px solid #e4ebf1;
-    border-radius:13px;
-    padding:18px;
-}
-
-.detail small{
-    display:block;
-    color:#718194;
-    font-size:11px;
-    margin-bottom:7px;
-    font-weight:700;
-}
-
-.detail strong{
     color:#12345b;
 }
-
-.history-title{
-    margin:35px 0 18px;
-    color:#12345b;
+.login:hover{
+    color:#1d9c96;
 }
-
-.history{
-    background:white;
-    border:1px solid #e4ebf1;
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:13px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.history-info h3{
-    color:#12345b;
-    font-size:16px;
-}
-
-.history-info p{
-    color:#6d7c8e;
-    font-size:13px;
-    margin-top:5px;
-}
-
-.status{
-    background:#eaf7ee;
-    color:#24854a;
-    padding:7px 12px;
-    border-radius:20px;
-    font-size:11px;
-    font-weight:700;
-}
-
-footer{
-    background:#102d4d;
-    color:white;
-    padding:30px;
-    text-align:center;
-}
-
-footer p{
-    color:#c5d4e3;
-    font-size:13px;
-}
-
-@media(max-width:750px){
-
-    .nav-links{
-        display:none;
-    }
-
-    .profile-card{
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .details{
-        grid-template-columns:1fr;
-    }
-
-    .history{
-        gap:15px;
-        align-items:flex-start;
-    }
-
-}
-
 </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<!-- <header class="header">
+
+    <div class="logo">
+        BOOK <span>N</span> MEET
+    </div>
+
+    <div class="header-right">
+
+        <div class="header-title">
+            My Profile
+        </div>
+
+        <button
+            class="logout-btn"
+            onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+</header> -->
 <header class="navbar">
 
 <div class="nav-inner">
 
 <a href="first.html" class="logo">
-
 <div class="logo-mark">✚</div>
-
-<div class="logo-name">
-BOOK <span>N</span> MEET
-</div>
-
+<div class="logo-name">BOOK <span>N</span> MEET</div>
 </a>
 
 <nav class="nav-links">
 <a href="first.html">Home</a>
 <a href="hospitals.html">Hospitals</a>
-<a href="first.html#doctors">Doctors</a>
-<a href="#">Appointments</a>
+<!-- <a href="#doctors">Doctors</a>
+<a href="#">Appointments</a> -->
 </nav>
 
 <div class="nav-actions">
 
-<a href="profile.html" class="user-icon">
-👤
+<a href="profile.html" class="user-icon" title="My Profile">
+    <img src="images/profile.png" alt="Profile">
 </a>
 
-<a href="notifications.html" class="notification-icon">
-🔔
-<span class="notification-dot"></span>
+<a href="notifications.html" class="notification-icon" title="Notifications">
+    <img src="images/notification.png" alt="Notifications">
+    <span class="notification-dot"></span>
 </a>
 
-<button class="login">Login</button>
-<button class="signup">Sign Up</button>
-
-</div>
-
-</div>
-
-</header>
-
-
-<main class="container">
-
-<div class="heading">
-
-<h1>My Profile</h1>
-
-<p>
-Manage your personal details and appointment history.
-</p>
-
-</div>
-
-
-<div class="profile-card">
-
-<div class="profile-image">
-👤
-</div>
-
-<div class="profile-info">
-
-<h2>Dharani</h2>
-
-<p>✉ dharani@example.com</p>
-
-<p>📱 +91 XXXXX XXXXX</p>
-
-</div>
-
-<button class="edit-btn" onclick="editProfile()">
-Edit Profile
+ <button class="login" onclick="window.location.href='landing.html'">
+    Logout
 </button>
 
-</div>
-
-
-<div class="details">
-
-<div class="detail">
-<small>FULL NAME</small>
-<strong>Dharani</strong>
-</div>
-
-<div class="detail">
-<small>EMAIL</small>
-<strong>dharani@example.com</strong>
-</div>
-
-<div class="detail">
-<small>PHONE</small>
-<strong>+91 XXXXX XXXXX</strong>
-</div>
-
-<div class="detail">
-<small>AGE</small>
-<strong>21</strong>
-</div>
-
-<div class="detail">
-<small>CITY</small>
-<strong>Tadepalligudem</strong>
-</div>
-
-<div class="detail">
-<small>MEMBER SINCE</small>
-<strong>2026</strong>
-</div>
+<!-- <button class="signup" onclick="window.location.href='signup.html'">
+    Sign Up
+</button> --> 
 
 </div>
 
-
-<h2 class="history-title">
-Appointment History
-</h2>
-
-
-<div class="history">
-
-<div class="history-info">
-
-<h3>Trinity Hospital</h3>
-
-<p>
-Dr. Ananya Rao · Cardiology
-</p>
-
-<p>
-15 August 2026 · 10:30 AM
-</p>
-
 </div>
+</header>
 
-<div class="status">
-Completed
-</div>
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
-</div>
-
-
-<div class="history">
-
-<div class="history-info">
-
-<h3>Gowthami Hospital</h3>
-
-<p>
-Dr. Priya Sharma · Dermatology
-</p>
-
-<p>
-05 July 2026 · 3:00 PM
-</p>
-
-</div>
-
-<div class="status">
-Completed
-</div>
-
-</div>
+<main class="main">
 
 
-<div class="history">
+    <!-- PROFILE HERO -->
 
-<div class="history-info">
+    <section class="profile-hero">
 
-<h3>Neokidz ENT</h3>
+        <div
+            class="profile-avatar"
+            id="profileAvatar">
+            U
+        </div>
 
-<p>
-Dr. Vikram Rao · ENT Specialist
-</p>
+        <div>
 
-<p>
-20 August 2026 · 11:00 AM
-</p>
+            <h1 id="heroName">
+                User
+            </h1>
 
-</div>
+            <p>
+                Manage your profile and appointments
+            </p>
 
-<div class="status">
-Upcoming
-</div>
+        </div>
 
-</div>
+    </section>
+
+
+    <!-- =================================================
+         PERSONAL DETAILS
+    ================================================== -->
+
+    <section class="profile-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Personal Details
+            </h2>
+
+            <button
+                class="edit-profile-btn"
+                onclick="openEditProfile()">
+
+                ✎ Edit Profile
+
+            </button>
+
+        </div>
+
+
+        <div class="details-grid">
+
+
+            <div class="detail-box">
+
+                <span>
+                    Full Name
+                </span>
+
+                <strong id="profileName">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <span>
+                    Phone Number
+                </span>
+
+                <strong id="profilePhone">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <span>
+                    Email
+                </span>
+
+                <strong id="profileEmail">
+                    -
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         APPOINTMENT HISTORY
+    ================================================== -->
+
+    <section class="history-section">
+
+        <div class="history-heading">
+
+            <h2>
+                Appointment History
+            </h2>
+
+            <span
+                class="appointment-count"
+                id="appointmentCount">
+                0 appointments
+            </span>
+
+        </div>
+
+
+        <div id="appointmentHistory">
+
+        </div>
+
+    </section>
+
 
 </main>
 
 
-<footer>
+<!-- =====================================================
+     EDIT PROFILE MODAL
+===================================================== -->
 
-<p>
-© 2026 BOOK N MEET. Hospital Appointment Booking Platform.
-</p>
+<div
+    class="modal"
+    id="editProfileModal">
 
-</footer>
+    <div class="modal-content">
+
+
+        <button
+            class="close-btn"
+            onclick="closeEditProfile()">
+
+            ×
+
+        </button>
+
+
+        <h2>
+            Edit Profile
+        </h2>
+
+
+        <div class="form-group">
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="editName"
+                placeholder="Enter your name">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Phone Number
+            </label>
+
+            <input
+                type="tel"
+                id="editPhone"
+                maxlength="10"
+                placeholder="Enter 10-digit phone number">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="editEmail"
+                placeholder="Enter your email">
+
+        </div>
+
+
+        <button
+            class="save-profile-btn"
+            onclick="saveProfile()">
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MESSAGE
+===================================================== -->
+
+<div
+    class="profile-message"
+    id="profileMessage">
+</div>
 
 
 <script>
 
-function editProfile(){
+/* =====================================================
+   GET CURRENT USER
+===================================================== */
 
-alert("Profile editing will be connected to the registration system.");
+let currentUser =
+    JSON.parse(
+        localStorage.getItem(
+            "bookNMeetCurrentUser"
+        )
+    );
+
+
+/*
+   If nobody is logged in,
+   send them to login page.
+*/
+
+if(!currentUser){
+
+    window.location.href = "first.html";
 
 }
+
+
+/* =====================================================
+   DISPLAY USER PROFILE
+===================================================== */
+
+function displayProfile(){
+
+    if(!currentUser){
+        return;
+    }
+
+
+    const name =
+        currentUser.name || "User";
+
+
+    document.getElementById(
+        "heroName"
+    ).textContent = name;
+
+
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "profilePhone"
+    ).textContent =
+        currentUser.contact || "-";
+
+
+    document.getElementById(
+        "profileEmail"
+    ).textContent =
+        currentUser.email || "-";
+
+
+    /*
+       First letter of name
+    */
+
+    document.getElementById(
+        "profileAvatar"
+    ).textContent =
+        name.charAt(0).toUpperCase();
+
+}
+
+
+displayProfile();
+
+
+/* =====================================================
+   OPEN EDIT PROFILE
+===================================================== */
+
+function openEditProfile(){
+
+    document.getElementById(
+        "editName"
+    ).value =
+        currentUser.name || "";
+
+
+    document.getElementById(
+        "editPhone"
+    ).value =
+        currentUser.contact || "";
+
+
+    document.getElementById(
+        "editEmail"
+    ).value =
+        currentUser.email || "";
+
+
+    document.getElementById(
+        "editProfileModal"
+    ).classList.add("show");
+
+}
+
+
+/* =====================================================
+   CLOSE EDIT PROFILE
+===================================================== */
+
+function closeEditProfile(){
+
+    document.getElementById(
+        "editProfileModal"
+    ).classList.remove("show");
+
+}
+
+
+/* =====================================================
+   SAVE PROFILE
+===================================================== */
+
+function saveProfile(){
+
+    const name =
+        document.getElementById(
+            "editName"
+        ).value.trim();
+
+
+    const phone =
+        document.getElementById(
+            "editPhone"
+        ).value.trim();
+
+
+    const email =
+        document.getElementById(
+            "editEmail"
+        ).value.trim()
+        .toLowerCase();
+
+
+    /* NAME */
+
+    if(!name){
+
+        showMessage(
+            "Please enter your name."
+        );
+
+        return;
+
+    }
+
+
+    if(!/^[A-Za-z ]+$/.test(name)){
+
+        showMessage(
+            "Name should contain only letters."
+        );
+
+        return;
+
+    }
+
+
+    /* PHONE */
+
+    if(!/^[0-9]{10}$/.test(phone)){
+
+        showMessage(
+            "Enter a valid 10-digit phone number."
+        );
+
+        return;
+
+    }
+
+
+    /* EMAIL */
+
+    if(!/^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email)){
+
+        showMessage(
+            "Please enter a valid Gmail address."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Store old email before changing it.
+       This is important because appointments
+       are connected to the user's email.
+    */
+
+    const oldEmail =
+        currentUser.email;
+
+
+    /* ============================================
+       UPDATE CURRENT USER
+    ============================================ */
+
+    currentUser.name =
+        name;
+
+    currentUser.contact =
+        phone;
+
+    currentUser.email =
+        email;
+
+
+    localStorage.setItem(
+        "bookNMeetCurrentUser",
+        JSON.stringify(currentUser)
+    );
+
+
+    /* ============================================
+       UPDATE USERS
+    ============================================ */
+
+    let accounts =
+        JSON.parse(
+            localStorage.getItem(
+                "bookNMeetUsers"
+            )
+        ) || [];
+
+
+    accounts =
+        accounts.map(account => {
+
+            /*
+               Find the account using
+               the old email.
+            */
+
+            if(
+                account.email &&
+                account.email.toLowerCase() ===
+                oldEmail.toLowerCase()
+            ){
+
+                account.name =
+                    name;
+
+                account.contact =
+                    phone;
+
+                account.email =
+                    email;
+
+            }
+
+            return account;
+
+        });
+
+
+    localStorage.setItem(
+        "bookNMeetUsers",
+        JSON.stringify(accounts)
+    );
+
+
+    /*
+       ============================================
+       UPDATE EMAIL IN EXISTING APPOINTMENTS
+       ============================================
+
+       This is important.
+
+       If the user changes their email,
+       their old appointments should still
+       appear in Appointment History.
+    */
+
+    let bookings =
+        JSON.parse(
+            localStorage.getItem(
+                "bookNMeetBookings"
+            )
+        ) || [];
+
+
+    let bookingsChanged = false;
+
+
+    bookings =
+        bookings.map(booking => {
+
+            if(
+                booking.email &&
+                booking.email.toLowerCase() ===
+                oldEmail.toLowerCase()
+            ){
+
+                booking.email =
+                    email;
+
+                booking.patientName =
+                    name;
+
+                booking.phone =
+                    phone;
+
+                bookingsChanged = true;
+
+            }
+
+            return booking;
+
+        });
+
+
+    if(bookingsChanged){
+
+        localStorage.setItem(
+            "bookNMeetBookings",
+            JSON.stringify(bookings)
+        );
+
+    }
+
+
+    /* Refresh page data */
+
+    displayProfile();
+
+    loadAppointmentHistory();
+
+    closeEditProfile();
+
+
+    showMessage(
+        "Profile updated successfully."
+    );
+
+}
+
+
+/* =====================================================
+   APPOINTMENT HISTORY
+===================================================== */
+
+function loadAppointmentHistory(){
+
+    const bookings =
+        JSON.parse(
+            localStorage.getItem(
+                "bookNMeetBookings"
+            )
+        ) || [];
+
+
+    const container =
+        document.getElementById(
+            "appointmentHistory"
+        );
+
+
+    /*
+       Find only this user's appointments.
+
+       We use email because booking.html
+       saves the patient's email.
+    */
+
+    const userEmail =
+        currentUser.email
+            ? currentUser.email
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const userAppointments =
+        bookings.filter(booking => {
+
+            if(!booking.email){
+                return false;
+            }
+
+            return (
+                booking.email
+                    .trim()
+                    .toLowerCase()
+                ===
+                userEmail
+            );
+
+        });
+
+
+    /*
+       Appointment count
+    */
+
+    const count =
+        userAppointments.length;
+
+
+    document.getElementById(
+        "appointmentCount"
+    ).textContent =
+
+        count +
+        (
+            count === 1
+                ? " appointment"
+                : " appointments"
+        );
+
+
+    /*
+       No appointments
+    */
+
+    if(count === 0){
+
+        container.innerHTML = `
+
+            <div class="no-appointments">
+
+                <div class="empty-icon">
+                    📅
+                </div>
+
+                <h3>
+                    No appointments yet
+                </h3>
+
+                <p>
+                    Your booked appointments
+                    will appear here.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /*
+       Clear previous cards
+    */
+
+    container.innerHTML = "";
+
+
+    /*
+       Latest booking first
+    */
+
+    userAppointments
+        .slice()
+        .reverse()
+        .forEach(booking => {
+
+            createAppointmentCard(
+                booking,
+                container
+            );
+
+        });
+
+}
+
+
+/* =====================================================
+   CREATE APPOINTMENT CARD
+===================================================== */
+
+function createAppointmentCard(
+    booking,
+    container
+){
+
+    /*
+       If admin has not assigned a status,
+       default to Pending.
+    */
+
+    const status =
+        booking.status || "Pending";
+
+
+    /*
+       Convert status to CSS class.
+    */
+
+    const statusClass =
+        status
+            .toLowerCase()
+            .replace(/\s+/g,"");
+
+
+    const card =
+        document.createElement("div");
+
+
+    card.className =
+        "appointment-card";
+
+
+    card.innerHTML = `
+
+        <div class="appointment-top">
+
+            <div>
+
+                <div class="hospital-name">
+                    ${escapeHTML(
+                        booking.hospital ||
+                        "-"
+                    )}
+                </div>
+
+                <div class="doctor-name">
+                    ${escapeHTML(
+                        booking.doctor ||
+                        "-"
+                    )}
+                </div>
+
+            </div>
+
+
+            <span
+                class="
+                    status
+                    ${statusClass}
+                ">
+
+                ${escapeHTML(status)}
+
+            </span>
+
+        </div>
+
+
+        <div class="appointment-details">
+
+
+            <div class="appointment-detail">
+
+                <span>
+                    Specialization
+                </span>
+
+                <strong>
+                    ${escapeHTML(
+                        booking.speciality ||
+                        "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="appointment-detail">
+
+                <span>
+                    Appointment Date
+                </span>
+
+                <strong>
+                    ${escapeHTML(
+                        booking.date ||
+                        "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="appointment-detail">
+
+                <span>
+                    Time Slot
+                </span>
+
+                <strong>
+                    ${escapeHTML(
+                        booking.slot ||
+                        "-"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="appointment-detail">
+
+                <span>
+                    Patient Age
+                </span>
+
+                <strong>
+                    ${
+                        booking.age
+                            ? escapeHTML(
+                                booking.age
+                              ) + " years"
+                            : "-"
+                    }
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    `;
+
+
+    container.appendChild(card);
+
+}
+function updateBookingStatus(bookingId, newStatus) {
+
+    let bookings =
+        JSON.parse(
+            localStorage.getItem("bookNMeetBookings")
+        ) || [];
+
+    bookings = bookings.map(booking => {
+
+        if (String(booking.id) === String(bookingId)) {
+            booking.status = newStatus;
+        }
+
+        return booking;
+    });
+
+    localStorage.setItem(
+        "bookNMeetBookings",
+        JSON.stringify(bookings)
+    );
+
+    loadAppointments();
+}
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value;
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   SHOW MESSAGE
+===================================================== */
+
+function showMessage(text){
+
+    const message =
+        document.getElementById(
+            "profileMessage"
+        );
+
+
+    message.textContent =
+        text;
+
+
+    message.classList.add(
+        "show"
+    );
+
+
+    setTimeout(() => {
+
+        message.classList.remove(
+            "show"
+        );
+
+    }, 2500);
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout(){
+
+    localStorage.removeItem(
+        "bookNMeetCurrentUser"
+    );
+
+    window.location.href =
+        "first.html";
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+===================================================== */
+
+document
+.getElementById("editProfileModal")
+.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target ===
+            this
+        ){
+
+            closeEditProfile();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL APPOINTMENT LOAD
+===================================================== */
+
+loadAppointmentHistory();
+
+
+/*
+   Refresh appointment status periodically.
+
+   This allows the page to reflect changes
+   made to the booking data while the profile
+   page is open.
+*/
+
+setInterval(
+    loadAppointmentHistory,
+    2000
+);
 
 </script>
 
