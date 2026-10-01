@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients - BOOK N MEET</title>
+
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f8fc;
+            color: #12345b;
+            min-height: 100vh;
+        }
+
+        .page {
+            padding: 24px;
+        }
+
+        /* HEADER */
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            color: #12345b;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #6c8198;
+            font-size: 15px;
+        }
+
+        /* MAIN CARD */
+        .patients-card {
+            background: white;
+            border: 1px solid #dce6ef;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(18, 52, 91, 0.05);
+        }
+
+        /* CARD TOP */
+        .card-header {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5edf4;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #12345b;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .selected-count {
+            font-size: 13px;
+            color: #60758d;
+            margin-right: 5px;
+        }
+
+        .export-btn {
+            border: none;
+            background: #123f70;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .export-btn:hover {
+            background: #0d3159;
+            transform: translateY(-1px);
+        }
+
+        .export-btn:disabled {
+            background: #aebdca;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* TABLE */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        thead {
+            background: #f7fafc;
+        }
+
+        th {
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: #60758d;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #e1e9f0;
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: #274b70;
+            border-bottom: 1px solid #e7edf2;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f9fcfe;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* CHECKBOX */
+        .check-box {
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            accent-color: #1d9c96;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            color: #234c75;
+        }
+
+        .email {
+            color: #315b82;
+        }
+
+        .contact {
+            color: #315b82;
+        }
+
+        .no-appointments {
+            color: #94a5b5;
+        }
+
+        /* HISTORY BUTTON */
+        .history-btn {
+            border: none;
+            background: #eaf5f5;
+            color: #168d88;
+            padding: 8px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .history-btn:hover {
+            background: #d9eeee;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: #71869b;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: #12345b;
+            margin-bottom: 7px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 34, 58, 0.55);
+            z-index: 1000;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .history-modal {
+            width: min(950px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #e1e9f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #12345b;
+        }
+
+        .close-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: #f0f4f7;
+            color: #45627c;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background: #e3ebf1;
+        }
+
+        /* PATIENT INFO */
+        .patient-info {
+            padding: 22px 25px;
+            background: #f7fafc;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            border-bottom: 1px solid #e1e9f0;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #7890a7;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .info-item span {
+            color: #234b70;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* HISTORY */
+        .history-content {
+            padding: 25px;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #12345b;
+            margin-bottom: 16px;
+        }
+
+        .appointment-card {
+            border: 1px solid #dfe8ef;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 13px;
+            background: white;
+        }
+
+        .appointment-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .appointment-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: #12345b;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status.pending {
+            background: #fff5dc;
+            color: #9b6b00;
+        }
+
+        .status.confirmed {
+            background: #e5f7ee;
+            color: #16804e;
+        }
+
+        .status.completed {
+            background: #e8f0ff;
+            color: #4169a1;
+        }
+
+        .status.cancelled {
+            background: #ffe9e9;
+            color: #bd4545;
+        }
+
+        .appointment-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .detail label {
+            display: block;
+            color: #8194a7;
+            font-size: 11px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .detail span {
+            color: #315776;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .no-history {
+            padding: 30px;
+            text-align: center;
+            color: #8799aa;
+            border: 1px dashed #ccd8e2;
+            border-radius: 10px;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #12345b;
+            color: white;
+            padding: 13px 18px;
+            border-radius: 9px;
+            font-size: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* MOBILE */
+        @media (max-width: 700px) {
+            .page {
+                padding: 15px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .patient-info {
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-details {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .modal-overlay {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Patients</h1>
+        <p>View registered patients and appointment history.</p>
+    </div>
+
+    <!-- PATIENT DIRECTORY -->
+    <div class="patients-card">
+
+        <div class="card-header">
+            <div class="card-title">Patient Directory</div>
+
+            <div class="header-actions">
+                <span class="selected-count" id="selectedCount">
+                    0 selected
+                </span>
+
+                <button
+                    class="export-btn"
+                    id="exportBtn"
+                    onclick="exportSelectedPatients()"
+                    disabled>
+                    Export Selected
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:50px;">
+                            <input
+                                type="checkbox"
+                                class="check-box"
+                                id="selectAll"
+                                title="Select all patients">
+                        </th>
+
+                        <th>Patient</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Last Appointment</th>
+                        <th>Appointments</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="patientsTableBody">
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">👤</div>
+            <h3>No patients found</h3>
+            <p>Patients will appear here when they register or book an appointment.</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- HISTORY MODAL -->
+<div class="modal-overlay" id="historyModal">
+
+    <div class="history-modal">
+
+        <div class="modal-header">
+            <h2 id="historyPatientName">Patient History</h2>
+
+            <button class="close-btn" onclick="closeHistory()">
+                ×
+            </button>
+        </div>
+
+        <div class="patient-info">
+
+            <div class="info-item">
+                <label>Patient</label>
+                <span id="historyName">-</span>
+            </div>
+
+            <div class="info-item">
+                <label>Contact</label>
+                <span id="historyPhone">-</span>
+            </div>
+
+            <div class="info-item">
+                <label>Email</label>
+                <span id="historyEmail">-</span>
+            </div>
+
+        </div>
+
+        <div class="history-content">
+
+            <div class="history-title">
+                Appointment History
+            </div>
+
+            <div id="historyList"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+    /*
+     ============================================================
+       BOOK N MEET - PATIENTS PAGE
+       Uses:
+       bookNMeetUsers
+       bookNMeetBookings
+       bookNMeetCurrentUser
+     ============================================================
+    */
+
+    let patients = [];
+    let selectedPatients = new Set();
+
+
+    /* ---------------------------------------------------------
+       LOCAL STORAGE HELPERS
+    --------------------------------------------------------- */
+
+    function getUsers() {
+
+        try {
+            return JSON.parse(
+                localStorage.getItem("bookNMeetUsers")
+            ) || [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+
+    function getBookings() {
+
+        try {
+            return JSON.parse(
+                localStorage.getItem("bookNMeetBookings")
+            ) || [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       DATE HELPERS
+    --------------------------------------------------------- */
+
+    function parseDate(value) {
+
+        if (!value) return null;
+
+        const d = new Date(value);
+
+        if (!isNaN(d.getTime())) {
+            return d;
+        }
+
+        /*
+          Handles DD/MM/YYYY or DD-MM-YYYY
+        */
+        const match = String(value).match(
+            /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+        );
+
+        if (match) {
+
+            return new Date(
+                Number(match[3]),
+                Number(match[2]) - 1,
+                Number(match[1])
+            );
+        }
+
+        return null;
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) return "-";
+
+        const date = parseDate(value);
+
+        if (!date) {
+            return value;
+        }
+
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+
+    function getTimestamp(booking) {
+
+        /*
+          bookedAt is preferred because it tells us when
+          the appointment was actually created.
+
+          This is what keeps the newest patient on top.
+        */
+
+        if (booking.bookedAt) {
+
+            const time = new Date(booking.bookedAt).getTime();
+
+            if (!isNaN(time)) {
+                return time;
+            }
+        }
+
+        const appointmentDate = parseDate(booking.date);
+
+        if (appointmentDate) {
+            return appointmentDate.getTime();
+        }
+
+        return 0;
+    }
+
+
+    /* ---------------------------------------------------------
+       PATIENT IDENTIFICATION
+    --------------------------------------------------------- */
+
+    function getPatientKey(patient) {
+
+        if (patient.email) {
+            return "email:" + patient.email.toLowerCase().trim();
+        }
+
+        if (patient.phone) {
+            return "phone:" + String(patient.phone).trim();
+        }
+
+        return "name:" +
+            String(patient.name || "")
+                .toLowerCase()
+                .trim();
+    }
+
+
+    function normalizeName(name) {
+
+        return String(name || "")
+            .trim()
+            .toLowerCase();
+    }
+
+
+    /*
+      Some older user records may have different field names.
+      This makes the page compatible with them.
+    */
+
+    function getUserName(user) {
+
+        return (
+            user.name ||
+            user.fullName ||
+            user.patientName ||
+            "Unknown Patient"
+        );
+    }
+
+
+    function getUserEmail(user) {
+
+        return (
+            user.email ||
+            user.emailAddress ||
+            ""
+        );
+    }
+
+
+    function getUserPhone(user) {
+
+        return (
+            user.phone ||
+            user.contact ||
+            user.mobile ||
+            ""
+        );
+    }
+
+
+    /* ---------------------------------------------------------
+       BUILD PATIENT DIRECTORY
+    --------------------------------------------------------- */
+
+    function buildPatients() {
+
+        const users = getUsers();
+        const bookings = getBookings();
+
+        const patientMap = new Map();
+
+
+        /*
+         ========================================================
+         STEP 1
+         Add registered patient accounts
+         ========================================================
+        */
+
+        users.forEach(user => {
+
+            /*
+              Only patient/user accounts should appear here.
+              Staff/admin accounts are ignored.
+            */
+
+            const role = String(
+                user.role || "patient"
+            ).toLowerCase();
+
+            if (
+                role === "staff" ||
+                role === "admin" ||
+                role === "hospital staff" ||
+                role === "hospital_staff"
+            ) {
+                return;
+            }
+
+
+            const patient = {
+                name: getUserName(user),
+                email: getUserEmail(user),
+                phone: getUserPhone(user),
+                appointments: [],
+                latestTimestamp: 0
+            };
+
+
+            const key = getPatientKey(patient);
+
+            if (!patientMap.has(key)) {
+
+                patientMap.set(key, patient);
+
+            }
+
+        });
+
+
+        /*
+         ========================================================
+         STEP 2
+         Add booking records
+         ========================================================
+        */
+
+        bookings.forEach(booking => {
+
+            const patient = {
+                name:
+                    booking.patientName ||
+                    booking.name ||
+                    "Unknown Patient",
+
+                email:
+                    booking.email ||
+                    "",
+
+                phone:
+                    booking.phone ||
+                    booking.contact ||
+                    "",
+
+                appointments: [],
+                latestTimestamp: 0
+            };
+
+
+            /*
+              Try email first.
+              If email doesn't exist, use phone.
+              This prevents duplicate patients.
+            */
+
+            let key = getPatientKey(patient);
+
+
+            /*
+              If the patient was registered with an email,
+              but the booking contains the same name/phone,
+              try matching those records too.
+            */
+
+            if (!patientMap.has(key)) {
+
+                for (const [existingKey, existingPatient]
+                    of patientMap.entries()) {
+
+                    const sameEmail =
+                        patient.email &&
+                        existingPatient.email &&
+                        patient.email.toLowerCase().trim() ===
+                        existingPatient.email.toLowerCase().trim();
+
+                    const samePhone =
+                        patient.phone &&
+                        existingPatient.phone &&
+                        String(patient.phone).trim() ===
+                        String(existingPatient.phone).trim();
+
+                    const sameName =
+                        normalizeName(patient.name) ===
+                        normalizeName(existingPatient.name);
+
+
+                    if (sameEmail || samePhone) {
+
+                        key = existingKey;
+                        break;
+
+                    }
+
+                    /*
+                      Name matching is used only when email and phone
+                      are unavailable.
+                    */
+
+                    if (
+                        !patient.email &&
+                        !patient.phone &&
+                        sameName
+                    ) {
+
+                        key = existingKey;
+                        break;
+
+                    }
+                }
+            }
+
+
+            if (!patientMap.has(key)) {
+
+                patientMap.set(key, {
+                    name: patient.name,
+                    email: patient.email,
+                    phone: patient.phone,
+                    appointments: [],
+                    latestTimestamp: 0
+                });
+
+            }
+
+
+            const savedPatient = patientMap.get(key);
+
+
+            /*
+              Fill missing patient information from booking.
+            */
+
+            if (!savedPatient.name || savedPatient.name === "Unknown Patient") {
+                savedPatient.name = patient.name;
+            }
+
+            if (!savedPatient.email && patient.email) {
+                savedPatient.email = patient.email;
+            }
+
+            if (!savedPatient.phone && patient.phone) {
+                savedPatient.phone = patient.phone;
+            }
+
+
+            /*
+              Store complete appointment record.
+            */
+
+            savedPatient.appointments.push(booking);
+
+
+            const timestamp = getTimestamp(booking);
+
+            if (timestamp > savedPatient.latestTimestamp) {
+                savedPatient.latestTimestamp = timestamp;
+            }
+
+        });
+
+
+        patients = Array.from(patientMap.values());
+
+
+        /*
+         ========================================================
+         SORTING
+         Latest patient / latest booking FIRST
+         ========================================================
+        */
+
+        patients.sort((a, b) => {
+
+            if (b.latestTimestamp !== a.latestTimestamp) {
+
+                return b.latestTimestamp - a.latestTimestamp;
+
+            }
+
+            /*
+              Patients without appointments go after patients
+              with appointments.
+            */
+
+            if (a.appointments.length === 0 &&
+                b.appointments.length > 0) {
+                return 1;
+            }
+
+            if (a.appointments.length > 0 &&
+                b.appointments.length === 0) {
+                return -1;
+            }
+
+            return a.name.localeCompare(b.name);
+
+        });
+
+
+        /*
+          Sort each patient's appointments newest first.
+        */
+
+        patients.forEach(patient => {
+
+            patient.appointments.sort((a, b) => {
+
+                return getTimestamp(b) - getTimestamp(a);
+
+            });
+
+        });
+
+
+        renderPatients();
+
+    }
+
+
+    /* ---------------------------------------------------------
+       RENDER PATIENT TABLE
+    --------------------------------------------------------- */
+
+    function renderPatients() {
+
+        const tbody =
+            document.getElementById("patientsTableBody");
+
+        const emptyState =
+            document.getElementById("emptyState");
+
+        tbody.innerHTML = "";
+
+
+        if (patients.length === 0) {
+
+            emptyState.style.display = "block";
+
+            updateSelectionUI();
+
+            return;
+
+        }
+
+
+        emptyState.style.display = "none";
+
+
+        patients.forEach((patient, index) => {
+
+            const row = document.createElement("tr");
+
+            const patientId =
+                getPatientKey(patient);
+
+
+            /*
+              Last appointment
+            */
+
+            let lastAppointment = "-";
+
+            if (patient.appointments.length > 0) {
+
+                const latest =
+                    patient.appointments[0];
+
+                lastAppointment =
+                    formatDate(latest.date);
+
+            }
+
+
+            row.innerHTML = `
+
+                <td>
+                    <input
+                        type="checkbox"
+                        class="check-box patient-check"
+                        data-index="${index}"
+                        onchange="togglePatient(${index})">
+                </td>
+
+                <td>
+                    <span class="patient-name">
+                        ${escapeHTML(patient.name)}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="contact">
+                        ${escapeHTML(patient.phone || "-")}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="email">
+                        ${escapeHTML(patient.email || "-")}
+                    </span>
+                </td>
+
+                <td>
+                    ${escapeHTML(lastAppointment)}
+                </td>
+
+                <td>
+                    ${patient.appointments.length}
+                </td>
+
+                <td>
+                    <button
+                        class="history-btn"
+                        onclick="showHistory(${index})">
+                        History
+                    </button>
+                </td>
+
+            `;
+
+            tbody.appendChild(row);
+
+        });
+
+
+        /*
+          Restore selected rows after refresh.
+        */
+
+        patients.forEach((patient, index) => {
+
+            const key = getPatientKey(patient);
+
+            if (selectedPatients.has(key)) {
+
+                const checkbox =
+                    document.querySelector(
+                        `.patient-check[data-index="${index}"]`
+                    );
+
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+
+            }
+
+        });
+
+
+        updateSelectionUI();
+
+    }
+
+
+    /* ---------------------------------------------------------
+       CHECKBOX SELECTION
+    --------------------------------------------------------- */
+
+    function togglePatient(index) {
+
+        const patient = patients[index];
+
+        if (!patient) return;
+
+        const key = getPatientKey(patient);
+
+        const checkbox =
+            document.querySelector(
+                `.patient-check[data-index="${index}"]`
+            );
+
+
+        if (checkbox && checkbox.checked) {
+
+            selectedPatients.add(key);
+
+        } else {
+
+            selectedPatients.delete(key);
+
+        }
+
+
+        updateSelectionUI();
+
+    }
+
+
+    document.getElementById("selectAll")
+        .addEventListener("change", function () {
+
+            const checked = this.checked;
+
+
+            patients.forEach((patient, index) => {
+
+                const key = getPatientKey(patient);
+
+                if (checked) {
+
+                    selectedPatients.add(key);
+
+                } else {
+
+                    selectedPatients.delete(key);
+
+                }
+
+
+                const checkbox =
+                    document.querySelector(
+                        `.patient-check[data-index="${index}"]`
+                    );
+
+                if (checkbox) {
+                    checkbox.checked = checked;
+                }
+
+            });
+
+
+            updateSelectionUI();
+
+        });
+
+
+    function updateSelectionUI() {
+
+        const count =
+            selectedPatients.size;
+
+        const countText =
+            document.getElementById("selectedCount");
+
+        const exportBtn =
+            document.getElementById("exportBtn");
+
+        countText.textContent =
+            count + (count === 1 ? " selected" : " selected");
+
+
+        exportBtn.disabled =
+            count === 0;
+
+
+        const selectAll =
+            document.getElementById("selectAll");
+
+
+        if (patients.length === 0) {
+
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+            return;
+
+        }
+
+
+        if (count === 0) {
+
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+
+        } else if (count === patients.length) {
+
+            selectAll.checked = true;
+            selectAll.indeterminate = false;
+
+        } else {
+
+            selectAll.checked = false;
+            selectAll.indeterminate = true;
+
+        }
+
+    }
+
+
+    /* ---------------------------------------------------------
+       PATIENT HISTORY
+    --------------------------------------------------------- */
+
+    function showHistory(index) {
+
+        const patient = patients[index];
+
+        if (!patient) return;
+
+
+        document.getElementById("historyPatientName")
+            .textContent =
+            patient.name + " - History";
+
+
+        document.getElementById("historyName")
+            .textContent =
+            patient.name || "-";
+
+
+        document.getElementById("historyPhone")
+            .textContent =
+            patient.phone || "-";
+
+
+        document.getElementById("historyEmail")
+            .textContent =
+            patient.email || "-";
+
+
+        const historyList =
+            document.getElementById("historyList");
+
+
+        historyList.innerHTML = "";
+
+
+        if (patient.appointments.length === 0) {
+
+            historyList.innerHTML = `
+                <div class="no-history">
+                    This patient has no appointment history yet.
+                </div>
+            `;
+
+        } else {
+
+            patient.appointments.forEach((booking, index) => {
+
+                const status =
+                    booking.status || "Pending";
+
+                const statusClass =
+                    String(status)
+                        .toLowerCase()
+                        .replace(/\s+/g, "-");
+
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "appointment-card";
+
+
+                card.innerHTML = `
+
+                    <div class="appointment-top">
+
+                        <span class="appointment-number">
+                            Appointment ${patient.appointments.length - index}
+                        </span>
+
+                        <span class="status ${statusClass}">
+                            ${escapeHTML(status)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="appointment-details">
+
+                        <div class="detail">
+                            <label>Date</label>
+                            <span>
+                                ${escapeHTML(
+                                    formatDate(booking.date)
+                                )}
+                            </span>
+                        </div>
+
+
+                        <div class="detail">
+                            <label>Time / Slot</label>
+                            <span>
+                                ${escapeHTML(
+                                    booking.slot ||
+                                    booking.time ||
+                                    "-"
+                                )}
+                            </span>
+                        </div>
+
+
+                        <div class="detail">
+                            <label>Hospital</label>
+                            <span>
+                                ${escapeHTML(
+                                    booking.hospital || "-"
+                                )}
+                            </span>
+                        </div>
+
+
+                        <div class="detail">
+                            <label>Doctor</label>
+                            <span>
+                                ${escapeHTML(
+                                    booking.doctor || "-"
+                                )}
+                            </span>
+                        </div>
+
+
+                        <div class="detail">
+                            <label>Speciality</label>
+                            <span>
+                                ${escapeHTML(
+                                    booking.speciality ||
+                                    booking.specialty ||
+                                    "-"
+                                )}
+                            </span>
+                        </div>
+
+
+                        <div class="detail">
+                            <label>Age</label>
+                            <span>
+                                ${escapeHTML(
+                                    booking.age || "-"
+                                )}
+                            </span>
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                historyList.appendChild(card);
+
+            });
+
+        }
+
+
+        document.getElementById("historyModal")
+            .classList.add("active");
+
+    }
+
+
+    function closeHistory() {
+
+        document.getElementById("historyModal")
+            .classList.remove("active");
+
+    }
+
+
+    /*
+      Close modal by clicking outside.
+    */
+
+    document.getElementById("historyModal")
+        .addEventListener("click", function(event) {
+
+            if (event.target === this) {
+
+                closeHistory();
+
+            }
+
+        });
+
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            closeHistory();
+
+        }
+
+    });
+
+
+    /* ---------------------------------------------------------
+       EXPORT SELECTED PATIENTS TO PDF
+    --------------------------------------------------------- */
+
+    function exportSelectedPatients() {
+
+        if (selectedPatients.size === 0) {
+
+            showToast(
+                "Please select at least one patient."
+            );
+
+            return;
+
+        }
+
+
+        const selected =
+            patients.filter(patient =>
+                selectedPatients.has(
+                    getPatientKey(patient)
+                )
+            );
+
+
+        if (selected.length === 0) {
+
+            showToast(
+                "No patients selected."
+            );
+
+            return;
+
+        }
+
+
+        const {
+            jsPDF
+        } = window.jspdf;
+
+
+        const doc =
+            new jsPDF();
+
+
+        let y = 20;
+
+
+        /*
+          DOCUMENT HEADER
+        */
+
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text("BOOK N MEET", 20, y);
+
+        y += 9;
+
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "normal");
+        doc.text(
+            "Patient Appointment Records",
+            20,
+            y
+        );
+
+        y += 8;
+
+        doc.line(
+            20,
+            y,
+            190,
+            y
+        );
+
+        y += 12;
+
+
+        /*
+          EXPORT DATE
+        */
+
+        doc.setFontSize(9);
+
+        doc.text(
+            "Generated: " +
+            new Date().toLocaleString("en-IN"),
+            20,
+            y
+        );
+
+        y += 12;
+
+
+        selected.forEach((patient, patientIndex) => {
+
+            /*
+              New page for every patient except first
+            */
+
+            if (patientIndex > 0) {
+
+                doc.addPage();
+
+                y = 20;
+
+            }
+
+
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+
+            doc.text(
+                "Patient Invoice / Record",
+                20,
+                y
+            );
+
+            y += 12;
+
+
+            /*
+              Patient details box
+            */
+
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
+
+            doc.text(
+                "Patient:",
+                20,
+                y
+            );
+
+            doc.setFont("helvetica", "normal");
+
+            doc.text(
+                safePDFText(patient.name),
+                55,
+                y
+            );
+
+            y += 7;
+
+
+            doc.setFont("helvetica", "bold");
+
+            doc.text(
+                "Contact:",
+                20,
+                y
+            );
+
+            doc.setFont("helvetica", "normal");
+
+            doc.text(
+                safePDFText(patient.phone || "-"),
+                55,
+                y
+            );
+
+            y += 7;
+
+
+            doc.setFont("helvetica", "bold");
+
+            doc.text(
+                "Email:",
+                20,
+                y
+            );
+
+            doc.setFont("helvetica", "normal");
+
+            doc.text(
+                safePDFText(patient.email || "-"),
+                55,
+                y
+            );
+
+            y += 12;
+
+
+            doc.line(
+                20,
+                y,
+                190,
+                y
+            );
+
+            y += 10;
+
+
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+
+            doc.text(
+                "Appointment History",
+                20,
+                y
+            );
+
+            y += 9;
+
+
+            if (patient.appointments.length === 0) {
+
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "normal");
+
+                doc.text(
+                    "No appointments recorded.",
+                    20,
+                    y
+                );
+
+                return;
+
+            }
+
+
+            /*
+              Appointment records
+            */
+
+            patient.appointments.forEach(
+                (booking, bookingIndex) => {
+
+                    /*
+                      Add page if required.
+                    */
+
+                    if (y > 255) {
+
+                        doc.addPage();
+
+                        y = 20;
+
+                    }
+
+
+                    doc.setFontSize(10);
+                    doc.setFont("helvetica", "bold");
+
+                    doc.text(
+                        "Appointment " +
+                        (bookingIndex + 1),
+                        20,
+                        y
+                    );
+
+                    y += 7;
+
+
+                    doc.setFont("helvetica", "normal");
+
+                    const lines = [
+
+                        "Date: " +
+                        formatDate(booking.date),
+
+                        "Time: " +
+                        (booking.slot ||
+                            booking.time ||
+                            "-"),
+
+                        "Hospital: " +
+                        (booking.hospital ||
+                            "-"),
+
+                        "Doctor: " +
+                        (booking.doctor ||
+                            "-"),
+
+                        "Speciality: " +
+                        (booking.speciality ||
+                            booking.specialty ||
+                            "-"),
+
+                        "Age: " +
+                        (booking.age ||
+                            "-"),
+
+                        "Status: " +
+                        (booking.status ||
+                            "Pending")
+
+                    ];
+
+
+                    lines.forEach(line => {
+
+                        if (y > 275) {
+
+                            doc.addPage();
+
+                            y = 20;
+
+                        }
+
+
+                        doc.text(
+                            safePDFText(line),
+                            25,
+                            y
+                        );
+
+                        y += 6;
+
+                    });
+
+
+                    y += 5;
+
+
+                    doc.line(
+                        25,
+                        y,
+                        185,
+                        y
+                    );
+
+                    y += 9;
+
+                }
+            );
+
+
+            /*
+              Footer
+            */
+
+            if (y > 270) {
+
+                doc.addPage();
+
+                y = 20;
+
+            }
+
+
+            y += 5;
+
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "italic");
+
+            doc.text(
+                "Generated by BOOK N MEET",
+                20,
+                285
+            );
+
+        });
+
+
+        /*
+          File name
+        */
+
+        const date =
+            new Date()
+                .toISOString()
+                .slice(0, 10);
+
+
+        doc.save(
+            "BOOK-N-MEET-Patient-Records-" +
+            date +
+            ".pdf"
+        );
+
+
+        showToast(
+            selected.length +
+            " patient record" +
+            (selected.length > 1 ? "s" : "") +
+            " exported successfully."
+        );
+
+    }
+
+
+    /*
+      jsPDF uses standard fonts.
+      Replace characters that may not render correctly.
+    */
+
+    function safePDFText(value) {
+
+        return String(value || "-")
+            .replace(/[^\x00-\x7F]/g, "");
+
+    }
+
+
+    /* ---------------------------------------------------------
+       HTML SECURITY
+    --------------------------------------------------------- */
+
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* ---------------------------------------------------------
+       TOAST
+    --------------------------------------------------------- */
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 2500);
+
+    }
+
+
+    /* ---------------------------------------------------------
+       AUTOMATIC UPDATE
+    --------------------------------------------------------- */
+
+    /*
+      When booking.html is open in another tab and a patient
+      books an appointment, the storage event updates this page.
+    */
+
+    window.addEventListener("storage", function(event) {
+
+        if (
+            event.key === "bookNMeetBookings" ||
+            event.key === "bookNMeetUsers"
+        ) {
+
+            buildPatients();
+
+        }
+
+    });
+
+
+    /*
+      Custom event can also be used by other BOOK N MEET pages
+      after saving a booking.
+    */
+
+    window.addEventListener(
+        "bookNMeetBookingUpdated",
+        function() {
+
+            buildPatients();
+
+        }
+    );
+
+
+    /*
+      Refresh when returning to this page/tab.
+    */
+
+    document.addEventListener(
+        "visibilitychange",
+        function() {
+
+            if (!document.hidden) {
+
+                buildPatients();
+
+            }
+
+        }
+    );
+
+
+    /*
+      Also check when browser window gets focus.
+    */
+
+    window.addEventListener(
+        "focus",
+        function() {
+
+            buildPatients();
+
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       INITIAL LOAD
+    --------------------------------------------------------- */
+
+    buildPatients();
+
+</script>
+
+</body>
+</html>

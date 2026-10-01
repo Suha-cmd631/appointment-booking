@@ -877,49 +877,151 @@ function bookHospital(hospitalName){
         encodeURIComponent(age);
 }
 
-// function visitHospital(id){
+ function cleanHospitalName(name){
+    return String(name || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+}
 
-//     const hospital = hospitals[id];
+function cleanSpeciality(name){
+    return String(name || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+}
 
-//     document.getElementById("hospitalList").style.display = "none";
-//     document.getElementById("hospitalDetails").style.display = "block";
+function specialityKey(name){
+    const s = cleanSpeciality(name);
 
-//     document.getElementById("detailImage").src = hospital.image;
-//     document.getElementById("detailName").textContent = hospital.name;
-//     document.getElementById("detailLocation").textContent = hospital.location;
-//     document.getElementById("detailRating").textContent = hospital.rating;
-//     document.getElementById("detailDescription").textContent = hospital.description;
+    const map = {
+        "pediatrician":"pediatrics",
+        "pediatrics":"pediatrics",
+        "cardiologist":"cardiology",
+        "cardiology":"cardiology",
+        "neurologist":"neurology",
+        "neurology":"neurology",
+        "dermatologist":"dermatology",
+        "dermatology":"dermatology",
+        "gynecologist":"gynecology",
+        "gynecology":"gynecology",
+        "ophthalmologist":"ophthalmology",
+        "ophthalmology":"ophthalmology",
+        "orthopedic specialist":"orthopedics",
+        "orthopedist":"orthopedics",
+        "orthopedics":"orthopedics",
+        "ent specialist":"ent",
+        "ent":"ent",
+        "general physician":"general medicine",
+        "general medicine":"general medicine"
+    };
 
-//     document.getElementById("detailSpecialities").innerHTML =
-//         hospital.specialities.map(function(s){
-//             return '<span class="speciality-large">' + s + '</span>';
-//         }).join("");
+    return map[s] || s;
+}
 
-//     document.getElementById("doctorList").innerHTML =
-//         hospital.doctors.map(function(doctor){
-//             return `
-//                 <div class="doctor">
-//                     <img src="${doctor.image}" alt="${doctor.name}">
-//                     <div class="doctor-info">
-//                         <h4>${doctor.name}</h4>
-//                         <p class="doctor-speciality">${doctor.speciality}</p>
-//                         <p>${doctor.experience}</p>
-//                         <p class="doctor-rating">${doctor.rating}</p>
-//                         <p class="review">"${doctor.review}"</p>
-//                          <button class="doctor-book-btn"
-//                         onclick="bookDoctor('${hospital.name}', '${doctor.name}', '${doctor.speciality}')">
-//                         Book Now
-//                     </button>
-//                     </div>
-//                 </div>
-//             `;
-//         }).join("");
+function doctorMatchesSpeciality(doctor, selectedSpeciality){
+    const selected = specialityKey(selectedSpeciality);
 
-//     window.scrollTo({top:0,behavior:"smooth"});
-// }
+    const doctorKey = specialityKey(
+        doctor.specialityKey ||
+        doctor.speciality ||
+        ""
+    );
+
+    return doctorKey === selected;
+}
+
+function getStoredDoctors(){
+    try{
+        const stored =
+            JSON.parse(localStorage.getItem("bookNMeetDoctors")) || [];
+
+        return Array.isArray(stored) ? stored : [];
+    }catch(error){
+        console.error("Unable to read bookNMeetDoctors:", error);
+        return [];
+    }
+}
+
+function getHospitalDoctors(hospital){
+    /*
+      Keep the doctors already present in this patient page,
+      then add doctors created from admin/doctors.html.
+
+      This means an admin-added doctor is visible to patients
+      without removing the existing hospital doctors.
+    */
+    const existingDoctors = (hospital.doctors || []).map(function(doctor){
+        return {
+            ...doctor,
+            hospital: doctor.hospital || hospital.name,
+            hospitalName: doctor.hospitalName || hospital.name,
+            specialityKey:
+                doctor.specialityKey ||
+                specialityKey(doctor.speciality || "")
+        };
+    });
+
+    const storedDoctors = getStoredDoctors().filter(function(doctor){
+        const doctorHospital = cleanHospitalName(
+            doctor.hospital || doctor.hospitalName || ""
+        );
+
+        return doctorHospital === cleanHospitalName(hospital.name);
+    }).map(function(doctor){
+        return {
+            ...doctor,
+            hospital: doctor.hospital || doctor.hospitalName || hospital.name,
+            hospitalName:
+                doctor.hospitalName ||
+                doctor.hospital ||
+                hospital.name,
+            specialityKey:
+                doctor.specialityKey ||
+                specialityKey(doctor.speciality || "")
+        };
+    });
+
+    /*
+      Merge by hospital + doctor name + speciality so that
+      the same doctor is not displayed twice.
+    */
+    const merged = [];
+    const seen = new Set();
+
+    existingDoctors.concat(storedDoctors).forEach(function(doctor){
+        const key =
+            cleanHospitalName(hospital.name) +
+            "|" +
+            cleanSpeciality(doctor.name) +
+            "|" +
+            specialityKey(doctor.specialityKey || doctor.speciality);
+
+        if(!seen.has(key)){
+            seen.add(key);
+            merged.push(doctor);
+        }
+    });
+
+    return merged;
+}
+
+function escapeHtml(value){
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 function visitHospital(id){
 
     const hospital = hospitals[id];
+
+    if(!hospital){
+        return;
+    }
 
     /* Get speciality entered in the search */
     const params = new URLSearchParams(window.location.search);
@@ -936,147 +1038,108 @@ function visitHospital(id){
     document.getElementById("detailRating").textContent = hospital.rating;
     document.getElementById("detailDescription").textContent = hospital.description;
 
-
-    /* ------------------------------------------------
-       SHOW SPECIALITIES
-    ------------------------------------------------ */
-
+    /* Show hospital specialities */
     document.getElementById("detailSpecialities").innerHTML =
         hospital.specialities.map(function(s){
-
             return '<span class="speciality-large">' +
-                   s +
-                   '</span>';
-
+                escapeHtml(s) +
+                '</span>';
         }).join("");
 
+    /*
+      IMPORTANT:
+      Read doctors from localStorage as well as the doctors that
+      already exist in this hospitals.html file.
+    */
+    const allHospitalDoctors = getHospitalDoctors(hospital);
 
-    /* ------------------------------------------------
-       FILTER DOCTORS
-    ------------------------------------------------ */
-
-    let doctorsToShow = hospital.doctors;
+    let doctorsToShow = allHospitalDoctors;
 
     /*
-       If the user came through Search Hospitals,
-       show only doctors matching the searched speciality.
+      When the patient searched for a speciality, only show
+      doctors belonging to that speciality.
     */
     if(searched && selectedSpeciality){
 
-        doctorsToShow = hospital.doctors.filter(function(doctor){
-
-            const doctorSpeciality =
-                doctor.speciality.toLowerCase();
-
-            const searchedSpeciality =
-                selectedSpeciality.toLowerCase();
-
-            /*
-              Handles:
-              Pediatrics -> Pediatrician
-              Cardiology -> Cardiologist
-              Neurology -> Neurologist
-              Dermatology -> Dermatologist
-              Gynecology -> Gynecologist
-              Ophthalmology -> Ophthalmologist
-              Orthopedics -> Orthopedic Specialist
-              ENT -> ENT Specialist
-            */
-
-            return (
-                doctorSpeciality.includes(searchedSpeciality) ||
-                searchedSpeciality.includes(
-                    doctorSpeciality.replace(" specialist","")
-                ) ||
-                (
-                    searchedSpeciality === "pediatrics" &&
-                    doctorSpeciality.includes("pediatric")
-                ) ||
-                (
-                    searchedSpeciality === "cardiology" &&
-                    doctorSpeciality.includes("cardiolog")
-                ) ||
-                (
-                    searchedSpeciality === "neurology" &&
-                    doctorSpeciality.includes("neurolog")
-                ) ||
-                (
-                    searchedSpeciality === "dermatology" &&
-                    doctorSpeciality.includes("dermatolog")
-                ) ||
-                (
-                    searchedSpeciality === "gynecology" &&
-                    doctorSpeciality.includes("gynecolog")
-                ) ||
-                (
-                    searchedSpeciality === "ophthalmology" &&
-                    doctorSpeciality.includes("ophthalmolog")
-                ) ||
-                (
-                    searchedSpeciality === "orthopedics" &&
-                    doctorSpeciality.includes("orthopedic")
-                ) ||
-                (
-                    searchedSpeciality === "ent" &&
-                    doctorSpeciality.includes("ent")
-                )
+        doctorsToShow = allHospitalDoctors.filter(function(doctor){
+            return doctorMatchesSpeciality(
+                doctor,
+                selectedSpeciality
             );
-
         });
-
     }
 
-
-    /* ------------------------------------------------
-       DISPLAY DOCTORS
-    ------------------------------------------------ */
-
+    /* Display doctors */
     if(doctorsToShow.length === 0){
 
         document.getElementById("doctorList").innerHTML =
-            "<p style='color:#718194;'>No doctors available for " +
-            selectedSpeciality +
-            " at this hospital.</p>";
+            "<p style='color:#718194; padding:12px 0;'>" +
+            "No doctors available for " +
+            escapeHtml(selectedSpeciality || "this hospital") +
+            " at this hospital." +
+            "</p>";
 
     }else{
 
         document.getElementById("doctorList").innerHTML =
             doctorsToShow.map(function(doctor){
 
+                const doctorName =
+                    doctor.name || "Doctor";
+
+                const doctorSpeciality =
+                    doctor.speciality || doctor.specialityKey || "Specialist";
+
+                const experience =
+                    doctor.experience || "Experience not provided";
+
+                const rating =
+                    doctor.rating || "Rating not available";
+
+                const review =
+                    doctor.review ||
+                    doctor.about ||
+                    doctor.description ||
+                    "Doctor information available at the hospital.";
+
+                const image =
+                    doctor.image ||
+                    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80";
+
                 return `
                     <div class="doctor">
 
                         <img
-                            src="${doctor.image}"
-                            alt="${doctor.name}"
+                            src="${escapeHtml(image)}"
+                            alt="${escapeHtml(doctorName)}"
                         >
 
                         <div class="doctor-info">
 
-                            <h4>${doctor.name}</h4>
+                            <h4>${escapeHtml(doctorName)}</h4>
 
                             <p class="doctor-speciality">
-                                ${doctor.speciality}
+                                ${escapeHtml(doctorSpeciality)}
                             </p>
 
                             <p>
-                                ${doctor.experience}
+                                ${escapeHtml(experience)}
                             </p>
 
                             <p class="doctor-rating">
-                                ${doctor.rating}
+                                ${escapeHtml(rating)}
                             </p>
 
                             <p class="review">
-                                "${doctor.review}"
+                                "${escapeHtml(review)}"
                             </p>
 
                             <button
                                 class="doctor-book-btn"
                                 onclick="bookDoctor(
-                                    '${hospital.name}',
-                                    '${doctor.name}',
-                                    '${doctor.speciality}'
+                                    '${escapeHtml(hospital.name)}',
+                                    '${escapeHtml(doctorName)}',
+                                    '${escapeHtml(doctorSpeciality)}'
                                 )"
                             >
                                 Book Now
@@ -1086,9 +1149,7 @@ function visitHospital(id){
 
                     </div>
                 `;
-
             }).join("");
-
     }
 
     window.scrollTo({
@@ -1127,6 +1188,32 @@ function showHospitalList(){
 
 
 applySearchResults();
+
+/*
+  If an admin adds/updates a doctor in another tab,
+  refresh the currently open hospital details when
+  localStorage changes.
+*/
+window.addEventListener("storage", function(event){
+    if(event.key === "bookNMeetDoctors"){
+        const detailsVisible =
+            document.getElementById("hospitalDetails").style.display !== "none";
+
+        if(detailsVisible){
+            const currentId =
+                Object.keys(hospitals).find(function(id){
+                    return cleanHospitalName(hospitals[id].name) ===
+                           cleanHospitalName(
+                               document.getElementById("detailName").textContent
+                           );
+                });
+
+            if(currentId){
+                visitHospital(currentId);
+            }
+        }
+    }
+});
 
 </script>
 
