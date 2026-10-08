@@ -3,397 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BOOK N MEET - Hospitals</title>
+<meta name="description" content="Hospitals in Tadepalligudem with their doctors, specialities, services, contact details, timings and patient reviews.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Book N Meet">
+<meta property="og:title" content="Hospitals in Tadepalligudem: Doctors, Services and Timings | Book N Meet">
+<meta property="og:description" content="Hospitals in Tadepalligudem with their doctors, specialities, services, contact details, timings and patient reviews.">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<meta name="theme-color" content="#12345b">
+<title>Hospitals in Tadepalligudem: Doctors, Services and Timings | Book N Meet</title>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f7fafd;
-    color:#17283d;
-}
-
-a{text-decoration:none;color:inherit}
-
-/* .navbar{
-    height:76px;
-    background:white;
-    border-bottom:1px solid #e5ebf2;
-    display:flex;
-    align-items:center;
-}
-
-.nav-inner{
-    width:min(1180px,92%);
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo{display:flex;align-items:center;gap:10px}
-
-.logo-mark{
-    width:42px;height:42px;border-radius:12px;
-    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
-    color:white;display:grid;place-items:center;font-size:23px;
-}
-
-.logo-name{font-size:22px;font-weight:800;color:#12345b}
-.logo-name span{color:#1da79c}
-
-.nav-links{
-    display:flex;gap:27px;color:#536579;
-    font-size:14px;font-weight:600;
-}
-
-.nav-links a:hover{color:#1d9c96}
-
-.nav-actions{display:flex;align-items:center;gap:10px}
-
-.user-icon,.notification-icon{
-    width:40px;height:40px;border-radius:10px;
-    display:flex;align-items:center;justify-content:center;
-    position:relative;font-size:19px;
-}
-
-.user-icon{background:#eaf6f6}
-.notification-icon{background:#f3f6fa}
-
-.notification-dot{
-    position:absolute;width:8px;height:8px;background:#e74c3c;
-    border-radius:50%;top:7px;right:7px;border:2px solid white;
-} */
-.navbar{
-    height:76px;
-    background:white;
-    border-bottom:1px solid #e5ebf2;
-    display:flex;
-    align-items:center;
-}
-
-.nav-inner{
-    width:min(1180px,92%);
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.logo-mark{
-    width:42px;
-    height:42px;
-    border-radius:12px;
-    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
-    color:white;
-    display:grid;
-    place-items:center;
-    font-size:23px;
-    text-decoration: none;
-}
-
-.logo-name{
-    font-size:22px;
-    font-weight:800;
-    color:#12345b;
-      text-decoration: none;
-}
-
-.logo-name span{
-    color:#1da79c;
-}
-
-.nav-links{
-    display:flex;
-    gap:27px;
-    color:#536579;
-    font-size:14px;
-    font-weight:600;
-    margin-right: 400px;
-}
-
-.nav-links a:hover{
-    color:#1d9c96;
-}
-
-.nav-actions{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.user-icon,
-.notification-icon{
-    width:40px;
-    height:40px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    cursor:pointer;
-}
-
-.user-icon img,
-.notification-icon img{
-    width:24px;
-    height:24px;
-    object-fit:contain;
-    display:block;
-}
-
-.notification-icon img{
-    width:25px;
-    height:25px;
-}
-
-.user-icon{
-    background:#eaf6f6;
-}
-
-.notification-icon{
-    background:#f3f6fa;
-}
-
-.user-icon:hover,
-.notification-icon:hover{
-    transform:translateY(-2px);
-}
-
-.notification-dot{
-    position:absolute;
-    width:8px;
-    height:8px;
-    background:#e74c3c;
-    border-radius:50%;
-    top:7px;
-    right:7px;
-    border:2px solid white;
-}
-a{
-      text-decoration: none;
-      color: black;
-      /* margin-right: 100px; */
-}
-
-/* MAIN */
-.container{
-    width:min(1100px,92%);
-    margin:45px auto 70px;
-}
-
-.heading{margin-bottom:28px}
-.heading h1{font-size:32px;color:#12345b}
-.heading p{color:#6d7c8e;margin-top:7px}
-
-/* HOSPITAL LIST */
-.hospital{
-    background:white;
-    border:1px solid #e4ebf1;
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:22px;
-    box-shadow:0 7px 22px rgba(24,55,84,.05);
-}
-
-.hospital-top{display:flex;gap:22px}
-
-.hospital-image{
-    width:230px;height:160px;
-    object-fit:cover;border-radius:13px;
-}
-
-.hospital-info{flex:1}
-.hospital-info h2{color:#12345b;margin-bottom:8px}
-.hospital-info p{color:#6d7c8e;font-size:14px;margin:7px 0}
-
-.rating{color:#e39a17 !important;font-weight:700}
-
-.specialities{
-    display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;
-}
-
-.speciality{
-    padding:7px 10px;background:#eaf6f6;color:#147e79;
-    border-radius:7px;font-size:12px;font-weight:700;
-}
-
-.visit-btn{
-    margin-top:17px;padding:11px 20px;
-    background:#12345b;color:white;border:0;
-    border-radius:8px;cursor:pointer;font-weight:700;
-}
-
-.visit-btn:hover{background:#1d9c96}
-
-.book-hospital-btn{
-    margin-top:17px;
-    margin-left:8px;
-    padding:11px 20px;
-    background:#1d9c96;
-    color:white;
-    border:0;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:700;
-}
-
-.book-hospital-btn:hover{background:#147e79}
-
-.search-info{
-    background:#eaf6f6;
-    color:#147e79;
-    border:1px solid #cfe9e7;
-    border-radius:10px;
-    padding:12px 15px;
-    margin-bottom:22px;
-    font-size:14px;
-    font-weight:700;
-}
-
-/* DETAILS */
-#hospitalDetails{display:none}
-
-.back-btn{
-    border:1px solid #cbd7e4;
-    background:white;color:#12345b;
-    padding:10px 17px;border-radius:8px;
-    cursor:pointer;font-weight:700;margin-bottom:22px;
-}
-
-.back-btn:hover{background:#eef6f8}
-
-.detail-card{
-    background:white;
-    border:1px solid #e4ebf1;
-    border-radius:18px;
-    padding:25px;
-    box-shadow:0 7px 22px rgba(24,55,84,.05);
-}
-
-.detail-header{
-    display:flex;
-    gap:25px;
-    align-items:flex-start;
-    padding-bottom:25px;
-    border-bottom:1px solid #e5ebf2;
-}
-
-.detail-image{
-    width:310px;height:210px;
-    object-fit:cover;border-radius:14px;
-}
-
-.detail-info{flex:1}
-.detail-info h2{font-size:28px;color:#12345b;margin-bottom:10px}
-.detail-info p{color:#68798b;font-size:14px;line-height:1.6;margin:6px 0}
-
-.detail-rating{
-    color:#e39a17;
-    font-size:17px;
-    font-weight:700;
-    margin:10px 0;
-}
-
-.detail-section{margin-top:25px}
-.detail-section h3{color:#12345b;margin-bottom:14px}
-
-.speciality-large{
-    display:inline-block;
-    padding:9px 13px;
-    background:#eaf6f6;
-    color:#147e79;
-    border-radius:8px;
-    margin:0 7px 7px 0;
-    font-size:13px;
-    font-weight:700;
-}
-
-/* DOCTOR CARDS */
-.doctor{
-    display:flex;
-    gap:18px;
-    padding:18px;
-    border:1px solid #e5ebf2;
-    border-radius:14px;
-    margin-bottom:14px;
-    align-items:flex-start;
-}
-
-.doctor img{
-    width:82px;height:82px;
-    border-radius:50%;object-fit:cover;
-}
-
-.doctor-info{flex:1}
-.doctor-info h4{color:#12345b;font-size:17px;margin-bottom:5px}
-.doctor-speciality{color:#1d9c96 !important;font-weight:700}
-.doctor-info p{color:#6d7c8e;font-size:13px;margin:4px 0}
-
-.doctor-rating{color:#e39a17 !important;font-weight:700}
-
-.review{
-    margin-top:9px;
-    padding:9px 11px;
-    background:#f7fafd;
-    border-left:3px solid #1d9c96;
-    border-radius:6px;
-    color:#68798b !important;
-    font-style:italic;
-}
-.doctor-book-btn{
-    margin-top:12px;
-    padding:10px 18px;
-    background:#1d9c96;
-    color:white;
-    border:0;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:700;
-    font-size:13px;
-}
-
-.doctor-book-btn:hover{
-    background:#147e79;
-}
-
-.footer-inner{
-    width:min(1180px,92%);margin:auto;text-align:center;
-}
-
-.footer-inner p{color:#c5d4e3;font-size:13px}
-
-/* MOBILE */
-@media(max-width:800px){
-    .nav-links{display:none}
-    .hospital-top,.detail-header{flex-direction:column}
-    .hospital-image,.detail-image{width:100%;height:220px}
-    .doctor{flex-wrap:wrap}
-}
-.login,
-.signup{
-    padding:10px 18px;
-    border-radius:9px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-.login{
-    background:white;
-    border:1px solid #cbd7e4;
-    color:#12345b;
-}
-.login:hover{
-    color:#1d9c96;
-}
-</style>
+<link rel="stylesheet" href="css/hospitals.css">
 </head>
 
 <body>
@@ -436,14 +55,13 @@ a{
     <p id="listDescription">Explore hospitals and view their doctors, specialities, ratings and reviews.</p>
 </div>
 
-<div id="searchInfo" class="search-info" style="display:none;"></div>
-
 <!-- TRINITY -->
 <div class="hospital">
 
 <div class="hospital-top">
 <img class="hospital-image"
-src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80">
+src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80"
+alt="Trinity Hospital">
 
 <div class="hospital-info">
 <h2>Trinity Hospital</h2>
@@ -459,10 +77,6 @@ src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fi
 </div>
 
 <button class="visit-btn" onclick="visitHospital('trinity')">Visit Hospital</button>
-<!-- <button class="book-hospital-btn search-book-btn"
-        data-hospital="trinity"
-        onclick="bookHospital('Trinity Hospital')"
-        style="display:none;">Book Now</button> -->
 </div>
 </div>
 </div>
@@ -472,7 +86,8 @@ src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fi
 
 <div class="hospital-top">
 <img class="hospital-image"
-src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80">
+src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80"
+alt="Gowthami Hospital">
 
 <div class="hospital-info">
 <h2>Gowthami Hospital</h2>
@@ -488,10 +103,6 @@ src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fi
 </div>
 
 <button class="visit-btn" onclick="visitHospital('gowthami')">Visit Hospital</button>
-<!-- <button class="book-hospital-btn search-book-btn"
-        data-hospital="gowthami"
-        onclick="bookHospital('Gowthami Hospital')"
-        style="display:none;">Book Now</button> -->
 </div>
 </div>
 </div>
@@ -501,7 +112,8 @@ src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fi
 
 <div class="hospital-top">
 <img class="hospital-image"
-src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=800&q=80">
+src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=800&q=80"
+alt="Neokidz ENT">
 
 <div class="hospital-info">
 <h2>Neokidz ENT</h2>
@@ -516,10 +128,55 @@ src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fi
 </div>
 
 <button class="visit-btn" onclick="visitHospital('neokidz')">Visit Hospital</button>
-<!-- <button class="book-hospital-btn search-book-btn"
-        data-hospital="neokidz"
-        onclick="bookHospital('Neokidz ENT')"
-        style="display:none;">Book Now</button> -->
+</div>
+</div>
+</div>
+
+<!-- LALITHA -->
+<div class="hospital">
+
+<div class="hospital-top">
+<img class="hospital-image"
+src="https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=800&q=80"
+alt="Lalitha Hospital">
+
+<div class="hospital-info">
+<h2>Lalitha Hospital</h2>
+<p>📍 Tadepalligudem</p>
+<p class="rating">★★★★★ 4.9 (160 reviews)</p>
+<p>Private hospital open 24 hours, known for orthopaedic surgery, maternity care and general check-ups.</p>
+
+<div class="specialities">
+<span class="speciality">Orthopedics</span>
+<span class="speciality">Gynecology</span>
+<span class="speciality">General Medicine</span>
+</div>
+
+<button class="visit-btn" onclick="visitHospital('lalitha')">Visit Hospital</button>
+</div>
+</div>
+</div>
+
+<!-- AVIDEEP -->
+<div class="hospital">
+
+<div class="hospital-top">
+<img class="hospital-image"
+src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80"
+alt="Avideep Mother and Children Hospital">
+
+<div class="hospital-info">
+<h2>Avideep Mother and Children Hospital</h2>
+<p>📍 Tadepalligudem</p>
+<p class="rating">★★★★★ 4.9 (715 reviews)</p>
+<p>Mother and child hospital open 24 hours, with maternity, gynecology, pediatric and newborn intensive care.</p>
+
+<div class="specialities">
+<span class="speciality">Gynecology</span>
+<span class="speciality">Pediatrics</span>
+</div>
+
+<button class="visit-btn" onclick="visitHospital('avideep')">Visit Hospital</button>
 </div>
 </div>
 </div>
@@ -535,7 +192,7 @@ src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fi
 <div class="detail-card">
 
 <div class="detail-header">
-    <img id="detailImage" class="detail-image" src="">
+    <img id="detailImage" class="detail-image" src="" alt="Hospital photo">
 
     <div class="detail-info">
         <h2 id="detailName"></h2>
@@ -543,6 +200,27 @@ src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fi
         <div id="detailRating" class="detail-rating"></div>
         <p id="detailDescription"></p>
     </div>
+</div>
+
+<div class="detail-section">
+    <h3>About the Hospital</h3>
+    <p id="detailAbout" class="detail-about"></p>
+    <div id="detailStats" class="stat-row"></div>
+</div>
+
+<div class="detail-section">
+    <h3>Contact & Timings</h3>
+    <div id="detailContact" class="info-grid"></div>
+</div>
+
+<div class="detail-section">
+    <h3>Services & Facilities</h3>
+    <div id="detailFacilities"></div>
+</div>
+
+<div class="detail-section" id="detailReviewsSection">
+    <h3>Patient Reviews</h3>
+    <div id="detailReviews"></div>
 </div>
 
 <div class="detail-section">
@@ -566,116 +244,18 @@ src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fi
 </div>
 </footer>
 
+<script src="js/seed-doctors.js"></script>
+<script src="js/hospital-data.js"></script>
+
 <script>
 
-const hospitals = {
+/*
+  Hospital data and shared helper functions are in
+  js/hospital-data.js
 
-    trinity: {
-        name: "Trinity Hospital",
-        location: "📍 Tadepalligudem",
-        rating: "★★★★★ 4.8",
-        description: "A multi-speciality hospital providing quality healthcare and experienced doctors.",
-        image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80",
-        specialities: ["Cardiology","Neurology","General Medicine","Orthopedics"],
-        doctors: [
-            {
-                name:"Dr. Ananya Rao",
-                speciality:"Cardiologist",
-                experience:"12 years experience",
-                rating:"★★★★★ 4.9",
-                review:"Very attentive and explains the treatment clearly. Patients appreciate her caring approach.",
-                image:"https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80"
-            },
-            {
-                name:"Dr. Rahul Verma",
-                speciality:"Neurologist",
-                experience:"10 years experience",
-                rating:"★★★★★ 4.8",
-                review:"Professional doctor with excellent communication and detailed diagnosis.",
-                image:"https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80"
-            },
-            {
-                name:"Dr. Kiran Kumar",
-                speciality:"Orthopedic Specialist",
-                experience:"9 years experience",
-                rating:"★★★★★ 4.7",
-                review:"Patients appreciate the practical advice and friendly consultation.",
-                image:"https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80"
-            }
-        ]
-    },
-
-    gowthami: {
-        name: "Gowthami Hospital",
-        location: "📍 Tadepalligudem",
-        rating: "★★★★★ 4.7",
-        description: "Modern healthcare facilities with specialists across multiple departments.",
-        image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80",
-        specialities: ["Dermatology","Gynecology","Pediatrics","General Medicine"],
-        doctors: [
-            {
-                name:"Dr. Priya Sharma",
-                speciality:"Dermatologist",
-                experience:"11 years experience",
-                rating:"★★★★★ 4.8",
-                review:"Known for careful diagnosis and clear skin-care guidance.",
-                image:"https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80"
-            },
-            {
-                name:"Dr. Sneha Reddy",
-                speciality:"Pediatrician",
-                experience:"8 years experience",
-                rating:"★★★★★ 4.7",
-                review:"Friendly with children and provides clear instructions to parents.",
-                image:"https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80"
-            },
-            {
-                name:"Dr. Meera Rao",
-                speciality:"Gynecologist",
-                experience:"10 years experience",
-                rating:"★★★★★ 4.8",
-                review:"Patients value her supportive consultation and detailed explanations.",
-                image:"https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=300&q=80"
-            }
-        ]
-    },
-
-    neokidz: {
-        name: "Neokidz ENT",
-        location: "📍 Tadepalligudem",
-        rating: "★★★★★ 4.6",
-        description: "Specialized healthcare services with a focus on ENT and children's healthcare.",
-        image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=800&q=80",
-        specialities: ["ENT","Pediatrics","Ophthalmology"],
-        doctors: [
-            {
-                name:"Dr. Vikram Rao",
-                speciality:"ENT Specialist",
-                experience:"9 years experience",
-                rating:"★★★★★ 4.7",
-                review:"Patients appreciate his detailed explanations and efficient treatment.",
-                image:"https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80"
-            },
-            {
-                name:"Dr. Arjun Kumar",
-                speciality:"Pediatrician",
-                experience:"7 years experience",
-                rating:"★★★★★ 4.6",
-                review:"A patient and friendly doctor who makes children comfortable.",
-                image:"https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=300&q=80"
-            },
-            {
-                name:"Dr. Nisha Patel",
-                speciality:"Ophthalmologist",
-                experience:"8 years experience",
-                rating:"★★★★★ 4.7",
-                review:"Known for careful eye examinations and easy-to-understand advice.",
-                image:"https://images.unsplash.com/photo-1618498082410-b4aa22193b38?auto=format&fit=crop&w=300&q=80"
-            }
-        ]
-    }
-};
-
+  This page only SHOWS information about hospitals and doctors.
+  Searching and booking happen in search.html
+*/
 
 function getHospitalIdFromCard(card){
     const visitButton = card.querySelector(".visit-btn");
@@ -690,63 +270,6 @@ function getHospitalIdFromCard(card){
     return match ? match[1] : null;
 }
 
-function specialityDisplayName(name){
-    const key = specialityKey(name);
-
-    const names = {
-        "cardiology":"Cardiology",
-        "neurology":"Neurology",
-        "general medicine":"General Medicine",
-        "orthopedics":"Orthopedics",
-        "dermatology":"Dermatology",
-        "gynecology":"Gynecology",
-        "pediatrics":"Pediatrics",
-        "ophthalmology":"Ophthalmology",
-        "ent":"ENT"
-    };
-
-    if(names[key]){
-        return names[key];
-    }
-
-    return String(name || "Specialist")
-        .trim()
-        .replace(/\b\w/g, function(letter){
-            return letter.toUpperCase();
-        });
-}
-
-function getHospitalSpecialities(hospital){
-    const specialities = Array.isArray(hospital.specialities)
-        ? hospital.specialities.slice()
-        : [];
-
-    /* Add specialities automatically from doctors added by admin. */
-    getHospitalDoctors(hospital).forEach(function(doctor){
-        const doctorSpeciality =
-            doctor.specialityKey ||
-            doctor.speciality ||
-            "";
-
-        if(!doctorSpeciality){
-            return;
-        }
-
-        const displayName = specialityDisplayName(doctorSpeciality);
-        const key = specialityKey(displayName);
-
-        const alreadyExists = specialities.some(function(existing){
-            return specialityKey(existing) === key;
-        });
-
-        if(!alreadyExists){
-            specialities.push(displayName);
-        }
-    });
-
-    return specialities;
-}
-
 function updateHospitalCardSpecialities(card, hospital){
     const specialityBox = card.querySelector(".specialities");
 
@@ -754,466 +277,84 @@ function updateHospitalCardSpecialities(card, hospital){
         return;
     }
 
-    const specialities = getHospitalSpecialities(hospital);
-
-    specialityBox.innerHTML = specialities.map(function(speciality){
-        return '<span class="speciality">' +
-            escapeHtml(speciality) +
-            '</span>';
-    }).join("");
+    specialityBox.innerHTML =
+        getHospitalSpecialities(hospital).map(function(speciality){
+            return '<span class="speciality">' +
+                escapeHtml(speciality) +
+                '</span>';
+        }).join("");
 }
 
-function applySearchResults(){
+/* Show every hospital card with its up-to-date speciality list. */
+function renderHospitalCards(){
 
-    const params = new URLSearchParams(window.location.search);
+    document.querySelectorAll("#hospitalList .hospital")
+        .forEach(function(card){
 
-    const speciality =
-        params.get("speciality") || "";
+            const hospitalId = getHospitalIdFromCard(card);
+            const hospital = hospitalId ? hospitals[hospitalId] : null;
 
-    const searched =
-        params.get("searched") === "true";
+            if(!hospital){
+                card.style.display = "none";
+                return;
+            }
 
-    const hospitalCards =
-        document.querySelectorAll(
-            "#hospitalList .hospital"
-        );
-
-    let found = 0;
-
-    hospitalCards.forEach(function(card){
-
-        const hospitalId =
-            getHospitalIdFromCard(card);
-
-        const hospital =
-            hospitalId
-                ? hospitals[hospitalId]
-                : null;
-
-        if(!hospital){
-            card.style.display = "none";
-            return;
-        }
-
-        /*
-          IMPORTANT:
-          Read both the original doctors in hospitals.html
-          and doctors added by the hospital admin.
-        */
-        const allDoctors =
-            getHospitalDoctors(hospital);
-
-        /*
-          Build the hospital's speciality list dynamically.
-
-          Example:
-          Trinity originally:
-          Cardiology, Neurology, General Medicine, Orthopedics
-
-          Admin adds:
-          Dr. X -> Dermatologist
-
-          Result:
-          Cardiology, Neurology, General Medicine,
-          Orthopedics, Dermatology
-        */
-        const hospitalSpecialities =
-            getHospitalSpecialities(hospital);
-
-        updateHospitalCardSpecialities(
-            card,
-            hospital
-        );
-
-        /*
-          Normal hospitals page:
-          show every hospital.
-        */
-        if(!searched || !speciality){
+            updateHospitalCardSpecialities(card, hospital);
             card.style.display = "block";
-            return;
-        }
+        });
+}
 
-        const requestedKey =
-            specialityKey(speciality);
+/* One labelled box in the "Contact & Timings" grid. */
+function infoItem(label, value){
 
-        /*
-          Match using the dynamically generated
-          speciality list.
-        */
-        const hospitalHasSpeciality =
-            hospitalSpecialities.some(function(item){
-
-                return (
-                    specialityKey(item) ===
-                    requestedKey
-                );
-
-            });
-
-        /*
-          Also check the actual doctor records.
-          This is the important part for a newly
-          added Trinity dermatologist.
-        */
-        /*
-          Also check the raw admin doctor records directly.
-          This makes the search independent of how the doctor
-          was saved (hospital / hospitalName / hospitalId).
-        */
-        const storedDoctors = getStoredDoctors();
-
-        const hasMatchingDoctor =
-            allDoctors.some(function(doctor){
-                return doctorMatchesSpeciality(
-                    doctor,
-                    speciality
-                );
-            }) ||
-            storedDoctors.some(function(doctor){
-                const doctorHospital =
-                    doctor.hospital ||
-                    doctor.hospitalName ||
-                    doctor.hospitalId ||
-                    "";
-
-                return (
-                    hospitalNamesMatch(doctorHospital, hospital.name) &&
-                    doctorMatchesSpeciality(doctor, speciality)
-                );
-            });
-
-        if(
-            hospitalHasSpeciality ||
-            hasMatchingDoctor
-        ){
-
-            card.style.display = "block";
-            found++;
-
-        }else{
-
-            card.style.display = "none";
-
-        }
-
-    });
-
-    /*
-      Heading
-    */
-    if(!searched || !speciality){
-
-        document.getElementById(
-            "listTitle"
-        ).textContent =
-            "Available Hospitals";
-
-        document.getElementById(
-            "listDescription"
-        ).textContent =
-            "Explore hospitals and view their doctors, specialities, ratings and reviews.";
-
-        document.getElementById(
-            "searchInfo"
-        ).style.display = "none";
-
-        return;
+    if(!value){
+        return "";
     }
 
-    document.getElementById(
-        "listTitle"
-    ).textContent =
-        speciality + " Hospitals";
+    return '<div class="info-item">' +
+        '<span class="info-label">' + escapeHtml(label) + '</span>' +
+        '<span class="info-value">' + escapeHtml(value) + '</span>' +
+        '</div>';
+}
 
-    document.getElementById(
-        "listDescription"
-    ).textContent =
-        "Hospitals offering " +
-        speciality +
-        " services.";
+/* A clickable website link in the "Contact & Timings" grid. */
+function linkItem(label, url){
 
-    const searchInfo =
-        document.getElementById(
-            "searchInfo"
-        );
-
-    searchInfo.style.display = "block";
-
-    const date =
-        params.get("date");
-
-    const age =
-        params.get("age");
-
-    if(found > 0){
-
-        searchInfo.textContent =
-            "Search results for " +
-            speciality +
-            (date
-                ? " • Date: " + date
-                : "") +
-            (age
-                ? " • Age: " + age
-                : "");
-
-    }else{
-
-        searchInfo.textContent =
-            "No hospitals found for " +
-            speciality +
-            ".";
-
+    if(!url){
+        return "";
     }
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    return '<div class="info-item">' +
+        '<span class="info-label">' + escapeHtml(label) + '</span>' +
+        '<a class="info-value info-link" target="_blank" rel="noopener" href="' +
+        escapeHtml(url) + '">' +
+        escapeHtml(url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")) +
+        '</a>' +
+        '</div>';
 }
 
+/* One number box in the "About" section. */
+function statItem(value, label){
 
-function bookHospital(hospitalName){
-    const params = new URLSearchParams(window.location.search);
-
-    const speciality = params.get("speciality") || "";
-    const date = params.get("date") || "";
-    const age = params.get("age") || "";
-
-    window.location.href =
-        "booking.html?hospital=" +
-        encodeURIComponent(hospitalName) +
-        "&speciality=" +
-        encodeURIComponent(speciality) +
-        "&date=" +
-        encodeURIComponent(date) +
-        "&age=" +
-        encodeURIComponent(age);
-}
-
- function cleanHospitalName(name){
-    return String(name || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, " ");
-}
-
-/* 
-   Hospital names can come from different pages/localStorage.
-   Treat small naming differences as the same hospital.
-   Examples:
-   Trinity / Trinity Hospital
-   Gowthami / Goutami / Gowthami Hospital
-*/
-function hospitalKey(name){
-    let value = cleanHospitalName(name);
-
-    value = value
-        .replace(/\bgoutami\b/g, "gowthami")
-        .replace(/\bhospital\b/g, "")
-        .replace(/[^a-z0-9]+/g, " ")
-        .trim()
-        .replace(/\s+/g, " ");
-
-    return value;
-}
-
-function hospitalNamesMatch(first, second){
-    const a = hospitalKey(first);
-    const b = hospitalKey(second);
-
-    if(!a || !b){
-        return false;
+    if(!value){
+        return "";
     }
 
-    return (
-        a === b ||
-        a.includes(b) ||
-        b.includes(a)
-    );
+    return '<div class="stat">' +
+        '<strong>' + escapeHtml(value) + '</strong>' +
+        '<span>' + escapeHtml(label) + '</span>' +
+        '</div>';
 }
 
-function cleanSpeciality(name){
-    return String(name || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, " ");
-}
+/* One "Label: value" line inside a doctor card. */
+function doctorLine(label, value){
 
-function specialityKey(name){
-    const s = cleanSpeciality(name);
-
-    const map = {
-        "pediatrician":"pediatrics",
-        "pediatrics":"pediatrics",
-        "cardiologist":"cardiology",
-        "cardiology":"cardiology",
-        "neurologist":"neurology",
-        "neurology":"neurology",
-        "dermatologist":"dermatology",
-        "dermatology":"dermatology",
-        "gynecologist":"gynecology",
-        "gynecology":"gynecology",
-        "ophthalmologist":"ophthalmology",
-        "ophthalmology":"ophthalmology",
-        "orthopedic specialist":"orthopedics",
-        "orthopedist":"orthopedics",
-        "orthopedics":"orthopedics",
-        "ent specialist":"ent",
-        "ent":"ent",
-        "general physician":"general medicine",
-        "general medicine":"general medicine"
-    };
-
-    return map[s] || s;
-}
-
-function doctorMatchesSpeciality(doctor, selectedSpeciality){
-    const selected = specialityKey(selectedSpeciality);
-
-    const doctorKey = specialityKey(
-        doctor.specialityKey ||
-        doctor.speciality ||
-        ""
-    );
-
-    return doctorKey === selected;
-}
-
-function getStoredDoctors(){
-    try{
-        const stored =
-            JSON.parse(localStorage.getItem("bookNMeetDoctors")) || [];
-
-        return Array.isArray(stored) ? stored : [];
-    }catch(error){
-        console.error("Unable to read bookNMeetDoctors:", error);
-        return [];
-    }
-}
-function getRemovedDoctorIds(){
-    try{
-        const removed = JSON.parse(
-            localStorage.getItem("bookNMeetRemovedDoctors") || "[]"
-        );
-
-        return Array.isArray(removed)
-            ? removed.map(String)
-            : [];
-    }catch(error){
-        console.error("Unable to read removed doctors:", error);
-        return [];
-    }
-}
-
-function isDoctorRemoved(doctor){
-    const doctorId = doctor.id || doctor.doctorId;
-
-    if(!doctorId){
-        return false;
+    if(!value){
+        return "";
     }
 
-    return getRemovedDoctorIds().includes(String(doctorId));
-}
-function getHospitalDoctors(hospital){
-    /*
-      Keep the doctors already present in this patient page,
-      then add doctors created from admin/doctors.html.
-
-      This means an admin-added doctor is visible to patients
-      without removing the existing hospital doctors.
-    */
-    // const existingDoctors = (hospital.doctors || []).map(function(doctor){
-    //     return {
-    //         ...doctor,
-    //         hospital: doctor.hospital || hospital.name,
-    //         hospitalName: doctor.hospitalName || hospital.name,
-    //         specialityKey:
-    //             doctor.specialityKey ||
-    //             specialityKey(doctor.speciality || "")
-    //     };
-    // });
-    const existingDoctors = (hospital.doctors || [])
-    .filter(function(doctor){
-
-        // Do not show removed doctors
-        if(isDoctorRemoved(doctor)){
-            return false;
-        }
-
-        return true;
-    })
-    .map(function(doctor){
-
-        return {
-            ...doctor,
-            hospital: doctor.hospital || hospital.name,
-            hospitalName: doctor.hospitalName || hospital.name,
-            specialityKey:
-                doctor.specialityKey ||
-                specialityKey(doctor.speciality || "")
-        };
-
-    });
-
-    const storedDoctors = getStoredDoctors().filter(function(doctor){
-        if(isDoctorRemoved(doctor)){
-        return false;
-    }
-        const doctorHospital = cleanHospitalName(
-            doctor.hospital || doctor.hospitalName || ""
-        );
-
-        return hospitalNamesMatch(
-            doctorHospital,
-            hospital.name
-        );
-    }).map(function(doctor){
-        return {
-            ...doctor,
-            hospital: doctor.hospital || doctor.hospitalName || hospital.name,
-            hospitalName:
-                doctor.hospitalName ||
-                doctor.hospital ||
-                hospital.name,
-            specialityKey:
-                doctor.specialityKey ||
-                specialityKey(doctor.speciality || "")
-        };
-    });
-
-    /*
-      Merge by hospital + doctor name + speciality so that
-      the same doctor is not displayed twice.
-    */
-    const merged = [];
-    const seen = new Set();
-
-    existingDoctors.concat(storedDoctors).forEach(function(doctor){
-        const key =
-            cleanHospitalName(hospital.name) +
-            "|" +
-            cleanSpeciality(doctor.name) +
-            "|" +
-            specialityKey(doctor.specialityKey || doctor.speciality);
-
-        if(!seen.has(key)){
-            seen.add(key);
-            merged.push(doctor);
-        }
-    });
-
-    return merged;
-}
-
-function escapeHtml(value){
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return '<p><span class="doctor-label">' + escapeHtml(label) +
+        ':</span> ' + escapeHtml(value) + '</p>';
 }
 
 function visitHospital(id){
@@ -1224,22 +365,60 @@ function visitHospital(id){
         return;
     }
 
-    /* Get speciality entered in the search */
-    const params = new URLSearchParams(window.location.search);
-    const searched = params.get("searched") === "true";
-    const selectedSpeciality = params.get("speciality") || "";
-
     document.getElementById("hospitalList").style.display = "none";
     document.getElementById("hospitalDetails").style.display = "block";
 
-    /* Hospital details */
+    const doctors = getHospitalDoctors(hospital);
+
+    /* Hospital header */
     document.getElementById("detailImage").src = hospital.image;
     document.getElementById("detailName").textContent = hospital.name;
     document.getElementById("detailLocation").textContent = hospital.location;
     document.getElementById("detailRating").textContent = hospital.rating;
     document.getElementById("detailDescription").textContent = hospital.description;
 
-    /* Show hospital specialities */
+    /* About */
+    document.getElementById("detailAbout").textContent =
+        hospital.about || hospital.description || "";
+
+    document.getElementById("detailStats").innerHTML =
+        statItem(hospital.founded, "Founded") +
+        statItem(String(doctors.length), "Doctors") +
+        statItem(hospital.beds, "Beds") +
+        statItem(
+            String(getHospitalSpecialities(hospital).length),
+            "Specialities"
+        );
+
+    /* Contact & timings */
+    document.getElementById("detailContact").innerHTML =
+        infoItem("Address", hospital.address) +
+        infoItem("Phone", hospital.phone) +
+        infoItem("Email", hospital.email) +
+        linkItem("Website", hospital.website) +
+        infoItem("Timings", hospital.timings) +
+        infoItem("Emergency", hospital.emergency);
+
+    /* Facilities */
+    document.getElementById("detailFacilities").innerHTML =
+        (hospital.facilities || []).map(function(facility){
+            return '<span class="facility">' +
+                escapeHtml(facility) +
+                '</span>';
+        }).join("");
+
+    /* Patient reviews of the hospital (hidden when there are none) */
+    const hospitalReviews = hospital.reviews || [];
+
+    document.getElementById("detailReviewsSection").style.display =
+        hospitalReviews.length ? "block" : "none";
+
+    document.getElementById("detailReviews").innerHTML =
+        hospitalReviews.map(function(text){
+            return '<p class="review">"' + escapeHtml(text) + '"</p>';
+        }).join("");
+
+    /* Specialities */
     document.getElementById("detailSpecialities").innerHTML =
         getHospitalSpecialities(hospital).map(function(s){
             return '<span class="speciality-large">' +
@@ -1247,43 +426,16 @@ function visitHospital(id){
                 '</span>';
         }).join("");
 
-    /*
-      IMPORTANT:
-      Read doctors from localStorage as well as the doctors that
-      already exist in this hospitals.html file.
-    */
-    const allHospitalDoctors = getHospitalDoctors(hospital);
-
-    let doctorsToShow = allHospitalDoctors;
-
-    /*
-      When the patient searched for a speciality, only show
-      doctors belonging to that speciality.
-    */
-    if(searched && selectedSpeciality){
-
-        doctorsToShow = allHospitalDoctors.filter(function(doctor){
-            return doctorMatchesSpeciality(
-                doctor,
-                selectedSpeciality
-            );
-        });
-    }
-
-    /* Display doctors */
-    if(doctorsToShow.length === 0){
+    /* Doctors (built-in doctors + doctors added by the admin) */
+    if(doctors.length === 0){
 
         document.getElementById("doctorList").innerHTML =
-            "<p style='color:#718194; padding:12px 0;'>" +
-            "No doctors available for " +
-            escapeHtml(selectedSpeciality || "this hospital") +
-            " at this hospital." +
-            "</p>";
+            "<p class='no-doctors'>No doctors available at this hospital.</p>";
 
     }else{
 
         document.getElementById("doctorList").innerHTML =
-            doctorsToShow.map(function(doctor){
+            doctors.map(function(doctor){
 
                 const doctorName =
                     doctor.name || "Doctor";
@@ -1291,21 +443,15 @@ function visitHospital(id){
                 const doctorSpeciality =
                     doctor.speciality || doctor.specialityKey || "Specialist";
 
-                const experience =
-                    doctor.experience || "Experience not provided";
-
-                const rating =
-                    doctor.rating || "Rating not available";
-
-                const review =
-                    doctor.review ||
-                    doctor.about ||
-                    doctor.description ||
-                    "Doctor information available at the hospital.";
-
                 const image =
                     doctor.image ||
                     "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80";
+
+                const about =
+                    doctor.about || doctor.description || "";
+
+                const review =
+                    doctor.review || "";
 
                 return `
                     <div class="doctor">
@@ -1323,28 +469,29 @@ function visitHospital(id){
                                 ${escapeHtml(doctorSpeciality)}
                             </p>
 
-                            <p>
-                                ${escapeHtml(experience)}
-                            </p>
+                            ${doctor.rating
+                                ? '<p class="doctor-rating">' +
+                                  escapeHtml(doctor.rating) + '</p>'
+                                : ''}
 
-                            <p class="doctor-rating">
-                                ${escapeHtml(rating)}
-                            </p>
+                            ${doctorLine(
+                                "Qualification",
+                                doctor.qualification || doctor.study
+                            )}
 
-                            <p class="review">
-                                "${escapeHtml(review)}"
-                            </p>
+                            ${doctorLine("Experience", doctor.experience)}
 
-                            <button
-                                class="doctor-book-btn"
-                                onclick="bookDoctor(
-                                    '${escapeHtml(hospital.name)}',
-                                    '${escapeHtml(doctorName)}',
-                                    '${escapeHtml(doctorSpeciality)}'
-                                )"
-                            >
-                                Book Now
-                            </button>
+                            ${doctorLine("Languages", doctor.languages)}
+
+                            ${about
+                                ? '<p class="doctor-about">' +
+                                  escapeHtml(about) + '</p>'
+                                : ''}
+
+                            ${review
+                                ? '<p class="review">"' +
+                                  escapeHtml(review) + '"</p>'
+                                : ''}
 
                         </div>
 
@@ -1359,26 +506,6 @@ function visitHospital(id){
     });
 }
 
-function bookDoctor(hospitalName, doctorName, doctorSpeciality){
-
-    const params = new URLSearchParams(window.location.search);
-
-    const speciality = params.get("speciality") || doctorSpeciality;
-    const date = params.get("date") || "";
-    const age = params.get("age") || "";
-
-    window.location.href =
-        "booking.html?hospital=" +
-        encodeURIComponent(hospitalName) +
-        "&doctor=" +
-        encodeURIComponent(doctorName) +
-        "&speciality=" +
-        encodeURIComponent(speciality) +
-        "&date=" +
-        encodeURIComponent(date) +
-        "&age=" +
-        encodeURIComponent(age);
-}
 function showHospitalList(){
 
     document.getElementById("hospitalDetails").style.display = "none";
@@ -1388,21 +515,22 @@ function showHospitalList(){
 }
 
 
-applySearchResults();
+renderHospitalCards();
 
 /*
   If an admin adds/updates a doctor in another tab,
-  refresh the currently open hospital details when
-  localStorage changes.
+  refresh this page when localStorage changes.
 */
 window.addEventListener("storage", function(event){
-    if(event.key === "bookNMeetDoctors"){
+    if(
+        event.key === "bookNMeetDoctors" ||
+        event.key === "bookNMeetRemovedDoctors"
+    ){
 
-        /* Refresh hospital cards so newly-added specialities appear immediately. */
-        applySearchResults();
+        renderHospitalCards();
 
         const detailsVisible =
-            document.getElementById("hospitalDetails").style.display !== "none";
+            document.getElementById("hospitalDetails").style.display === "block";
 
         if(detailsVisible){
             const currentId =
@@ -1421,6 +549,9 @@ window.addEventListener("storage", function(event){
 });
 
 </script>
+
+<script src="js/patient-notifications.js"></script>
+<script src="js/site-links.js"></script>
 
 </body>
 </html>

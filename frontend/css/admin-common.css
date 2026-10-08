@@ -1,0 +1,303 @@
+/*
+  BOOK N MEET - shared look for every admin (hospital staff) page
+
+  Loaded AFTER each page's own CSS file, so that the top menu bar,
+  the font, the page width and the page title look exactly the same
+  on Home, Appointments, Doctors, Patients, Schedule, Reports,
+  Settings and Notifications.
+
+  Change the admin menu bar here, once, for all pages.
+*/
+
+/* ---------- same font and background everywhere ---------- */
+body{
+    margin:0;
+    font-family:"Inter", Arial, Helvetica, sans-serif;
+    background:#f5f9fc;
+    color:#12345b;
+}
+
+/* ---------- top menu bar ---------- */
+.adm-header,
+.adm-header *{
+    box-sizing:border-box;
+}
+
+.adm-header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:#ffffff;
+    border-bottom:1px solid #e1e9f0;
+    box-shadow:0 1px 8px rgba(18,52,91,0.04);
+    font-family:"Inter", Arial, Helvetica, sans-serif;
+}
+
+.adm-header-inner{
+    max-width:1400px;
+    height:72px;
+    margin:0 auto;
+    padding:0 32px;
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+/* logo */
+.adm-logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:none;
+    text-decoration:none;
+    color:#12345b;
+    font-size:19px;
+    font-weight:800;
+    letter-spacing:0.2px;
+    white-space:nowrap;
+}
+
+.adm-logo-mark{
+    width:38px;
+    height:38px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:11px;
+    background:linear-gradient(135deg,#1fa8a0,#12345b);
+    color:#ffffff;
+    font-size:24px;
+    font-weight:500;
+    line-height:1;
+}
+
+.adm-logo-name span{
+    color:#1d9c96;
+}
+
+/* menu links */
+.adm-nav{
+    flex:1;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+}
+
+.adm-nav a{
+    padding:9px 12px;
+    border-radius:9px;
+    text-decoration:none;
+    white-space:nowrap;
+    font-size:14px;
+    font-weight:600;
+    line-height:1;
+    color:#536579;
+    transition:background 0.15s ease, color 0.15s ease;
+}
+
+.adm-nav a:hover{
+    background:#f1f6f9;
+    color:#12345b;
+}
+
+.adm-nav a.active{
+    background:#e7f5f4;
+    color:#147e79;
+}
+
+/* right side: bell, staff name, logout */
+.adm-right{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.adm-bell{
+    position:relative;
+    width:40px;
+    height:40px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #e1e9f0;
+    border-radius:11px;
+    background:#ffffff;
+    text-decoration:none;
+    font-size:17px;
+    line-height:1;
+}
+
+.adm-bell:hover{
+    background:#f1f6f9;
+}
+
+.adm-badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    border:2px solid #ffffff;
+    background:#e0483c;
+    color:#ffffff;
+    font-size:10px;
+    font-weight:700;
+    line-height:1;
+}
+
+.adm-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.adm-avatar{
+    width:40px;
+    height:40px;
+    flex:none;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    border-radius:50%;
+    background:linear-gradient(135deg,#1fa8a0,#12345b);
+    color:#ffffff;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    line-height:1;
+    cursor:pointer;
+}
+
+.adm-user-text{
+    min-width:0;
+    max-width:170px;
+    line-height:1.25;
+}
+
+.adm-user-name,
+.adm-user-hospital{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.adm-user-name{
+    font-size:13px;
+    font-weight:700;
+    color:#12345b;
+}
+
+.adm-user-hospital{
+    font-size:11px;
+    font-weight:500;
+    color:#6b7f92;
+}
+
+.adm-logout{
+    flex:none;
+    height:40px;
+    padding:0 16px;
+    border:1px solid #cbd7e4;
+    border-radius:10px;
+    background:#ffffff;
+    color:#12345b;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.adm-logout:hover{
+    background:#fdf1f0;
+    border-color:#f0c4bf;
+    color:#c0392b;
+}
+
+/* ---------- same page width and page title everywhere ---------- */
+main.main,
+main.page{
+    max-width:1400px;
+    margin:0 auto;
+    padding:32px 32px 56px;
+}
+
+main.main h1,
+main.page h1{
+    margin:0 0 6px;
+    font-family:inherit;
+    font-size:30px;
+    font-weight:800;
+    line-height:1.15;
+    letter-spacing:0;
+    color:#12345b;
+}
+
+main.main h1 + p,
+main.page h1 + p{
+    margin-top:0;
+    font-size:14px;
+    font-weight:400;
+    line-height:1.5;
+    color:#6b7f92;
+}
+
+/* page title starts exactly under the logo on every page */
+main.page > .page-title{
+    padding-left:0;
+}
+
+/* ---------- smaller screens ---------- */
+@media (max-width:1180px){
+
+    .adm-user-text{
+        display:none;
+    }
+}
+
+@media (max-width:980px){
+
+    .adm-header-inner{
+        height:auto;
+        padding:10px 16px;
+        flex-wrap:wrap;
+        gap:10px 16px;
+    }
+
+    .adm-right{
+        margin-left:auto;
+    }
+
+    /* menu moves to its own row and can be swiped sideways */
+    .adm-nav{
+        order:3;
+        flex:0 0 100%;
+        justify-content:flex-start;
+        overflow-x:auto;
+        padding-bottom:2px;
+    }
+
+    main.main,
+    main.page{
+        padding:22px 16px 40px;
+    }
+
+    main.main h1,
+    main.page h1{
+        font-size:25px;
+    }
+}

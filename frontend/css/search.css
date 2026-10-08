@@ -1,0 +1,310 @@
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f7fafd;
+    color:#17283d;
+}
+
+a{text-decoration:none;color:inherit}
+
+/* NAVBAR (same look as the hospitals page) */
+.navbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #e5ebf2;
+    display:flex;
+    align-items:center;
+}
+
+.nav-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-mark{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+}
+
+.logo-name{
+    font-size:22px;
+    font-weight:800;
+    color:#12345b;
+}
+
+.logo-name span{color:#1da79c}
+
+.nav-links{
+    display:flex;
+    gap:27px;
+    color:#536579;
+    font-size:14px;
+    font-weight:600;
+    margin-right:400px;
+}
+
+.nav-links a:hover{color:#1d9c96}
+
+.nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-icon,
+.notification-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    cursor:pointer;
+}
+
+.user-icon img,
+.notification-icon img{
+    width:24px;
+    height:24px;
+    object-fit:contain;
+    display:block;
+}
+
+.user-icon{background:#eaf6f6}
+.notification-icon{background:#f3f6fa}
+
+.notification-dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#e74c3c;
+    border-radius:50%;
+    top:7px;
+    right:7px;
+    border:2px solid white;
+}
+
+.login{
+    padding:10px 18px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+    background:white;
+    border:1px solid #cbd7e4;
+    color:#12345b;
+}
+
+.login:hover{color:#1d9c96}
+
+/* MAIN */
+.container{
+    width:min(1100px,92%);
+    margin:35px auto 70px;
+}
+
+.back-btn{
+    display:inline-block;
+    border:1px solid #cbd7e4;
+    background:white;
+    color:#12345b;
+    padding:10px 17px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:22px;
+}
+
+.back-btn:hover{background:#eef6f8}
+
+.heading{margin-bottom:20px}
+.heading h1{font-size:32px;color:#12345b}
+.heading p{color:#6d7c8e;margin-top:7px}
+
+/* WHAT WAS SEARCHED */
+.search-summary{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 26px;
+    background:#eaf6f6;
+    color:#147e79;
+    border:1px solid #cfe9e7;
+    border-radius:10px;
+    padding:13px 16px;
+    margin-bottom:24px;
+    font-size:14px;
+}
+
+/* ONE HOSPITAL RESULT */
+.result{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:24px;
+    box-shadow:0 7px 22px rgba(24,55,84,.05);
+}
+
+.result-top{
+    display:flex;
+    gap:22px;
+    padding-bottom:20px;
+    border-bottom:1px solid #e5ebf2;
+}
+
+.result-image{
+    width:230px;
+    height:170px;
+    object-fit:cover;
+    border-radius:13px;
+    background:#e8eef4;
+}
+
+.result-info{flex:1}
+.result-info h2{color:#12345b;margin-bottom:8px}
+.result-info p{color:#6d7c8e;font-size:14px;margin:7px 0}
+
+.rating{color:#e39a17 !important;font-weight:700}
+
+.result-meta{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:12px;
+    font-size:13px;
+    color:#3d5269;
+}
+
+.doctors-title{
+    color:#12345b;
+    font-size:17px;
+    margin:20px 0 14px;
+}
+
+/* DOCTOR CARDS */
+.doctor{
+    display:flex;
+    gap:18px;
+    padding:18px;
+    border:1px solid #e5ebf2;
+    border-radius:14px;
+    margin-bottom:14px;
+    align-items:flex-start;
+}
+
+.doctor:last-child{margin-bottom:0}
+
+.doctor img{
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#e8eef4;
+}
+
+.doctor-info{flex:1}
+.doctor-info h4{color:#12345b;font-size:17px;margin-bottom:5px}
+.doctor-info p{color:#6d7c8e;font-size:13px;margin:4px 0}
+
+.doctor-speciality{color:#1d9c96 !important;font-weight:700}
+.doctor-rating{color:#e39a17 !important;font-weight:700}
+
+.doctor-label{
+    font-weight:700;
+    color:#3d5269;
+}
+
+.doctor-about{
+    margin-top:8px !important;
+    line-height:1.6;
+    color:#56687b !important;
+}
+
+.review{
+    margin-top:9px !important;
+    padding:9px 11px;
+    background:#f7fafd;
+    border-left:3px solid #1d9c96;
+    border-radius:6px;
+    color:#68798b !important;
+    font-style:italic;
+}
+
+.book-btn{
+    align-self:center;
+    padding:12px 22px;
+    background:#1d9c96;
+    color:white;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:14px;
+    white-space:nowrap;
+}
+
+.book-btn:hover{background:#147e79}
+
+.no-doctors{
+    color:#718194;
+    font-size:14px;
+}
+
+/* NOTHING FOUND */
+.empty{
+    background:white;
+    border:1px solid #e4ebf1;
+    border-radius:18px;
+    padding:45px 25px;
+    text-align:center;
+}
+
+.empty h3{color:#12345b;font-size:20px;margin-bottom:8px}
+.empty p{color:#6d7c8e;font-size:14px}
+
+.empty-btn{
+    display:inline-block;
+    margin-top:18px;
+    padding:11px 20px;
+    background:#12345b;
+    color:white;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:700;
+}
+
+.empty-btn:hover{background:#1d9c96}
+
+/* FOOTER */
+.footer-inner{
+    width:min(1180px,92%);
+    margin:auto;
+    text-align:center;
+}
+
+.footer-inner p{color:#c5d4e3;font-size:13px}
+
+/* MOBILE */
+@media(max-width:800px){
+    .nav-links{display:none}
+    .result-top{flex-direction:column}
+    .result-image{width:100%;height:220px}
+    .doctor{flex-wrap:wrap}
+    .book-btn{width:100%}
+}

@@ -3,417 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Book N Meet — Healthcare made simple</title>
+<meta name="description" content="Book N Meet lets you find hospitals and doctors in Tadepalligudem and book appointments online. No phone queues, no waiting.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Book N Meet">
+<meta property="og:title" content="Book N Meet | Book Hospital Appointments Online in Tadepalligudem">
+<meta property="og:description" content="Book N Meet lets you find hospitals and doctors in Tadepalligudem and book appointments online. No phone queues, no waiting.">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<meta name="theme-color" content="#12345b">
+<title>Book N Meet | Book Hospital Appointments Online in Tadepalligudem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#10263B;
-    --muted:#5B6B7A;
-    --primary:#0D6E6E;
-    --primary-dark:#2E6FF2;
-    --secondary:#2E6FF2;
-    --accent:#FF6B57;
-    --bg-a:#EAF6F3;
-    --bg-b:#EAF1FF;
-    --card:#FFFFFF;
-    --shadow: rgba(30,27,75,0.12);
-    --border: rgba(30,27,75,0.10);
-    --radius-lg: 22px;
-    --radius-md: 14px;
-    --font-display:'Space Grotesk', sans-serif;
-    --font-body:'Inter', sans-serif;
-  }
-
-  *{ box-sizing:border-box; }
-  html,body{ height:100%; }
-  body{
-    margin:0;
-    font-family:var(--font-body);
-    color:var(--ink);
-    background:
-      radial-gradient(1200px 600px at 8% 0%, var(--bg-a) 0%, transparent 55%),
-      radial-gradient(1200px 700px at 95% 15%, var(--bg-b) 0%, transparent 50%),
-      #F9FAFB;
-    overflow-x:hidden;
-    min-height:100vh;
-  }
-
-  /* ---------- ambient background blobs ---------- */
-  .blobs{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
-  .blob{ position:absolute; border-radius:50%; filter: blur(60px); opacity:0.32; will-change: transform; }
-  .blob-a{
-    width:420px; height:420px; left:-120px; top:-100px;
-    background: radial-gradient(circle at 30% 30%, var(--primary), transparent 70%);
-    animation: floatA 22s ease-in-out infinite alternate;
-  }
-  .blob-b{
-    width:520px; height:520px; right:-160px; top:10%;
-    background: radial-gradient(circle at 60% 40%, var(--secondary), transparent 70%);
-    animation: floatB 26s ease-in-out infinite alternate;
-  }
-  .blob-c{
-    width:380px; height:380px; left:20%; bottom:-180px;
-    background: radial-gradient(circle at 50% 50%, var(--accent), transparent 70%);
-    opacity:0.20;
-    animation: floatC 30s ease-in-out infinite alternate;
-  }
-  @keyframes floatA{ 0%{ transform:translate(0,0); } 100%{ transform:translate(60px,50px); } }
-  @keyframes floatB{ 0%{ transform:translate(0,0); } 100%{ transform:translate(-50px,60px); } }
-  @keyframes floatC{ 0%{ transform:translate(0,0); } 100%{ transform:translate(40px,-40px); } }
-
-  /* ---------- intro brand -> header ---------- */
-  .brand-intro{
-    position:fixed; top:50%; left:50%;
-    transform:translate(-50%,-50%) scale(1.7);
-    display:flex; flex-direction:column; align-items:center; gap:10px;
-    z-index:50;
-    animation: introMove 1.5s cubic-bezier(.6,0,.2,1) forwards;
-    animation-delay:0.5s;
-  }
-  .brand-intro .brand-row{ display:flex; align-items:center; gap:12px; }
-  .brand-tagline{
-    margin:0; font-family:var(--font-body); font-size:0.95rem; color:var(--muted);
-    animation: taglineFade 1.4s ease forwards; animation-delay:0.5s;
-  }
-  @keyframes taglineFade{
-    0%{ opacity:0; transform:translateY(6px); }
-    18%{ opacity:1; transform:translateY(0); }
-    55%{ opacity:1; }
-    75%{ opacity:0; }
-    100%{ opacity:0; display:none; }
-  }
-  @keyframes introMove{
-    0%{ top:50%; left:50%; transform:translate(-50%,-50%) scale(1.7); }
-    100%{ top:26px; left:28px; transform:translate(0,0) scale(0.62); }
-  }
-  .brand-mark{
-    width:60px; height:60px; border-radius:18px; flex:none;
-    background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 20px rgba(13,110,110,0.35);
-  }
-  .brand-mark svg{ width:36px; height:36px; }
-  .brand-text{ font-family:var(--font-display); font-weight:700; font-size:1.75rem; letter-spacing:-0.01em; white-space:nowrap; }
-  .brand-book{ color:var(--ink); }
-  .brand-n{ color:var(--muted); font-weight:500; margin:0 4px; }
-  .brand-meet{
-    background:linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-
-  /* ---------- stage / layout ---------- */
-  .stage{
-    position:relative; z-index:1;
-    max-width:1300px; margin:0 auto;
-    padding:120px 32px 60px;
-    min-height:100vh;
-    opacity:0;
-    animation: contentFade 0.8s ease forwards;
-    animation-delay:1.7s;
-  }
-  @keyframes contentFade{ to{ opacity:1; } }
-
-  .hero-intro{
-    text-align:center; max-width:640px; margin:0 auto 40px;
-  }
-  .hero-intro h1{
-    font-family:var(--font-display); font-size:2.6rem; line-height:1.12; margin:0 0 14px; letter-spacing:-0.01em;
-  }
-  .hero-intro h1 .accent{
-    background:linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .hero-intro p{ color:var(--muted); font-size:1.05rem; line-height:1.6; margin:0 auto; }
-
-  .split-row{
-    display:grid;
-    grid-template-columns: minmax(320px, 440px) 1fr;
-    gap:40px;
-    align-items:start;
-  }
-
-  /* ---------- auth card ---------- */
-  .panel-auth{ position:sticky; top:120px; }
-  .auth-card{
-    background:var(--card);
-    border-radius:var(--radius-lg);
-    box-shadow:0 20px 60px var(--shadow);
-    padding:36px 34px 28px;
-    border:1px solid var(--border);
-  }
-  .auth-toggle{
-    position:relative; display:flex; background:var(--bg-a);
-    border-radius:999px; padding:4px; margin-bottom:26px;
-  }
-  .toggle-btn{
-    flex:1; z-index:2; position:relative; padding:10px 0; border:none; background:transparent;
-    font-family:var(--font-body); font-weight:600; font-size:0.92rem;
-    color:var(--muted); cursor:pointer; border-radius:999px; transition:color 0.3s ease;
-  }
-  .toggle-btn.active{ color:#fff; }
-  .toggle-pill{
-    position:absolute; top:4px; left:4px;
-    width:calc(50% - 4px); height:calc(100% - 8px);
-    background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    border-radius:999px; transition:transform 0.35s cubic-bezier(.6,0,.2,1);
-  }
-  .toggle-pill.to-signup{ transform:translateX(100%); }
-
-  .auth-flip{ position:relative; perspective:1400px; transition:height 0.4s ease; }
-  .auth-face{
-    position:absolute; inset:0; width:100%;
-    backface-visibility:hidden;
-    transition:transform 0.6s cubic-bezier(.6,0,.2,1);
-  }
-  .auth-face--login{ transform:rotateY(0deg); position:relative; }
-  .auth-face--signup{ transform:rotateY(180deg); position:absolute; }
-  .auth-flip.flipped .auth-face--login{ transform:rotateY(-180deg); position:absolute; }
-  .auth-flip.flipped .auth-face--signup{ transform:rotateY(0deg); position:relative; }
-
-  .auth-face h2{ font-family:var(--font-display); font-size:1.5rem; margin:0 0 6px; }
-  .auth-face .wave{ display:inline-block; animation:wave 2.2s ease infinite; transform-origin:70% 70%; }
-  @keyframes wave{
-    0%,100%{ transform:rotate(0); } 10%{ transform:rotate(14deg); } 20%{ transform:rotate(-8deg); }
-    30%{ transform:rotate(14deg); } 40%{ transform:rotate(-4deg); } 50%{ transform:rotate(10deg); } 60%{ transform:rotate(0); }
-  }
-  .auth-face p{ margin:0 0 22px; color:var(--muted); font-size:0.92rem; line-height:1.5; }
-
-  .auth-face label{
-    display:block; font-size:0.82rem; font-weight:600; color:var(--ink); margin-bottom:14px;
-  }
-  .auth-face input{
-    width:100%; margin-top:6px; padding:12px 14px;
-    border:1.5px solid var(--border); border-radius:var(--radius-md);
-    font-family:var(--font-body); font-size:0.95rem; color:var(--ink);
-    background:#FCFDFD;
-    transition:border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
-  }
-  .auth-face input:focus{
-    outline:none; border-color:var(--primary);
-    box-shadow:0 0 0 4px rgba(13,110,110,0.16);
-    transform:translateY(-1px);
-  }
-  .forgot{ display:inline-block; margin:-4px 0 18px; font-size:0.84rem; color:var(--primary-dark); text-decoration:none; font-weight:600; }
-  .forgot:hover{ text-decoration:underline; }
-
-  .btn-primary{
-    width:100%; padding:13px 0; border:none; border-radius:var(--radius-md);
-    background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color:#fff; font-family:var(--font-body); font-weight:700; font-size:0.98rem;
-    cursor:pointer; letter-spacing:0.01em;
-    box-shadow:0 10px 24px rgba(46,111,242,0.28);
-    transition:transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-  }
-  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(46,111,242,0.36); filter:brightness(1.04); }
-  .btn-primary:active{ transform:translateY(0) scale(0.98); }
-
-  .auth-secure{ text-align:center; margin:22px 0 0; font-size:0.78rem; color:var(--muted); }
-
-  /* ---------- extended signup form ---------- */
-  .field-error{
-    display:block; min-height:15px; margin:6px 0 12px; font-size:0.76rem;
-    color:#E0483C; font-weight:600;
-    opacity:0; transform:translateY(-3px);
-    transition:opacity 0.2s ease, transform 0.2s ease;
-  }
-  .field-error.show{ opacity:1; transform:translateY(0); }
-  .field-ok{ border-color:#1FAE6E !important; }
-  .field-bad{ border-color:#E0483C !important; }
-
-  .password-wrap{ position:relative; }
-  .password-wrap input{ padding-right:44px; }
-  .eye-btn{
-    position:absolute; right:6px; top:50%; transform:translateY(-1px);
-    margin-top:6px; background:none; border:none; cursor:pointer;
-    font-size:1rem; color:var(--muted); padding:6px; line-height:1;
-    transition:color 0.2s ease;
-  }
-  .eye-btn:hover{ color:var(--primary); }
-
-  .pw-rules{
-    list-style:none; margin:-4px 0 14px; padding:12px 14px;
-    background:var(--bg-a); border-radius:12px;
-    display:flex; flex-direction:column; gap:6px;
-  }
-  .pw-rules li{
-    font-size:0.78rem; color:var(--muted); font-weight:500;
-    display:flex; align-items:center; gap:8px; transition:color 0.2s ease;
-  }
-  .pw-rules .mark{
-    width:16px; height:16px; border-radius:50%; flex:none;
-    display:flex; align-items:center; justify-content:center;
-    font-size:0.65rem; font-weight:700; color:#fff;
-    background:#C7CDD6; transition:background 0.2s ease;
-  }
-  .pw-rules li.valid{ color:var(--ink); }
-  .pw-rules li.valid .mark{ background:#1FAE6E; }
-  .pw-rules li.invalid .mark{ background:#E0483C; }
-
-  .auth-face select{
-    width:100%; margin-top:6px; padding:12px 14px;
-    border:1.5px solid var(--border); border-radius:var(--radius-md);
-    font-family:var(--font-body); font-size:0.95rem; color:var(--ink);
-    background:#FCFDFD; appearance:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%235B6B7A' stroke-width='1.6' fill='none' fill-rule='evenodd' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 16px center;
-    transition:border-color 0.25s ease, box-shadow 0.25s ease;
-  }
-  .auth-face select:focus{
-    outline:none; border-color:var(--primary); box-shadow:0 0 0 4px rgba(13,110,110,0.16);
-  }
-  .auth-face select:invalid{ color:var(--muted); }
-
-  .hospital-field{
-    max-height:0; opacity:0; overflow:hidden;
-    transition:max-height 0.4s cubic-bezier(.6,0,.2,1), opacity 0.3s ease, margin 0.4s ease;
-    margin-bottom:0;
-  }
-  .hospital-field.open{ max-height:150px; opacity:1; margin-bottom:2px; }
-
-  .btn-primary:disabled{
-    background:#C7CDD6; box-shadow:none; cursor:not-allowed; color:#8A93A1;
-  }
-  .btn-primary:disabled:hover{ transform:none; box-shadow:none; filter:none; }
-
-  .form-msg{
-    text-align:center; font-size:0.82rem; font-weight:600; margin:2px 0 14px; min-height:18px;
-  }
-  .form-msg.error{ color:#E0483C; }
-  .form-msg.success{ color:#1FAE6E; }
-
-  .auth-face .switch-link{
-    text-align:center; font-size:0.84rem; color:var(--muted); margin:14px 0 0;
-  }
-  .auth-face .switch-link a{ color:var(--primary-dark); font-weight:700; text-decoration:none; cursor:pointer; }
-  .auth-face .switch-link a:hover{ text-decoration:underline; }
-
-  /* ---------- story side: rotating card ---------- */
-  .story-badge{
-    display:inline-block; font-family:var(--font-body); font-weight:700; font-size:0.76rem;
-    letter-spacing:0.02em; color:var(--primary-dark); background:var(--bg-a);
-    padding:7px 16px; border-radius:999px; margin-bottom:20px;
-  }
-
-  .story-card{
-    background:var(--card); border-radius:var(--radius-lg);
-    box-shadow:0 20px 60px var(--shadow); border:1px solid var(--border);
-    padding:52px 56px 42px; min-height:480px; position:relative; overflow:hidden;
-  }
-  .story-slides{ position:relative; min-height:340px; }
-  .story-slide{
-    position:absolute; inset:0; opacity:0; transform:translateY(16px);
-    transition:opacity 0.55s ease, transform 0.55s ease; pointer-events:none;
-  }
-  .story-slide.active{ position:relative; opacity:1; transform:translateY(0); pointer-events:auto; }
-  .story-eyebrow{
-    display:inline-block; font-family:var(--font-body); font-weight:700; font-size:0.85rem;
-    color:var(--primary-dark); background:var(--bg-a); padding:6px 14px; border-radius:999px; margin-bottom:20px;
-  }
-  .story-slide h2{ font-family:var(--font-display); font-size:2.35rem; line-height:1.15; margin:0 0 16px; letter-spacing:-0.01em; }
-  .story-slide h2 .accent{
-    background:linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .story-slide p.lead{ color:var(--muted); font-size:1.15rem; line-height:1.65; max-width:54ch; margin:0 0 24px; }
-
-  .motto-box{
-    border-left:4px solid var(--accent);
-    background:linear-gradient(90deg, rgba(255,107,87,0.08), rgba(46,111,242,0.05));
-    border-radius:0 14px 14px 0; padding:18px 22px; margin-top:6px;
-  }
-  .motto-box .label{ font-weight:700; font-size:0.76rem; color:var(--accent); display:block; margin-bottom:6px; }
-  .motto-box .quote{ font-family:var(--font-display); font-weight:600; font-size:1.3rem; margin:0; }
-
-  .feature-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:8px; }
-  .feature-tile{
-    background:var(--bg-a); border-radius:16px; padding:20px;
-    transition:transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .feature-tile:hover{ transform:translateY(-4px); box-shadow:0 12px 24px rgba(13,110,110,0.14); }
-  .feature-tile .emoji{
-    width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
-    font-size:1.3rem; background:#fff; margin-bottom:12px; box-shadow:0 4px 10px rgba(30,27,75,0.08);
-  }
-  .feature-tile h3{ font-family:var(--font-display); font-size:1.2rem; margin:0 0 8px; }
-  .feature-tile p{ font-size:0.98rem; color:var(--muted); margin:0; line-height:1.55; }
-
-  .steps{ list-style:none; padding:0; margin:10px 0 0; display:flex; flex-direction:column; gap:14px; }
-  .steps li{ display:flex; gap:16px; align-items:flex-start; }
-  .steps .num{
-    flex:none; width:34px; height:34px; border-radius:10px;
-    background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color:#fff; font-family:var(--font-display); font-weight:700; font-size:0.95rem;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .steps h4{ margin:0 0 4px; font-family:var(--font-display); font-size:1.12rem; }
-  .steps span.desc{ font-size:0.98rem; color:var(--muted); line-height:1.55; }
-
-  .gain-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:6px; }
-  .gain-tile{
-    background:var(--bg-a); border:1px solid var(--border); border-radius:16px;
-    padding:22px 16px; text-align:center;
-    transition:transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  }
-  .gain-tile:hover{ transform:translateY(-4px); background:#fff; box-shadow:0 14px 26px rgba(13,110,110,0.18); }
-  .gain-tile .gain-num{
-    font-family:var(--font-display); font-weight:700; font-size:2.1rem;
-    background:linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .gain-tile .gain-label{ font-size:0.98rem; color:var(--ink); font-weight:600; margin-top:6px; }
-
-  .stats-row{ display:flex; gap:28px; margin:8px 0 22px; flex-wrap:wrap; }
-  .stat{ min-width:110px; }
-  .stat .num{
-    font-family:var(--font-display); font-weight:700; font-size:2rem;
-    background:linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .stat .label{ font-size:0.92rem; color:var(--muted); }
-  .testimonial{
-    background:var(--bg-a); border-radius:16px; padding:20px 24px;
-    font-size:1.02rem; color:var(--ink); line-height:1.6;
-  }
-  .testimonial .who{ display:block; margin-top:10px; font-weight:700; font-size:0.9rem; color:var(--primary-dark); }
-
-  .story-dots{ display:flex; gap:8px; margin-top:28px; padding-top:22px; border-top:1px solid var(--border); }
-  .dot{
-    flex:1; height:5px; border:none; border-radius:999px; cursor:pointer;
-    background:var(--border); position:relative; overflow:hidden; padding:0;
-  }
-  .dot::after{
-    content:''; position:absolute; inset:0; left:0; width:0%;
-    background:linear-gradient(90deg, var(--primary), var(--secondary)); border-radius:999px;
-  }
-  .dot.active::after{ animation:dotFill 6s linear forwards; }
-  .dot.filled::after{ width:100%; }
-  @keyframes dotFill{ from{ width:0%; } to{ width:100%; } }
-
-  /* ---------- responsive ---------- */
-  @media (max-width: 980px){
-    .stage{ padding:130px 20px 50px; }
-    .split-row{ grid-template-columns:1fr; }
-    .panel-auth{ position:relative; top:auto; order:2; }
-    .panel-story{ order:1; }
-    .story-card{ padding:32px 26px 26px; }
-    .feature-grid{ grid-template-columns:1fr; }
-    .gain-grid{ grid-template-columns:1fr 1fr; }
-    .hero-intro h1{ font-size:2.1rem; }
-  }
-  @media (max-width:520px){
-    .brand-tagline{ font-size:0.82rem; }
-    .story-slide h2{ font-size:1.6rem; }
-    .gain-grid{ grid-template-columns:1fr 1fr; }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
-    .brand-intro{ top:26px; left:28px; transform:translate(0,0) scale(0.62); }
-    .stage{ opacity:1; }
-  }
-</style>
+<link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
 
@@ -456,79 +57,113 @@
 
         <div class="auth-flip" id="authFlip">
           <div class="auth-face auth-face--login" id="faceLogin">
-            <h2>Welcome back <span class="wave">👋</span></h2>
-            <p>Your healthcare journey starts here. Log in to manage your appointments.</p>
-            <form id="loginForm" novalidate onsubmit="return false;">
-              <label>Email address
-                <input type="email" id="liEmail" placeholder="you@example.com" />
-              </label>
-              <label>Password
-                <input type="password" id="liPassword" placeholder="Enter your password" />
-              </label>
+            <h2>Welcome back</h2>
+            <p>Log in to manage your appointments.</p>
+
+            <form id="loginForm" novalidate>
+              <div class="field">
+                <label for="liEmail">Email address</label>
+                <input type="email" id="liEmail" name="email" placeholder="you@gmail.com" autocomplete="username" />
+              </div>
+
+              <div class="field">
+                <label for="liPassword">Password</label>
+                <div class="password-wrap">
+                  <input type="password" id="liPassword" name="password" placeholder="Enter your password" autocomplete="current-password" />
+                  <button type="button" class="eye-btn" data-target="liPassword" aria-label="Show password" title="Show password">
+                    <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1"/><path d="M6.5 6.6C3.7 8.5 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="button" class="forgot" id="forgotLink">Forgot your password?</button>
+
               <p class="form-msg" id="loginMsg"></p>
-              <a class="forgot" href="#">Forgot your password?</a>
               <button type="submit" class="btn-primary" id="loginBtn">Log in</button>
+
+              <div class="divider"><span>or</span></div>
+              <div class="google-slot"></div>
             </form>
           </div>
+
           <div class="auth-face auth-face--signup" id="faceSignup">
-            <h2>Create your account <span class="wave">✨</span></h2>
+            <h2>Create your account</h2>
             <p>Join Book N Meet and book healthcare appointments easily.</p>
-            <form id="signupForm" novalidate onsubmit="return false;">
-              <label>Full Name
-                <input type="text" id="suName" placeholder="Enter your full name" autocomplete="off" />
-              </label>
-              <span class="field-error" id="errName"></span>
 
-              <label>Email Address
-                <input type="email" id="suEmail" placeholder="example@gmail.com" autocomplete="off" />
-              </label>
-              <span class="field-error" id="errEmail"></span>
+            <form id="signupForm" novalidate>
+              <div class="field">
+                <label for="suName">Full name</label>
+                <input type="text" id="suName" name="name" placeholder="Enter your full name" autocomplete="name" />
+                <span class="field-error" id="errName"></span>
+              </div>
 
-              <label>Contact Number
-                <input type="text" id="suContact" placeholder="Enter 10 digit mobile number" maxlength="10" inputmode="numeric" autocomplete="off" />
-              </label>
-              <span class="field-error" id="errContact"></span>
+              <div class="field">
+                <label for="suEmail">Email address</label>
+                <input type="email" id="suEmail" name="email" placeholder="example@gmail.com" autocomplete="username" />
+                <span class="field-error" id="errEmail"></span>
+              </div>
 
-              <label>Password
+              <div class="field">
+                <label for="suContact">Contact number</label>
+                <input type="tel" id="suContact" name="tel" placeholder="Enter 10 digit mobile number" maxlength="10" inputmode="numeric" autocomplete="tel-national" />
+                <span class="field-error" id="errContact"></span>
+              </div>
+
+              <div class="field">
+                <label for="suPassword">Password</label>
                 <div class="password-wrap">
-                  <input type="password" id="suPassword" placeholder="Create your password" maxlength="10" autocomplete="off" />
-                  <button type="button" class="eye-btn" id="toggleEye" aria-label="Show password">👁</button>
+                  <input type="password" id="suPassword" name="new-password" placeholder="Create your password" maxlength="64" autocomplete="new-password" />
+                  <button type="button" class="eye-btn" data-target="suPassword" aria-label="Show password" title="Show password">
+                    <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1"/><path d="M6.5 6.6C3.7 8.5 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+                  </button>
                 </div>
-              </label>
-              <ul class="pw-rules" id="pwRules">
-                <li id="ruleCap" class="invalid"><span class="mark">✕</span> Starts with a capital letter</li>
-                <li id="ruleDigit" class="invalid"><span class="mark">✕</span> Contains at least one digit</li>
-                <li id="ruleSpecial" class="invalid"><span class="mark">✕</span> Contains at least one special character</li>
-              </ul>
+                <ul class="pw-rules" id="pwRules">
+                  <li id="ruleLength" class="invalid"><span class="mark">✕</span> At least 8 characters</li>
+                  <li id="ruleCap" class="invalid"><span class="mark">✕</span> Contains a capital letter</li>
+                  <li id="ruleDigit" class="invalid"><span class="mark">✕</span> Contains a digit</li>
+                  <li id="ruleSpecial" class="invalid"><span class="mark">✕</span> Contains a special character</li>
+                </ul>
+              </div>
 
-              <label>Role
-                <select id="suRole">
+              <div class="field">
+                <label for="suRole">Role</label>
+                <select id="suRole" name="role">
                   <option value="" disabled selected>Select your role</option>
                   <option value="patient">Patient</option>
                   <option value="staff">Hospital Staff</option>
                 </select>
-              </label>
-              <span class="field-error" id="errRole"></span>
+                <span class="field-error" id="errRole"></span>
+              </div>
 
               <div class="hospital-field" id="hospitalField">
-                <label>Select Hospital
-                  <select id="suHospital">
+                <div class="field">
+                  <label for="suHospital">Select hospital</label>
+                  <select id="suHospital" name="hospital">
                     <option value="" disabled selected>Select your hospital</option>
                     <option value="Trinity Hospital">Trinity Hospital</option>
                     <option value="Gowthami Hospital">Gowthami Hospital</option>
+                    <option value="Neokidz ENT">Neokidz ENT</option>
+                    <option value="Lalitha Hospital">Lalitha Hospital</option>
+                    <option value="Avideep Mother and Children Hospital">Avideep Mother and Children Hospital</option>
                   </select>
-                </label>
-                <span class="field-error" id="errHospital"></span>
+                  <span class="field-error" id="errHospital"></span>
+                </div>
               </div>
 
               <p class="form-msg" id="signupMsg"></p>
               <button type="submit" class="btn-primary" id="signupBtn" disabled>Create account</button>
-              <p class="switch-link">Already have an account? <a id="goToLogin">Login</a></p>
+
+              <div class="divider"><span>or</span></div>
+              <div class="google-slot"></div>
+
+              <p class="switch-link">Already have an account? <a id="goToLogin">Log in</a></p>
             </form>
           </div>
         </div>
 
-        <p class="auth-secure">🔒 Secure · Simple · Healthcare-focused</p>
+        <p class="auth-secure">Secure · Simple · Healthcare-focused</p>
       </div>
     </section>
 
@@ -616,6 +251,65 @@
 
   </main>
 
+  <!-- Forgot password popup -->
+  <div class="modal" id="forgotModal" aria-hidden="true">
+    <div class="modal-card">
+      <h3>Reset your password</h3>
+      <p>Enter your account email. We will send you a link to set a new password.</p>
+      <form id="forgotForm" novalidate>
+        <div class="field">
+          <label for="fpEmail">Email address</label>
+          <input type="email" id="fpEmail" placeholder="you@gmail.com" autocomplete="username" />
+        </div>
+        <p class="form-msg" id="forgotMsg"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary" id="forgotBtn">Send reset link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shown the first time someone signs in with Google -->
+  <div class="modal" id="completeModal" aria-hidden="true">
+    <div class="modal-card">
+      <h3>Complete your profile</h3>
+      <p>You are signed in with Google as <strong id="gpEmail"></strong>. We need a few more details.</p>
+      <form id="completeForm" novalidate>
+        <div class="field">
+          <label for="gpContact">Contact number</label>
+          <input type="tel" id="gpContact" placeholder="Enter 10 digit mobile number" maxlength="10" inputmode="numeric" autocomplete="tel-national" />
+        </div>
+        <div class="field">
+          <label for="gpRole">Role</label>
+          <select id="gpRole">
+            <option value="" disabled selected>Select your role</option>
+            <option value="patient">Patient</option>
+            <option value="staff">Hospital Staff</option>
+          </select>
+        </div>
+        <div class="field" id="gpHospitalField" hidden>
+          <label for="gpHospital">Select hospital</label>
+          <select id="gpHospital">
+            <option value="" disabled selected>Select your hospital</option>
+            <option value="Trinity Hospital">Trinity Hospital</option>
+            <option value="Gowthami Hospital">Gowthami Hospital</option>
+            <option value="Neokidz ENT">Neokidz ENT</option>
+            <option value="Lalitha Hospital">Lalitha Hospital</option>
+            <option value="Avideep Mother and Children Hospital">Avideep Mother and Children Hospital</option>
+          </select>
+        </div>
+        <p class="form-msg" id="completeMsg"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary" id="completeBtn">Continue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="js/config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
   // ---------- Auth flip + segmented toggle ----------
   const authFlip = document.getElementById('authFlip');
@@ -653,9 +347,92 @@
   window.addEventListener('load', setAuthHeight);
   window.addEventListener('resize', setAuthHeight);
 
-  // ---------- In-memory account store (resets on reload; no backend) ----------
-  //const accounts = [];
-  let accounts = JSON.parse(localStorage.getItem("bookNMeetUsers")) || [];
+  // =====================================================================
+  //  ACCOUNTS
+  //
+  //  Sign up and log in use the backend server (backend/server.js),
+  //  which saves accounts in the Supabase database.
+  //
+  //  If the server is not running, the page falls back to accounts
+  //  saved in this browser only.
+  // =====================================================================
+
+  const API_URL = String((window.BNM_CONFIG && BNM_CONFIG.API_URL) || '').replace(/\/+$/, '');
+  const GOOGLE_CLIENT_ID = String((window.BNM_CONFIG && BNM_CONFIG.GOOGLE_CLIENT_ID) || '').trim();
+
+  // Accounts saved in this browser (used only when the server is off)
+  let accounts = [];
+  try { accounts = JSON.parse(localStorage.getItem('bookNMeetUsers')) || []; } catch (e) { accounts = []; }
+
+  /*
+    Talk to the backend server.
+    Returns { status, data } when the server answered,
+    or null when the server could not be reached.
+  */
+  async function callServer(path, body){
+    if(!API_URL) return null;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
+    try{
+      const response = await fetch(API_URL + path, {
+        method: body ? 'POST' : 'GET',
+        headers: body ? { 'Content-Type': 'application/json' } : undefined,
+        body: body ? JSON.stringify(body) : undefined,
+        signal: controller.signal
+      });
+      const data = await response.json();
+      if(!data || typeof data.success !== 'boolean') return null;
+      return { status: response.status, data: data };
+    }catch(error){
+      return null;
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
+  // ---------- Small helpers ----------
+  function setMsg(element, text, type){
+    element.textContent = text || '';
+    element.className = 'form-msg' + (type ? ' ' + type : '');
+    setAuthHeight();
+  }
+  function setBusy(button, busy, busyText){
+    if(busy){ button.dataset.label = button.textContent; button.textContent = busyText; button.disabled = true; }
+    else { button.textContent = button.dataset.label || button.textContent; button.disabled = false; }
+  }
+  function isValidPassword(value){
+    return value.length >= 8 && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value);
+  }
+
+  // Save who is logged in, then open the right dashboard.
+  function finishLogin(user, messageElement){
+    const currentUser = {
+      id: user.id || '',
+      name: user.name || '',
+      email: String(user.email || '').trim().toLowerCase(),
+      contact: user.contact || '',
+      role: user.role || 'patient',
+      hospital: user.hospital || null
+    };
+    localStorage.setItem('bookNMeetCurrentUser', JSON.stringify(currentUser));
+    setMsg(messageElement, 'Login successful! Redirecting...', 'success');
+    setTimeout(() => {
+      window.location.href = currentUser.role === 'staff' ? 'admin.html' : 'first.html';
+    }, 500);
+  }
+
+  // ---------- Show / hide password (eye button) ----------
+  document.querySelectorAll('.eye-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const input = document.getElementById(button.dataset.target);
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      button.classList.toggle('showing', show);
+      const label = show ? 'Hide password' : 'Show password';
+      button.setAttribute('aria-label', label);
+      button.title = label;
+    });
+  });
 
   // ---------- Signup: field refs ----------
   const suName = document.getElementById('suName');
@@ -667,7 +444,6 @@
   const suHospital = document.getElementById('suHospital');
   const signupBtn = document.getElementById('signupBtn');
   const signupMsg = document.getElementById('signupMsg');
-  const toggleEye = document.getElementById('toggleEye');
 
   const errName = document.getElementById('errName');
   const errEmail = document.getElementById('errEmail');
@@ -675,11 +451,15 @@
   const errRole = document.getElementById('errRole');
   const errHospital = document.getElementById('errHospital');
 
-  const ruleCap = document.getElementById('ruleCap');
-  const ruleDigit = document.getElementById('ruleDigit');
-  const ruleSpecial = document.getElementById('ruleSpecial');
+  const passwordRules = [
+    { element: document.getElementById('ruleLength'),  test: v => v.length >= 8 },
+    { element: document.getElementById('ruleCap'),     test: v => /[A-Z]/.test(v) },
+    { element: document.getElementById('ruleDigit'),   test: v => /[0-9]/.test(v) },
+    { element: document.getElementById('ruleSpecial'), test: v => /[^A-Za-z0-9]/.test(v) }
+  ];
 
   const touched = { name:false, email:false, contact:false, password:false, role:false, hospital:false };
+  let signupBusy = false;
 
   function setError(span, input, message){
     if(message){
@@ -713,24 +493,13 @@
   }
   function validatePassword(){
     const v = suPassword.value;
-    const hasCap = /^[A-Z]/.test(v);
-    const hasDigit = /[0-9]/.test(v);
-    const hasSpecial = /[^A-Za-z0-9]/.test(v);
-    const withinLen = v.length > 0 && v.length <= 10;
-
-    ruleCap.classList.toggle('valid', hasCap);
-    ruleCap.classList.toggle('invalid', !hasCap);
-    ruleCap.querySelector('.mark').textContent = hasCap ? '✓' : '✕';
-
-    ruleDigit.classList.toggle('valid', hasDigit);
-    ruleDigit.classList.toggle('invalid', !hasDigit);
-    ruleDigit.querySelector('.mark').textContent = hasDigit ? '✓' : '✕';
-
-    ruleSpecial.classList.toggle('valid', hasSpecial);
-    ruleSpecial.classList.toggle('invalid', !hasSpecial);
-    ruleSpecial.querySelector('.mark').textContent = hasSpecial ? '✓' : '✕';
-
-    const ok = hasCap && hasDigit && hasSpecial && withinLen;
+    passwordRules.forEach(rule => {
+      const pass = rule.test(v);
+      rule.element.classList.toggle('valid', pass);
+      rule.element.classList.toggle('invalid', !pass);
+      rule.element.querySelector('.mark').textContent = pass ? '✓' : '✕';
+    });
+    const ok = isValidPassword(v);
     suPassword.classList.toggle('field-ok', ok);
     suPassword.classList.toggle('field-bad', touched.password && !ok);
     return ok;
@@ -742,7 +511,8 @@
   }
   function validateHospital(showErr){
     if(suRole.value !== 'staff') return true;
-    const ok = suHospital.value === 'Trinity Hospital' || suHospital.value === 'Gowthami Hospital';
+    /* Any hospital from the "Select hospital" list is accepted. */
+    const ok = Array.from(suHospital.options).some(option => option.value && option.value === suHospital.value);
     if(showErr) setError(errHospital, suHospital, ok ? '' : 'Please select your hospital.');
     return ok;
   }
@@ -755,7 +525,7 @@
     const okRole = validateRole(touched.role);
     const okHospital = validateHospital(touched.hospital);
 
-    signupBtn.disabled = !(okName && okEmail && okContact && okPassword && okRole && okHospital);
+    signupBtn.disabled = signupBusy || !(okName && okEmail && okContact && okPassword && okRole && okHospital);
     setAuthHeight();
   }
 
@@ -771,146 +541,305 @@
   });
   suContact.addEventListener('blur', () => { touched.contact = true; refreshSignupState(); });
 
-  suPassword.addEventListener('input', () => { touched.password = true; refreshSignupState(); });
+  // "change" also catches a password filled in by the browser / Google Password Manager
+  ['input', 'change'].forEach(eventName => {
+    suPassword.addEventListener(eventName, () => { touched.password = true; refreshSignupState(); });
+  });
 
   suRole.addEventListener('change', () => {
     touched.role = true;
     const isStaff = suRole.value === 'staff';
     hospitalField.classList.toggle('open', isStaff);
-    if(!isStaff){ suHospital.value = ''; touched.hospital = false; setError(errHospital, suHospital, ''); }
+    if(!isStaff){ suHospital.value = ''; touched.hospital = false; setError(errHospital, suHospital, ''); suHospital.classList.remove('field-ok'); }
     refreshSignupState();
     setTimeout(setAuthHeight, 420);
   });
 
   suHospital.addEventListener('change', () => { touched.hospital = true; refreshSignupState(); });
 
-  toggleEye.addEventListener('click', () => {
-    const isPw = suPassword.type === 'password';
-    suPassword.type = isPw ? 'text' : 'password';
-    toggleEye.textContent = isPw ? '🙈' : '👁';
-  });
+  function resetSignupForm(){
+    document.getElementById('signupForm').reset();
+    hospitalField.classList.remove('open');
+    Object.keys(touched).forEach(key => { touched[key] = false; });
+    [errName, errEmail, errContact, errRole, errHospital].forEach(s => { s.textContent=''; s.classList.remove('show'); });
+    [suName, suEmail, suContact, suRole, suHospital, suPassword].forEach(el => el.classList.remove('field-ok','field-bad'));
+    passwordRules.forEach(rule => { rule.element.classList.remove('valid'); rule.element.classList.add('invalid'); rule.element.querySelector('.mark').textContent='✕'; });
+    signupBtn.disabled = true;
+    setMsg(signupMsg, '');
+  }
 
-  document.getElementById('signupForm').addEventListener('submit', (e) => {
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    touched.name = touched.email = touched.contact = touched.password = touched.role = touched.hospital = true;
+    Object.keys(touched).forEach(key => { touched[key] = true; });
     refreshSignupState();
     if(signupBtn.disabled) return;
 
-    const email = suEmail.value.trim().toLowerCase();
-    if(accounts.some(a => a.email === email)){
-      signupMsg.textContent = 'An account with this email already exists. Please log in instead.';
-      signupMsg.className = 'form-msg error';
-      return;
+    const newAccount = {
+      name: suName.value.trim(),
+      email: suEmail.value.trim().toLowerCase(),
+      contact: suContact.value.trim(),
+      password: suPassword.value,
+      role: suRole.value,
+      hospital: suRole.value === 'staff' ? suHospital.value : null
+    };
+
+    signupBusy = true;
+    setBusy(signupBtn, true, 'Creating account...');
+    setMsg(signupMsg, '');
+
+    const result = await callServer('/api/signup', newAccount);
+
+    signupBusy = false;
+    setBusy(signupBtn, false);
+
+    let successText = 'Account created! Taking you to login...';
+
+    if(result){
+      // The server answered
+      if(!result.data.success){
+        setMsg(signupMsg, result.data.message || 'Account could not be created.', 'error');
+        return;
+      }
+    } else {
+      // Server is off: save the account in this browser only
+      if(accounts.some(a => a.email === newAccount.email)){
+        setMsg(signupMsg, 'An account with this email already exists. Please log in instead.', 'error');
+        return;
+      }
+      accounts.push(newAccount);
+      localStorage.setItem('bookNMeetUsers', JSON.stringify(accounts));
+      successText = 'Account saved in this browser. Taking you to login...';
     }
 
-    // accounts.push({
-    //   name: suName.value.trim(),
-    //   email: email,
-    //   contact: suContact.value.trim(),
-    //   password: suPassword.value,
-    //   role: suRole.value,
-    //   hospital: suRole.value === 'staff' ? suHospital.value : null
-    // });
-    const newAccount = {
-    name: suName.value.trim(),
-    email: email,
-    contact: suContact.value.trim(),
-    password: suPassword.value,
-    role: suRole.value,
-    hospital: suRole.value === 'staff' ? suHospital.value : null
-    
-};
-
-accounts.push(newAccount);
-
-// Save permanently in browser
-localStorage.setItem("bookNMeetUsers", JSON.stringify(accounts));
-
-    signupMsg.textContent = 'Account created! Redirecting you to login…';
-    signupMsg.className = 'form-msg success';
+    setMsg(signupMsg, successText, 'success');
 
     setTimeout(() => {
-      document.getElementById('signupForm').reset();
-      hospitalField.classList.remove('open');
-      touched.name = touched.email = touched.contact = touched.password = touched.role = touched.hospital = false;
-      [errName, errEmail, errContact, errRole, errHospital].forEach(s => { s.textContent=''; s.classList.remove('show'); });
-      [suName, suEmail, suContact, suRole, suHospital, suPassword].forEach(el => el.classList.remove('field-ok','field-bad'));
-      [ruleCap, ruleDigit, ruleSpecial].forEach(li => { li.classList.remove('valid'); li.classList.add('invalid'); li.querySelector('.mark').textContent='✕'; });
-      signupBtn.disabled = true;
-      signupMsg.textContent = '';
-      document.getElementById('liEmail').value = email;
+      resetSignupForm();
+      document.getElementById('liEmail').value = newAccount.email;
       showLogin();
-    }, 1100);
+    }, 1200);
   });
 
-  // ---------- Login: check accounts, redirect by role ----------
+  // ---------- Login ----------
   const liEmail = document.getElementById('liEmail');
   const liPassword = document.getElementById('liPassword');
   const loginMsg = document.getElementById('loginMsg');
+  const loginBtn = document.getElementById('loginBtn');
 
-  // document.getElementById('loginForm').addEventListener('submit', (e) => {
-  //   e.preventDefault();
-  //   const email = liEmail.value.trim().toLowerCase();
-  //   const password = liPassword.value;
-
-  //   const account = accounts.find(a => a.email === email);
-  //   if(!account){
-  //     loginMsg.textContent = 'No account found with this email.';
-  //     loginMsg.className = 'form-msg error';
-  //     return;
-  //   }
-  //   if(account.password !== password){
-  //     loginMsg.textContent = 'Incorrect password.';
-  //     loginMsg.className = 'form-msg error';
-  //     return;
-  //   }
-
-  //   loginMsg.textContent = 'Login successful! Redirecting…';
-  //   loginMsg.className = 'form-msg success';
-
-  //   setTimeout(() => {
-  //     window.location.href = account.role === 'staff' ? 'admin-dash.html' : 'first.html';
-  //   }, 500);
-  // });
-
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const email = liEmail.value.trim().toLowerCase();
     const password = liPassword.value;
 
-    const account = accounts.find(a => 
-        a.email.trim().toLowerCase() === email
-    );
-
-    if (!account) {
-        loginMsg.textContent = 'No account found with this email.';
-        loginMsg.className = 'form-msg error';
-        return;
+    if(!email || !password){
+      setMsg(loginMsg, 'Please enter your email and password.', 'error');
+      return;
     }
 
-    if (account.password !== password) {
-        loginMsg.textContent = 'Incorrect password.';
-        loginMsg.className = 'form-msg error';
-        return;
+    setBusy(loginBtn, true, 'Logging in...');
+    setMsg(loginMsg, '');
+
+    const result = await callServer('/api/login', { email: email, password: password });
+
+    setBusy(loginBtn, false);
+
+    if(result && result.data.success){
+      finishLogin(result.data.user, loginMsg);
+      return;
     }
 
-    loginMsg.textContent = 'Login successful! Redirecting...';
-    loginMsg.className = 'form-msg success';
+    // Not found on the server (or server is off): try accounts saved in this browser
+    const account = accounts.find(a => String(a.email || '').trim().toLowerCase() === email);
 
-    // Save currently logged-in user
-    localStorage.setItem("bookNMeetCurrentUser", JSON.stringify(account));
+    if(account && account.password === password){
+      finishLogin(account, loginMsg);
+      return;
+    }
 
-    setTimeout(() => {
+    if(result){
+      setMsg(loginMsg, result.data.message || 'Invalid email or password.', 'error');
+    } else if(!account){
+      setMsg(loginMsg, 'No account found with this email.', 'error');
+    } else {
+      setMsg(loginMsg, 'Incorrect password.', 'error');
+    }
+  });
 
-        if (account.role === "staff") {
-            window.location.href = "admin.html";
-        } else {
-            window.location.href = "first.html";
-        }
+  // ---------- Popups (forgot password, complete Google profile) ----------
+  function openModal(modal){ modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+  function closeModal(modal){ modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
 
-    }, 500);
-});
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', event => {
+      if(event.target === modal || event.target.hasAttribute('data-close-modal')) closeModal(modal);
+    });
+  });
+  document.addEventListener('keydown', event => {
+    if(event.key === 'Escape') document.querySelectorAll('.modal.open').forEach(closeModal);
+  });
+
+  // ---------- Forgot password ----------
+  const forgotModal = document.getElementById('forgotModal');
+  const fpEmail = document.getElementById('fpEmail');
+  const forgotMsg = document.getElementById('forgotMsg');
+  const forgotBtn = document.getElementById('forgotBtn');
+
+  document.getElementById('forgotLink').addEventListener('click', () => {
+    fpEmail.value = liEmail.value.trim();
+    setMsg(forgotMsg, '');
+    openModal(forgotModal);
+    fpEmail.focus();
+  });
+
+  document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = fpEmail.value.trim().toLowerCase();
+
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      setMsg(forgotMsg, 'Please enter a valid email address.', 'error');
+      return;
+    }
+
+    setBusy(forgotBtn, true, 'Sending...');
+    const result = await callServer('/api/forgot-password', {
+      email: email,
+      redirectTo: new URL('reset-password.html', window.location.href).href
+    });
+    setBusy(forgotBtn, false);
+
+    if(!result){
+      setMsg(forgotMsg, 'The server is not running, so the reset email cannot be sent right now.', 'error');
+    } else if(!result.data.success){
+      setMsg(forgotMsg, result.data.message || 'The reset email could not be sent.', 'error');
+    } else {
+      setMsg(forgotMsg, 'If an account exists for this email, a reset link has been sent. Please check your inbox.', 'success');
+    }
+  });
+
+  // ---------- Continue with Google ----------
+  const completeModal = document.getElementById('completeModal');
+  const gpEmail = document.getElementById('gpEmail');
+  const gpContact = document.getElementById('gpContact');
+  const gpRole = document.getElementById('gpRole');
+  const gpHospital = document.getElementById('gpHospital');
+  const gpHospitalField = document.getElementById('gpHospitalField');
+  const completeMsg = document.getElementById('completeMsg');
+  const completeBtn = document.getElementById('completeBtn');
+
+  let googleAccessToken = '';
+
+  function activeAuthMsg(){
+    return authFlip.classList.contains('flipped') ? signupMsg : loginMsg;
+  }
+
+  // Google calls this after the person picks their Google account.
+  async function onGoogleSignIn(response){
+    const message = activeAuthMsg();
+    setMsg(message, 'Signing in with Google...', '');
+
+    const result = await callServer('/api/google-login', { credential: response.credential });
+
+    if(!result){
+      setMsg(message, 'Google sign-in needs the server to be running.', 'error');
+      return;
+    }
+    if(!result.data.success){
+      setMsg(message, result.data.message || 'Google sign-in failed.', 'error');
+      return;
+    }
+
+    if(result.data.needsProfile){
+      // First time with Google: ask for contact number, role and hospital
+      googleAccessToken = result.data.access_token;
+      gpEmail.textContent = result.data.user.email;
+      setMsg(message, '');
+      setMsg(completeMsg, '');
+      openModal(completeModal);
+      return;
+    }
+
+    finishLogin(result.data.user, message);
+  }
+
+  gpContact.addEventListener('input', () => {
+    gpContact.value = gpContact.value.replace(/[^0-9]/g, '').slice(0, 10);
+  });
+  gpRole.addEventListener('change', () => {
+    gpHospitalField.hidden = gpRole.value !== 'staff';
+  });
+
+  document.getElementById('completeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if(!/^[0-9]{10}$/.test(gpContact.value)){
+      setMsg(completeMsg, 'Enter a valid 10-digit contact number.', 'error'); return;
+    }
+    if(gpRole.value !== 'patient' && gpRole.value !== 'staff'){
+      setMsg(completeMsg, 'Please select a role.', 'error'); return;
+    }
+    if(gpRole.value === 'staff' && !gpHospital.value){
+      setMsg(completeMsg, 'Please select your hospital.', 'error'); return;
+    }
+
+    setBusy(completeBtn, true, 'Saving...');
+    const result = await callServer('/api/google-complete', {
+      access_token: googleAccessToken,
+      contact: gpContact.value,
+      role: gpRole.value,
+      hospital: gpRole.value === 'staff' ? gpHospital.value : null
+    });
+    setBusy(completeBtn, false);
+
+    if(!result){
+      setMsg(completeMsg, 'The server is not running. Please try again.', 'error');
+    } else if(!result.data.success){
+      setMsg(completeMsg, result.data.message || 'Your profile could not be saved.', 'error');
+    } else {
+      finishLogin(result.data.user, completeMsg);
+    }
+  });
+
+  // Draw the Google button in both forms.
+  const GOOGLE_ICON =
+    '<svg viewBox="0 0 18 18" aria-hidden="true">' +
+    '<path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>' +
+    '<path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>' +
+    '<path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>' +
+    '<path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>' +
+    '</svg>';
+
+  function setupGoogleButtons(){
+    const slots = document.querySelectorAll('.google-slot');
+    const googleReady = GOOGLE_CLIENT_ID && window.google && google.accounts && google.accounts.id;
+
+    if(googleReady){
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleSignIn });
+      slots.forEach(slot => {
+        slot.innerHTML = '';
+        google.accounts.id.renderButton(slot, {
+          theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with',
+          width: Math.min(400, Math.max(240, slot.offsetWidth))
+        });
+      });
+    } else {
+      // Google is not set up yet: show a plain button that explains why
+      slots.forEach(slot => {
+        slot.innerHTML =
+          '<button type="button" class="google-btn">' + GOOGLE_ICON +
+          '<span>Continue with Google</span></button>';
+        slot.querySelector('.google-btn').addEventListener('click', () => {
+          setMsg(activeAuthMsg(),
+            GOOGLE_CLIENT_ID
+              ? 'Google sign-in could not load. Check your internet connection and open the site through Live Server.'
+              : 'Google sign-in is not set up yet. Add your Google Client ID in js/config.js (see SETUP-GUIDE.md).',
+            'error');
+        });
+      });
+    }
+    setAuthHeight();
+  }
+  window.addEventListener('load', setupGoogleButtons);
 
   // ---------- Story panel auto-rotation ----------
   const slides = Array.from(document.querySelectorAll('.story-slide'));

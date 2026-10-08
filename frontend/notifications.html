@@ -3,556 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>BOOK N MEET - Notifications</title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Arial, sans-serif;
-    background:#f7fafd;
-    color:#12345b;
-}
-
-/* ================= HEADER ================= */
-
-header{
-    height:76px;
-    background:white;
-    border-bottom:1px solid #dce5ed;
-
-    display:flex;
-    align-items:center;
-    padding:0 23px;
-
-    position:sticky;
-    top:0;
-    z-index:100;
-}
-
-/* LOGO */
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:22px;
-    font-weight:800;
-    color:#12345b;
-}
-
-.logo-icon{
-    width:39px;
-    height:39px;
-
-    border-radius:11px;
-
-    background:linear-gradient(
-        135deg,
-        #1d9c96,
-        #267fc0
-    );
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-    font-size:28px;
-    font-weight:bold;
-}
-
-.logo span{
-    color:#1d9c96;
-}
-
-/* NAVIGATION */
-
-nav{
-    display:flex;
-    align-items:center;
-    gap:28px;
-
-    margin-left:auto;
-}
-
-nav a{
-    text-decoration:none;
-    color:#12345b;
-    font-size:14px;
-    font-weight:500;
-}
-
-nav a:hover{
-    color:#1d9c96;
-    text-decoration:none;
-}
-
-/* HEADER ICONS */
-
-.header-actions{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    margin-left:25px;
-}
-
-.icon-btn{
-    width:40px;
-    height:40px;
-
-    border:1px solid #e0e8ee;
-    border-radius:11px;
-
-    background:white;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:19px;
-
-    cursor:pointer;
-
-    text-decoration:none;
-}
-
-.icon-btn.profile{
-    background:#eaf7f6;
-}
-
-.icon-btn.notification{
-    background:#fff8f0;
-    position:relative;
-}
-
-/* notification count */
-
-.notification-count{
-    position:absolute;
-
-    top:-4px;
-    right:-4px;
-
-    min-width:17px;
-    height:17px;
-
-    padding:0 4px;
-
-    border-radius:20px;
-
-    background:#e53935;
-    color:white;
-
-    font-size:10px;
-    font-weight:bold;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-/* ================= MAIN ================= */
-
-.container{
-    max-width:675px;
-    margin:40px auto 70px;
-    padding:0 20px;
-}
-
-.page-title{
-    font-size:30px;
-    font-weight:800;
-    margin-bottom:7px;
-}
-
-.page-subtitle{
-    color:#58718c;
-    font-size:15px;
-    margin-bottom:16px;
-}
-
-/* ================= NOTIFICATION CARD ================= */
-
-.notification-card{
-
-    background:white;
-
-    border:1px solid #dce5ed;
-
-    border-radius:15px;
-
-    margin-bottom:16px;
-
-    padding:18px 20px;
-
-    display:flex;
-    align-items:flex-start;
-
-    gap:15px;
-
-    position:relative;
-
-    transition:0.25s;
-
-    animation:fadeIn .3s ease;
-}
-
-.notification-card:hover{
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 7px 22px rgba(18,52,91,0.07);
-}
-
-/* unread notification */
-
-.notification-card.unread{
-    border-left:3px solid #1d9c96;
-}
-
-/* icon */
-
-.notification-icon{
-
-    width:45px;
-    height:45px;
-
-    min-width:45px;
-
-    border-radius:12px;
-
-    background:#eaf7f6;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:21px;
-}
-
-/* different icons */
-
-.notification-card.pending .notification-icon{
-    background:#fff5dc;
-}
-
-.notification-card.upcoming .notification-icon{
-    background:#e4f7f5;
-}
-
-.notification-card.completed .notification-icon{
-    background:#e5f7ea;
-}
-
-.notification-card.missed .notification-icon{
-    background:#ffe8e8;
-}
-
-.notification-card.canceled .notification-icon{
-    background:#eeeeee;
-}
-
-/* content */
-
-.notification-content{
-    flex:1;
-    padding-right:65px;
-}
-
-.notification-title{
-    font-size:15px;
-    font-weight:700;
-    margin-bottom:6px;
-}
-
-.notification-description{
-    font-size:13px;
-    color:#536d87;
-    line-height:1.5;
-}
-
-.notification-time{
-    font-size:11px;
-    color:#8294a6;
-    margin-top:7px;
-}
-
-/* mark read */
-
-.mark-read{
-    position:absolute;
-
-    right:12px;
-    top:18px;
-
-    border:none;
-
-    background:#eaf7f6;
-
-    color:#087f79;
-
-    border-radius:8px;
-
-    padding:6px 10px;
-
-    font-size:10px;
-    font-weight:bold;
-
-    cursor:pointer;
-}
-
-.mark-read:hover{
-    background:#d5efed;
-}
-
-/* ================= EMPTY ================= */
-
-.empty-state{
-
-    background:white;
-
-    border:1px solid #dce5ed;
-
-    border-radius:15px;
-
-    padding:55px 25px;
-
-    text-align:center;
-
-    color:#657b91;
-}
-
-.empty-icon{
-    font-size:42px;
-    margin-bottom:12px;
-}
-
-.empty-state h3{
-    color:#12345b;
-    margin-bottom:7px;
-}
-
-.empty-state p{
-    font-size:13px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:800px){
-
-    nav{
-        gap:14px;
-    }
-
-    nav a{
-        font-size:13px;
-    }
-
-    .container{
-        max-width:100%;
-    }
-}
-
-@media(max-width:650px){
-
-    header{
-        padding:0 14px;
-    }
-
-    .logo{
-        font-size:17px;
-    }
-
-    .logo-icon{
-        width:34px;
-        height:34px;
-        font-size:23px;
-    }
-
-    nav{
-        display:none;
-    }
-
-    .header-actions{
-        margin-left:auto;
-    }
-
-    .container{
-        margin-top:28px;
-    }
-
-    .page-title{
-        font-size:26px;
-    }
-
-    .notification-content{
-        padding-right:0;
-    }
-
-    .mark-read{
-        position:static;
-        margin-top:10px;
-    }
-
-    .notification-card{
-        flex-wrap:wrap;
-    }
-}
-
-@keyframes fadeIn{
-
-    from{
-        opacity:0;
-        transform:translateY(6px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-/* NAVBAR */
-.navbar{
-    height:76px;
-    background:white;
-    border-bottom:1px solid #e5ebf2;
-    display:flex;
-    align-items:center;
-}
-
-.nav-inner{
-    width:min(1180px,92%);
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.logo-mark{
-    width:42px;
-    height:42px;
-    border-radius:12px;
-    background:linear-gradient(135deg,#1fa8a0,#2d78c8);
-    color:white;
-    display:grid;
-    place-items:center;
-    font-size:23px;
-    text-decoration: none;
-}
-
-.logo-name{
-    font-size:22px;
-    font-weight:800;
-    color:#12345b;
-      text-decoration: none;
-}
-
-.logo-name span{
-    color:#1da79c;
-}
-
-.nav-links{
-    display:flex;
-    gap:27px;
-    color:#536579;
-    font-size:14px;
-    font-weight:600;
-    margin-right: 400px;
-}
-
-.nav-links a:hover{
-    color:#1d9c96;
-}
-
-.nav-actions{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.user-icon,
-.notification-icon{
-    width:40px;
-    height:40px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    cursor:pointer;
-}
-
-.user-icon img,
-.notification-icon img{
-    width:24px;
-    height:24px;
-    object-fit:contain;
-    display:block;
-}
-
-.notification-icon img{
-    width:25px;
-    height:25px;
-}
-
-.user-icon{
-    background:#eaf6f6;
-}
-
-.notification-icon{
-    background:#f3f6fa;
-}
-
-.user-icon:hover,
-.notification-icon:hover{
-    transform:translateY(-2px);
-}
-
-.notification-dot{
-    position:absolute;
-    width:8px;
-    height:8px;
-    background:#e74c3c;
-    border-radius:50%;
-    top:7px;
-    right:7px;
-    border:2px solid white;
-}
-a{
-      text-decoration: none;
-      color: black;
-      /* margin-right: 100px; */
-}
-.login,
-.signup{
-    padding:10px 18px;
-    border-radius:9px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-.login{
-    background:white;
-    border:1px solid #cbd7e4;
-    color:#12345b;
-}
-.login:hover{
-    color:#1d9c96;
-}
-</style>
+<meta name="description" content="Updates about your appointments.">
+<!-- Personal page: ask search engines not to list it -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<meta name="theme-color" content="#12345b">
+
+<title>Notifications | Book N Meet</title>
+
+<link rel="stylesheet" href="css/notifications.css">
 </head>
 
 <body>
@@ -618,696 +77,120 @@ a{
 </main>
 
 
+<script src="js/patient-notifications.js"></script>
+<script src="js/site-links.js"></script>
+
 <script>
 
-/* =====================================================
-   CURRENT USER
-===================================================== */
+/*
+  NOTIFICATIONS PAGE
 
-let currentUser =
-    JSON.parse(
-        localStorage.getItem(
-            "bookNMeetCurrentUser"
-        )
-    );
+  The notifications themselves are worked out in
+  js/patient-notifications.js (shared with the bell icon
+  on the other patient pages). This page only shows them.
+*/
 
+const container =
+    document.getElementById("notificationContainer");
 
-/* =====================================================
-   READ NOTIFICATIONS
-===================================================== */
+let lastShown = "";
 
-let readNotifications =
-    JSON.parse(
-        localStorage.getItem(
-            "bookNMeetReadNotifications"
-        )
-    ) || [];
-
-
-/* =====================================================
-   GET BOOKINGS
-===================================================== */
-
-function getBookings(){
-
-    return JSON.parse(
-        localStorage.getItem(
-            "bookNMeetBookings"
-        )
-    ) || [];
-
-}
-
-
-/* =====================================================
-   FORMAT DATE
-===================================================== */
-
-function formatDate(dateString){
-
-    if(!dateString){
-        return "";
-    }
-
-    const date =
-        new Date(dateString);
-
-    if(isNaN(date.getTime())){
-        return dateString;
-    }
-
-    return date.toLocaleDateString(
-        "en-IN",
-        {
-            day:"numeric",
-            month:"short",
-            year:"numeric"
-        }
-    );
-
-}
-
-
-/* =====================================================
-   NOTIFICATION ID
-===================================================== */
-
-function getNotificationId(
-    booking,
-    type
-){
-
-    return (
-        String(booking.id)
-        + "_"
-        + type
-    );
-
-}
-
-
-/* =====================================================
-   CREATE NOTIFICATION
-===================================================== */
-
-function createNotification(
-    booking,
-    type,
-    title,
-    description,
-    icon
-){
-
-    const notificationId =
-        getNotificationId(
-            booking,
-            type
-        );
-
-
-    const isRead =
-        readNotifications.includes(
-            notificationId
-        );
-
-
-    const card =
-        document.createElement("div");
-
-
-    card.className =
-        "notification-card " +
-        type.toLowerCase();
-
-
-    if(!isRead){
-
-        card.classList.add(
-            "unread"
-        );
-
-    }
-
-
-    card.innerHTML = `
-
-        <div class="notification-icon">
-            ${icon}
-        </div>
-
-        <div class="notification-content">
-
-            <div class="notification-title">
-                ${title}
-            </div>
-
-            <div class="notification-description">
-                ${description}
-            </div>
-
-            <div class="notification-time">
-                Appointment: ${formatDate(booking.date)}
-                ${booking.slot ? " • " + booking.slot : ""}
-            </div>
-
-            ${
-                !isRead
-                ?
-                `
-                <button
-                    class="mark-read"
-                    onclick="
-                        markAsRead('${notificationId}')
-                    "
-                >
-                    Mark read
-                </button>
-                `
-                :
-                ""
-            }
-
+function emptyState(icon, title, text){
+    return `
+        <div class="empty-state">
+            <div class="empty-icon">${icon}</div>
+            <h3>${title}</h3>
+            <p>${text}</p>
         </div>
     `;
-
-
-    return card;
-
 }
-
-
-/* =====================================================
-   LOAD NOTIFICATIONS
-===================================================== */
 
 function loadNotifications(){
 
-    const container =
-        document.getElementById(
-            "notificationContainer"
+    const user = BNMPatientNotifications.getCurrentUser();
+    const notifications = BNMPatientNotifications.list();
+
+    /* Only redraw when something actually changed. */
+    const signature = JSON.stringify([user && user.email, notifications]);
+
+    if(signature === lastShown){
+        return;
+    }
+
+    lastShown = signature;
+
+    if(!user){
+        container.innerHTML = emptyState(
+            "👤",
+            "Please log in",
+            "Log in to view your appointment notifications."
         );
+        return;
+    }
 
+    if(notifications.length === 0){
+        container.innerHTML = emptyState(
+            "🔔",
+            "No notifications yet",
+            "Your appointment updates will appear here."
+        );
+        return;
+    }
 
-    container.innerHTML = "";
+    container.innerHTML = notifications.map(function(notification){
+        return `
+            <div class="notification-card ${notification.type} ${notification.read ? "" : "unread"}">
 
-
-    if(!currentUser){
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    👤
+                <div class="notification-icon">
+                    ${notification.icon}
                 </div>
 
-                <h3>
-                    Please log in
-                </h3>
+                <div class="notification-content">
 
-                <p>
-                    Log in to view your appointment notifications.
-                </p>
+                    <div class="notification-title">
+                        ${notification.title}
+                    </div>
+
+                    <div class="notification-description">
+                        ${notification.html}
+                    </div>
+
+                    <div class="notification-time">
+                        ${notification.when}
+                    </div>
+
+                    ${notification.read
+                        ? ""
+                        : `<button class="mark-read" data-id="${notification.id}">Mark read</button>`}
+
+                </div>
 
             </div>
-
         `;
-
-        return;
-
-    }
-
-
-    const bookings =
-        getBookings();
-
-
-    // const userEmail =
-    //     currentUser.email
-    //         ? currentUser.email
-    //             .trim()
-    //             .toLowerCase()
-    //         : "";
-
-
-    // const userBookings =
-    //     bookings.filter(
-    //         booking => {
-
-    //             const bookedByEmail =
-    //                 booking.bookedByEmail ||
-    //                 booking.createdByEmail ||
-    //                 booking.accountEmail ||
-    //                 booking.email;
-
-    //             if(!bookedByEmail){
-    //                 return false;
-    //             }
-
-    //             return (
-    //                 bookedByEmail
-    //                     .trim()
-    //                     .toLowerCase()
-    //                 ===
-    //                 userEmail
-    //             );
-
-    //         }
-    //     );
-
-
-    // if(userBookings.length === 0){
-
-    //     container.innerHTML = `
-
-    //         <div class="empty-state">
-
-    //             <div class="empty-icon">
-    //                 🔔
-    //             </div>
-
-    //             <h3>
-    //                 No notifications yet
-    //             </h3>
-
-    //             <p>
-    //                 Your appointment updates will appear here.
-    //             </p>
-
-    //         </div>
-
-    //     `;
-
-    //     updateNotificationCount();
-
-    //     return;
-
-    // }
-    const userEmail =
-    String(currentUser.email || "")
-        .trim()
-        .toLowerCase();
-
-const userName =
-    String(currentUser.name || "")
-        .trim()
-        .toLowerCase();
-
-const userBookings = bookings.filter(booking => {
-
-    const bookedByEmail = String(
-        booking.bookedByEmail ||
-        booking.createdByEmail ||
-        booking.accountEmail ||
-        ""
-    )
-    .trim()
-    .toLowerCase();
-
-    const bookedByName = String(
-        booking.bookedByName || ""
-    )
-    .trim()
-    .toLowerCase();
-
-    /*
-       Show only appointments that were booked
-       through the currently logged-in account.
-    */
-
-    return (
-        (userEmail && bookedByEmail === userEmail) ||
-        (!bookedByEmail && userName && bookedByName === userName)
-    );
-
-});
-
-
-    let notifications = [];
-
-
-    /*
-       Generate notifications according
-       to current appointment status.
-    */
-
-    userBookings.forEach(
-        booking => {
-
-            // const status =
-            //     booking.status ||
-            //     "Pending";
-           const status = String(
-        booking.status || "Pending"
-    )
-    .trim()
-    .toLowerCase();
-
-            /* ================= PENDING ================= */
-
-            if(status === "pending"){
-
-                notifications.push({
-
-                    booking:booking,
-
-                    type:"pending",
-
-                    title:"Appointment Pending",
-
-                    description:
-                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
-                        <strong>${booking.doctor}</strong>
-                        at <strong>${booking.hospital}</strong>
-                        is waiting for confirmation.`,
-
-                    icon:"⏳"
-
-                });
-
-            }
-
-
-            /* ================= UPCOMING ================= */
-
-            else if(
-                status === "upcoming" ||
-                status === "confirmed"
-            ){
-
-                notifications.push({
-
-                    booking:booking,
-
-                    type:"upcoming",
-
-                    title:"Appointment Upcoming",
-
-                    description:
-                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
-                        <strong>${booking.doctor}</strong>
-                        at <strong>${booking.hospital}</strong>
-                        has been confirmed and is upcoming.`,
-
-                    icon:"📅"
-
-                });
-
-            }
-
-
-            /* ================= COMPLETED ================= */
-
-            else if(
-                status === "completed" ||
-        status === "complete"
-            ){
-
-                notifications.push({
-
-                    booking:booking,
-
-                    type:"completed",
-
-                    title:"Appointment Completed",
-
-                    description:
-                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
-                        <strong>${booking.doctor}</strong>
-                        at <strong>${booking.hospital}</strong>
-                        has been marked as completed.`,
-
-                    icon:"✓"
-
-                });
-
-            }
-
-
-            /* ================= MISSED ================= */
-
-            else if(
-                status === "missed" ||
-        status === "miss"
-            ){
-
-                notifications.push({
-
-                    booking:booking,
-
-                    type:"missed",
-
-                    title:"Appointment Missed",
-
-                    description:
-                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
-                        <strong>${booking.doctor}</strong>
-                        at <strong>${booking.hospital}</strong>
-                        was marked as missed.`,
-
-                    icon:"⚠️"
-
-                });
-
-            }
-
-
-            /* ================= CANCELED ================= */
-
-            else if(
-                status === "cancelled"  ||
-        status === "canceled" ||
-        status === "cancel"
-            ){
-
-                notifications.push({
-
-                    booking:booking,
-
-                    type:"canceled",
-
-                    title:"Appointment Cancelled",
-
-                    description:
-                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
-                        <strong>${booking.doctor}</strong>
-                        at <strong>${booking.hospital}</strong>
-                        has been canceled.`,
-
-                    icon:"✕"
-
-                });
-
-            }
-
-        }
-    );
-
-
-    /*
-       Newest booking first
-    */
-
-    notifications.reverse();
-
-
-    notifications.forEach(
-        notification => {
-
-            const card =
-                createNotification(
-                    notification.booking,
-                    notification.type,
-                    notification.title,
-                    notification.description,
-                    notification.icon
-                );
-
-
-            container.appendChild(card);
-
-        }
-    );
-
-
-    updateNotificationCount();
-
+    }).join("");
 }
 
+/* "Mark read" buttons */
+container.addEventListener("click", function(event){
 
-/* =====================================================
-   MARK NOTIFICATION AS READ
-===================================================== */
+    const button = event.target.closest(".mark-read");
 
-function markAsRead(
-    notificationId
-){
-
-    if(
-        !readNotifications.includes(
-            notificationId
-        )
-    ){
-
-        readNotifications.push(
-            notificationId
-        );
-
+    if(!button){
+        return;
     }
 
-
-    localStorage.setItem(
-        "bookNMeetReadNotifications",
-        JSON.stringify(
-            readNotifications
-        )
-    );
-
-
+    BNMPatientNotifications.markRead(button.dataset.id);
     loadNotifications();
-
-}
-
-
-/* =====================================================
-   NOTIFICATION COUNT
-===================================================== */
-
-function updateNotificationCount(){
-
-    const countElement =
-        document.getElementById(
-            "notificationCount"
-        );
-
-
-    if(!currentUser){
-
-        countElement.style.display =
-            "none";
-
-        return;
-
-    }
-
-
-    const bookings =
-        getBookings();
-
-
-    const userEmail =
-        currentUser.email
-            ? currentUser.email
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    const userBookings =
-        bookings.filter(
-            booking => {
-                // const bookedByEmail =
-                //     booking.bookedByEmail ||
-                //     booking.createdByEmail ||
-                //     booking.accountEmail ||
-                //     booking.email;
-
-                // return bookedByEmail &&
-                //     bookedByEmail
-                //         .trim()
-                //         .toLowerCase()
-                //     ===
-                //     userEmail;
-                const bookedByEmail = String(
-            booking.bookedByEmail ||
-            booking.createdByEmail ||
-            booking.accountEmail ||
-            ""
-        )
-        .trim()
-        .toLowerCase();
-
-        return (
-            userEmail &&
-            bookedByEmail === userEmail
-        );
-            }
-        );
-
-
-    let unreadCount = 0;
-
-
-    userBookings.forEach(
-        booking => {
-
-            const status =
-                booking.status ||
-                "Pending";
-
-
-            const id =
-                getNotificationId(
-                    booking,
-                    status.toLowerCase()
-                );
-
-
-            if(
-                !readNotifications.includes(id)
-            ){
-
-                unreadCount++;
-
-            }
-
-        }
-    );
-
-
-    if(unreadCount > 0){
-
-        countElement.textContent =
-            unreadCount;
-
-        countElement.style.display =
-            "flex";
-
-    }
-    else{
-
-        countElement.style.display =
-            "none";
-
-    }
-
-}
-
-
-/* =====================================================
-   INITIAL LOAD
-===================================================== */
+});
 
 loadNotifications();
 
-
 /*
-   Automatically refresh.
-
-   So when admin changes:
-
-   Pending → Upcoming
-   Upcoming → Completed
-   Upcoming → Missed
-   Upcoming → Canceled
-
-   the notification page updates.
+  Refresh automatically, so when the hospital changes an
+  appointment the page updates without reloading.
 */
-
-setInterval(
-    loadNotifications,
-    2000
-);
+window.addEventListener("storage", loadNotifications);
+setInterval(loadNotifications, 2000);
 
 </script>
 

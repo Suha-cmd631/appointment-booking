@@ -2,56 +2,62 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BOOK N MEET - Settings</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:#f4f8fb;color:#12345b}
-.top-header{height:78px;background:#fff;border-bottom:1px solid #e3e9ef;display:flex;align-items:center;padding:0 30px;position:sticky;top:0;z-index:10;box-shadow:0 1px 8px rgba(18,52,91,.04)}
-.brand{display:flex;align-items:center;gap:12px;min-width:300px}.brand-mark{width:45px;height:45px;border-radius:12px;background:linear-gradient(135deg,#20a9a6,#258db8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:800}.brand-name{font-size:24px;font-weight:800;white-space:nowrap}.brand-name span{color:#159e9d}
-.header-right{display:flex;align-items:center;gap:12px;margin-left:auto}.nav-links{display:flex;gap:31px;margin-right:228px}.nav-links a{color:#12345b;text-decoration:none;font-size:14px}.nav-links a:hover,.nav-links a.active{color:#159e9d}
-.header-icon{width:49px;height:46px;border:0;border-radius:12px;background:#eef8f8;color:#f2ad32;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:21px}.profile-wrap{display:flex;align-items:center;gap:10px;margin-right:20px}.profile-btn{width:46px;height:46px;border:0;border-radius:50%;background:linear-gradient(135deg,#1b9c9b,#12345b);color:#fff;font-weight:800;cursor:pointer}.profile-info{line-height:1.2}.staff-name{font-size:13px;font-weight:700}.hospital-name{font-size:11px;color:#71839a;margin-top:3px}.logout-btn{height:46px;padding:0 21px;border:1px solid #cbd9e6;border-radius:10px;background:#fff;color:#12345b;font-size:15px;font-weight:700;cursor:pointer}
-.page{padding:28px 18px 40px;max-width:1550px;margin:auto}.heading{margin-bottom:25px}.heading h1{font-size:30px;margin:0 0 7px}.heading p{margin:0;color:#71839a;font-size:14px}
-.card{background:#fff;border:1px solid #dce7ef;border-radius:15px;padding:22px 23px 28px;box-shadow:0 8px 25px rgba(18,52,91,.05)}.card h2{font-size:28px;margin:0 0 24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.field{display:flex;flex-direction:column;gap:8px}.full{grid-column:1/-1}label{font-size:13px;font-weight:600}input,select,textarea{width:100%;border:1px solid #cfdde8;border-radius:9px;background:#fff;color:#12345b;font-size:14px;padding:12px 13px;outline:none}input:focus,select:focus,textarea:focus{border-color:#1d9c96;box-shadow:0 0 0 3px rgba(29,156,150,.09)}input[readonly]{background:#f8fafc}textarea{height:112px;resize:vertical;font-family:inherit}.time-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.time-box{display:flex;flex-direction:column;gap:7px}.time-box span{font-size:11px;color:#71839a}.actions{margin-top:25px;display:flex;align-items:center;gap:15px}.save{border:0;background:#12345b;color:#fff;border-radius:9px;padding:12px 20px;font-weight:700;cursor:pointer}.success{display:none;color:#168b70;background:#e9f8f3;border:1px solid #bde8da;border-radius:8px;padding:9px 13px;font-size:13px}.success.show{display:block}
-@media(max-width:1200px){.brand{min-width:250px}.nav-links{gap:18px;margin-right:14px}}@media(max-width:950px){.nav-links{display:none}.form-grid,.grid{grid-template-columns:1fr}.full{grid-column:auto}.brand{min-width:auto}}@media(max-width:600px){.brand-name{font-size:19px}.brand-mark{width:40px;height:40px}.profile-info{display:none}.page{padding:20px 12px}.card{padding:20px 15px}.time-row{grid-template-columns:1fr}}
-.ampm-time{
-    display:grid;
-    grid-template-columns:1fr 15px 1fr 1fr;
-    gap:6px;
-    align-items:center;
-}
-
-.ampm-time select{
-    padding:12px 8px;
-    cursor:pointer;
-}
-
-.ampm-time .colon{
-    text-align:center;
-    font-size:18px;
-    font-weight:700;
-    color:#12345b;
-}
-
-@media(max-width:600px){
-    .ampm-time{
-        grid-template-columns:1fr 12px 1fr 1fr;
-    }
-}
-</style>
+<meta name="description" content="Hospital details, working hours and dashboard preferences.">
+<!-- Staff-only page: ask search engines not to list it -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#12345b">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Settings | Book N Meet Hospital Admin</title>
+<link rel="stylesheet" href="css/settings.css">
+<link rel="stylesheet" href="css/admin-common.css">
 </head>
 <body>
-<header class="top-header">
-<div class="brand"><div class="brand-mark">+</div><div class="brand-name">BOOK <span>N</span> MEET</div></div>
-<div class="header-right">
-<nav class="nav-links">
-<a href="admin.html">Home</a><a href="appointments.html">Appointments</a><a href="doctors.html">Doctors</a><a href="patients.html">Patients</a><a href="doctor-schedule.html">Schedule</a><a href="reports.html">Reports</a>
-<a href="settings.html">
-            Settings
+<!-- =====================================================
+     ADMIN MENU BAR
+     The same on every admin page. Its look is in
+     css/admin-common.css
+===================================================== -->
+<header class="adm-header">
+    <div class="adm-header-inner">
+
+        <a href="admin.html" class="adm-logo" aria-label="Book N Meet hospital dashboard">
+            <span class="adm-logo-mark" aria-hidden="true">+</span>
+            <span class="adm-logo-name">BOOK <span>N</span> MEET</span>
         </a>
-</nav>
-<a class="header-icon" href="admin-notifications.html">🔔</a>
-<div class="profile-wrap"><button class="profile-btn" id="profileBtn">HS</button><div class="profile-info"><div class="staff-name" id="headerStaff">Hospital Staff</div><div class="hospital-name" id="headerHospital">Hospital</div></div></div>
-<button class="logout-btn" id="logout">Logout</button>
-</div>
+
+        <nav class="adm-nav" aria-label="Admin menu">
+            <a href="admin.html">Home</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="doctors.html">Doctors</a>
+            <a href="patients.html">Patients</a>
+            <a href="doctor-schedule.html">Schedule</a>
+            <a href="reports.html">Reports</a>
+            <a href="settings.html" class="active" aria-current="page">Settings</a>
+        </nav>
+
+        <div class="adm-right">
+
+            <a href="admin-notifications.html" class="adm-bell" title="Notifications" aria-label="Notifications">
+                🔔
+                <span class="adm-badge">0</span>
+            </a>
+
+            <div class="adm-user">
+                <button class="adm-avatar" id="profileBtn" type="button" title="Profile and settings">U</button>
+                <div class="adm-user-text">
+                    <span class="adm-user-name" id="headerStaff">Staff</span>
+                    <span class="adm-user-hospital" id="headerHospital">Hospital</span>
+                </div>
+            </div>
+
+            <button class="adm-logout" type="button" id="logout">Logout</button>
+
+        </div>
+
+    </div>
 </header>
 <main class="page">
 <div class="heading"><h1>Settings</h1><p>Manage hospital and dashboard preferences.</p></div>
@@ -337,5 +343,8 @@ document.getElementById("ok").classList.add("show");setTimeout(()=>document.getE
 };
 })();
 </script>
+<script src="js/admin-header.js"></script>
+<script src="js/site-links.js"></script>
+
 </body>
 </html>

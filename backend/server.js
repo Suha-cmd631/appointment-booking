@@ -37,6 +37,41 @@ const supabaseAdmin = createClient(
 );
 
 
+// A fresh sign-in client for one request, so one person's
+// sign-in is never mixed up with another person's.
+function newAuthClient() {
+    return createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        }
+    );
+}
+
+
+// ======================================================
+// PASSWORD RULE
+// (the same rule is shown on the sign up page)
+// ======================================================
+
+const PASSWORD_RULE_MESSAGE =
+    "Password must be at least 8 characters and contain a capital letter, a digit and a special character.";
+
+function isValidPassword(password) {
+    return (
+        typeof password === "string" &&
+        password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /\d/.test(password) &&
+        /[^A-Za-z0-9]/.test(password)
+    );
+}
+
+
 // ======================================================
 // TEST ROUTE
 // ======================================================
@@ -115,19 +150,11 @@ app.post("/api/signup", async (req, res) => {
 
         // Password validation
 
-        const passwordValid =
-            /^[A-Z](?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/
-                .test(password);
-
-
-        if (!passwordValid) {
-
+        if (!isValidPassword(password)) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Password must start with a capital letter, contain a digit and a special character, and be at least 10 characters."
+                message: PASSWORD_RULE_MESSAGE
             });
-
         }
 
 
@@ -449,6 +476,355 @@ app.post("/api/login", async (req, res) => {
 
 
 // ======================================================
+// LOGGED-IN USER DETAILS SENT TO THE WEBSITE
+// ======================================================
+
+function publicUser(profile) {
+    return {
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        contact: profile.contact,
+        role: profile.role,
+        hospital: profile.hospital
+    };
+}
+
+
+// ======================================================
+// CONTINUE WITH GOOGLE
+//
+// The website sends the "credential" it received from
+// Google. Supabase checks it with Google and signs the
+// person in. (The Google provider must be enabled in the
+// Supabase dashboard - see SETUP-GUIDE.md.)
+// ======================================================
+
+app.post("/api/google-login", async (req, res) => {
+
+    try {
+
+        const { credential } = req.body;
+
+        if (!credential) {
+            return res.status(400).json({
+                success: false,
+                message: "Google sign-in information is missing."
+            });
+        }
+
+        const {
+            data: authData,
+            error: authError
+        } = await newAuthClient().auth.signInWithIdToken({
+            provider: "google",
+            token: credential
+        });
+
+        if (authError || !authData.user || !authData.session) {
+
+            console.error(authError);
+
+            return res.status(401).json({
+                success: false,
+                message:
+                    "Google sign-in failed. Check that Google is enabled in Supabase."
+            });
+        }
+
+        const user = authData.user;
+
+        // Does this person already have a profile?
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseAdmin
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
+
+        if (profileError) {
+
+            console.error(profileError);
+
+            return res.status(500).json({
+                success: false,
+                message: "User profile could not be loaded."
+            });
+        }
+
+        // First time: the website must ask for
+        // contact number, role and hospital.
+        if (!profile) {
+            return res.json({
+                success: true,
+                needsProfile: true,
+                access_token: authData.session.access_token,
+                user: {
+                    id: user.id,
+                    email: user.email
+                }
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Login successful.",
+            user: publicUser(profile)
+        });
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+});
+
+
+// ======================================================
+// FINISH A NEW GOOGLE ACCOUNT
+// (save contact number, role and hospital)
+// ======================================================
+
+app.post("/api/google-complete", async (req, res) => {
+
+    try {
+
+        const {
+            access_token,
+            contact,
+            role,
+            hospital
+        } = req.body;
+
+        if (!access_token) {
+            return res.status(401).json({
+                success: false,
+                message: "Please sign in with Google again."
+            });
+        }
+
+        // Find out who this is from their sign-in token
+        const {
+            data: userData,
+            error: userError
+        } = await supabaseAdmin.auth.getUser(access_token);
+
+        if (userError || !userData.user) {
+            return res.status(401).json({
+                success: false,
+                message: "Please sign in with Google again."
+            });
+        }
+
+        const user = userData.user;
+
+        if (!/^\d{10}$/.test(String(contact || ""))) {
+            return res.status(400).json({
+                success: false,
+                message: "Contact number must contain exactly 10 digits."
+            });
+        }
+
+        if (role !== "patient" && role !== "staff") {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid role."
+            });
+        }
+
+        if (
+            role === "staff" &&
+            (!hospital || String(hospital).trim() === "")
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Hospital is required for staff accounts."
+            });
+        }
+
+        const name =
+            (user.user_metadata &&
+                (user.user_metadata.full_name ||
+                    user.user_metadata.name)) ||
+            user.email.split("@")[0];
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseAdmin
+            .from("profiles")
+            .insert({
+                id: user.id,
+                name: String(name).trim(),
+                email: user.email.trim().toLowerCase(),
+                contact: String(contact).trim(),
+                role: role,
+                hospital:
+                    role === "staff"
+                        ? String(hospital).trim()
+                        : null
+            })
+            .select()
+            .single();
+
+        if (profileError) {
+
+            console.error(profileError);
+
+            return res.status(500).json({
+                success: false,
+                message: "Your profile could not be saved."
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            message: "Account created successfully.",
+            user: publicUser(profile)
+        });
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+});
+
+
+// ======================================================
+// FORGOT PASSWORD
+// Supabase emails a link that opens reset-password.html
+// ======================================================
+
+app.post("/api/forgot-password", async (req, res) => {
+
+    try {
+
+        const { email, redirectTo } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is required."
+            });
+        }
+
+        const { error } =
+            await newAuthClient().auth.resetPasswordForEmail(
+                String(email).trim().toLowerCase(),
+                redirectTo ? { redirectTo: redirectTo } : undefined
+            );
+
+        if (error) {
+            console.error(error);
+        }
+
+        // Same answer whether or not the account exists,
+        // so nobody can use this to check who has an account.
+        res.json({
+            success: true,
+            message: "If an account exists, a reset link has been sent."
+        });
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+});
+
+
+// ======================================================
+// SET A NEW PASSWORD
+// (called by reset-password.html after the email link)
+// ======================================================
+
+app.post("/api/reset-password", async (req, res) => {
+
+    try {
+
+        const { access_token, password } = req.body;
+
+        if (!access_token) {
+            return res.status(401).json({
+                success: false,
+                message:
+                    "This reset link is not valid. Please request a new one."
+            });
+        }
+
+        if (!isValidPassword(password)) {
+            return res.status(400).json({
+                success: false,
+                message: PASSWORD_RULE_MESSAGE
+            });
+        }
+
+        const {
+            data: userData,
+            error: userError
+        } = await supabaseAdmin.auth.getUser(access_token);
+
+        if (userError || !userData.user) {
+            return res.status(401).json({
+                success: false,
+                message:
+                    "This reset link has expired. Please request a new one."
+            });
+        }
+
+        const { error: updateError } =
+            await supabaseAdmin.auth.admin.updateUserById(
+                userData.user.id,
+                { password: password }
+            );
+
+        if (updateError) {
+
+            console.error(updateError);
+
+            return res.status(400).json({
+                success: false,
+                message: updateError.message
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Password updated. You can log in now."
+        });
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+});
+
+
+// ======================================================
 // GET PROFILE
 // ======================================================
 
@@ -517,7 +893,7 @@ app.get("/api/profile/:id", async (req, res) => {
 // ======================================================
 
 const PORT =
-    process.env.PORT || 5000;
+    process.env.PORT || 5050;
 
 
 app.listen(PORT, () => {

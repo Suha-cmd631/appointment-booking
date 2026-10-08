@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Hospitals and doctors that match your search, ready to book.">
+<!-- Personal page: ask search engines not to list it -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<meta name="theme-color" content="#12345b">
+<title>Search Results | Book N Meet</title>
+
+<link rel="stylesheet" href="css/search.css">
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="nav-inner">
+
+<a href="first.html" class="logo">
+    <div class="logo-mark">✚</div>
+    <div class="logo-name">BOOK <span>N</span> MEET</div>
+</a>
+
+<nav class="nav-links">
+    <a href="first.html">Home</a>
+    <a href="hospitals.html">Hospitals</a>
+</nav>
+
+<div class="nav-actions">
+    <a href="profile.html" class="user-icon" title="My Profile">
+        <img src="images/profile.png" alt="Profile">
+    </a>
+    <a href="notifications.html" class="notification-icon" title="Notifications">
+        <img src="images/notification.png" alt="Notifications">
+        <span class="notification-dot"></span>
+    </a>
+    <button class="login" onclick="window.location.href='landing.html'">
+        Logout
+    </button>
+</div>
+
+</div>
+</header>
+
+<main class="container">
+
+<a href="first.html" class="back-btn">← Change Search</a>
+
+<div class="heading">
+    <h1 id="resultTitle">Search Results</h1>
+    <p id="resultDescription"></p>
+</div>
+
+<!-- What the patient searched for -->
+<div id="searchSummary" class="search-summary"></div>
+
+<!-- Matching hospitals and their doctors are added here by the script -->
+<div id="results"></div>
+
+</main>
+
+<footer>
+<div class="footer-inner">
+<p>© 2026 BOOK N MEET. Hospital Appointment Booking Platform.</p>
+</div>
+</footer>
+
+<script src="js/seed-doctors.js"></script>
+<script src="js/hospital-data.js"></script>
+
+<script>
+
+/*
+  SEARCH RESULTS PAGE
+
+  The home page (first.html) sends the patient here with:
+    search.html?speciality=...&date=...&age=...
+
+  This page shows every hospital that offers the chosen speciality,
+  together with the matching doctors, and a Book Now button
+  for each doctor.
+
+  Hospital data and helper functions come from js/hospital-data.js
+*/
+
+const searchParams = new URLSearchParams(window.location.search);
+
+const searchSpeciality = searchParams.get("speciality") || "";
+const searchDate = searchParams.get("date") || "";
+const searchAge = searchParams.get("age") || "";
+
+const DEFAULT_DOCTOR_IMAGE =
+    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80";
+
+/* 2026-10-12  ->  12 Oct 2026 */
+function formatDate(value){
+
+    const parts = String(value).split("-");
+
+    if(parts.length !== 3){
+        return value;
+    }
+
+    const months = [
+        "Jan","Feb","Mar","Apr","May","Jun",
+        "Jul","Aug","Sep","Oct","Nov","Dec"
+    ];
+
+    const month = months[Number(parts[1]) - 1];
+
+    if(!month){
+        return value;
+    }
+
+    return Number(parts[2]) + " " + month + " " + parts[0];
+}
+
+/* Doctors of this hospital that match the searched speciality. */
+function getMatchingDoctors(hospital){
+
+    return getHospitalDoctors(hospital).filter(function(doctor){
+        return doctorMatchesSpeciality(doctor, searchSpeciality);
+    });
+}
+
+function doctorLine(label, value){
+
+    if(!value){
+        return "";
+    }
+
+    return '<p><span class="doctor-label">' + escapeHtml(label) +
+        ':</span> ' + escapeHtml(value) + '</p>';
+}
+
+function doctorCard(hospital, doctor){
+
+    const doctorName =
+        doctor.name || "Doctor";
+
+    const doctorSpeciality =
+        doctor.speciality || doctor.specialityKey || "Specialist";
+
+    const about =
+        doctor.about || doctor.description || "";
+
+    return `
+        <div class="doctor">
+
+            <img
+                src="${escapeHtml(doctor.image || DEFAULT_DOCTOR_IMAGE)}"
+                alt="${escapeHtml(doctorName)}"
+            >
+
+            <div class="doctor-info">
+
+                <h4>${escapeHtml(doctorName)}</h4>
+
+                <p class="doctor-speciality">
+                    ${escapeHtml(doctorSpeciality)}
+                </p>
+
+                ${doctor.rating
+                    ? '<p class="doctor-rating">' +
+                      escapeHtml(doctor.rating) + '</p>'
+                    : ''}
+
+                ${doctorLine(
+                    "Qualification",
+                    doctor.qualification || doctor.study
+                )}
+
+                ${doctorLine("Experience", doctor.experience)}
+
+                ${doctorLine("Languages", doctor.languages)}
+
+                ${about
+                    ? '<p class="doctor-about">' +
+                      escapeHtml(about) + '</p>'
+                    : ''}
+
+                ${doctor.review
+                    ? '<p class="review">"' +
+                      escapeHtml(doctor.review) + '"</p>'
+                    : ''}
+
+            </div>
+
+            <button
+                class="book-btn"
+                data-hospital="${escapeHtml(hospital.name)}"
+                data-doctor="${escapeHtml(doctorName)}"
+            >
+                Book Now
+            </button>
+
+        </div>
+    `;
+}
+
+function hospitalCard(hospital, doctors){
+
+    return `
+        <section class="result">
+
+            <div class="result-top">
+
+                <img
+                    class="result-image"
+                    src="${escapeHtml(hospital.image)}"
+                    alt="${escapeHtml(hospital.name)}"
+                >
+
+                <div class="result-info">
+
+                    <h2>${escapeHtml(hospital.name)}</h2>
+
+                    <p>${escapeHtml(hospital.location)}</p>
+
+                    <p class="rating">${escapeHtml(hospital.rating)}</p>
+
+                    <p>${escapeHtml(hospital.description)}</p>
+
+                    <div class="result-meta">
+                        ${hospital.address
+                            ? '<span>🏠 ' + escapeHtml(hospital.address) + '</span>'
+                            : ''}
+                        ${hospital.phone
+                            ? '<span>📞 ' + escapeHtml(hospital.phone) + '</span>'
+                            : ''}
+                        ${hospital.timings
+                            ? '<span>🕒 ' + escapeHtml(hospital.timings) + '</span>'
+                            : ''}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <h3 class="doctors-title">
+                ${escapeHtml(specialityDisplayName(searchSpeciality))}
+                doctors at this hospital (${doctors.length})
+            </h3>
+
+            ${doctors.length === 0
+                ? '<p class="no-doctors">No ' +
+                  escapeHtml(specialityDisplayName(searchSpeciality)) +
+                  ' doctor is listed at this hospital yet.</p>'
+                : doctors.map(function(doctor){
+                      return doctorCard(hospital, doctor);
+                  }).join("")}
+
+        </section>
+    `;
+}
+
+function renderSearchResults(){
+
+    const title = document.getElementById("resultTitle");
+    const description = document.getElementById("resultDescription");
+    const summary = document.getElementById("searchSummary");
+    const results = document.getElementById("results");
+
+    /* Page was opened without searching from the home page. */
+    if(!searchSpeciality){
+
+        title.textContent = "Search Results";
+        description.textContent = "";
+        summary.style.display = "none";
+
+        results.innerHTML =
+            '<div class="empty">' +
+            '<h3>No search yet</h3>' +
+            '<p>Please choose a speciality, date and age on the home page.</p>' +
+            '<a href="first.html" class="empty-btn">Go to Home</a>' +
+            '</div>';
+
+        return;
+    }
+
+    const specialityName = specialityDisplayName(searchSpeciality);
+
+    /* What the patient searched for */
+    summary.style.display = "flex";
+    summary.innerHTML =
+        '<span><b>Speciality:</b> ' + escapeHtml(specialityName) + '</span>' +
+        (searchDate
+            ? '<span><b>Date:</b> ' + escapeHtml(formatDate(searchDate)) + '</span>'
+            : '') +
+        (searchAge
+            ? '<span><b>Age:</b> ' + escapeHtml(searchAge) + '</span>'
+            : '');
+
+    /* Find hospitals that offer the searched speciality. */
+    const matches = [];
+    let doctorCount = 0;
+
+    Object.keys(hospitals).forEach(function(id){
+
+        const hospital = hospitals[id];
+        const doctors = getMatchingDoctors(hospital);
+
+        /* The hospital offers this speciality (even if no doctor is listed yet). */
+        const offersSpeciality =
+            getHospitalSpecialities(hospital).some(function(item){
+                return specialityKey(item) === specialityKey(searchSpeciality);
+            });
+
+        if(doctors.length > 0 || offersSpeciality){
+            matches.push({ hospital: hospital, doctors: doctors });
+            doctorCount += doctors.length;
+        }
+    });
+
+    /* Hospitals that have doctors to book come first. */
+    matches.sort(function(a, b){
+        return (b.doctors.length > 0) - (a.doctors.length > 0);
+    });
+
+    title.textContent = specialityName + " - Search Results";
+
+    if(matches.length === 0){
+
+        description.textContent = "";
+
+        results.innerHTML =
+            '<div class="empty">' +
+            '<h3>No hospitals found</h3>' +
+            '<p>No hospital offers ' + escapeHtml(specialityName) +
+            ' right now. Try another speciality.</p>' +
+            '<a href="first.html" class="empty-btn">Search Again</a>' +
+            '</div>';
+
+        return;
+    }
+
+    description.textContent =
+        doctorCount + (doctorCount === 1 ? " doctor" : " doctors") +
+        " found in " +
+        matches.length + (matches.length === 1 ? " hospital." : " hospitals.");
+
+    results.innerHTML =
+        matches.map(function(match){
+            return hospitalCard(match.hospital, match.doctors);
+        }).join("");
+}
+
+/* Open the booking page for the chosen doctor. */
+function bookDoctor(hospitalName, doctorName){
+
+    window.location.href =
+        "booking.html?hospital=" +
+        encodeURIComponent(hospitalName) +
+        "&doctor=" +
+        encodeURIComponent(doctorName) +
+        "&speciality=" +
+        encodeURIComponent(searchSpeciality) +
+        "&date=" +
+        encodeURIComponent(searchDate) +
+        "&age=" +
+        encodeURIComponent(searchAge);
+}
+
+document.getElementById("results").addEventListener("click", function(event){
+
+    const button = event.target.closest(".book-btn");
+
+    if(!button){
+        return;
+    }
+
+    bookDoctor(button.dataset.hospital, button.dataset.doctor);
+});
+
+renderSearchResults();
+
+/*
+  If an admin adds/removes a doctor in another tab,
+  refresh the results.
+*/
+window.addEventListener("storage", function(event){
+    if(
+        event.key === "bookNMeetDoctors" ||
+        event.key === "bookNMeetRemovedDoctors"
+    ){
+        renderSearchResults();
+    }
+});
+
+</script>
+
+<script src="js/patient-notifications.js"></script>
+<script src="js/site-links.js"></script>
+
+</body>
+</html>
