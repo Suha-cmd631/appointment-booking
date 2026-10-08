@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BOOK N MEET - Settings</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:#f4f8fb;color:#12345b}
+.top-header{height:78px;background:#fff;border-bottom:1px solid #e3e9ef;display:flex;align-items:center;padding:0 30px;position:sticky;top:0;z-index:10;box-shadow:0 1px 8px rgba(18,52,91,.04)}
+.brand{display:flex;align-items:center;gap:12px;min-width:300px}.brand-mark{width:45px;height:45px;border-radius:12px;background:linear-gradient(135deg,#20a9a6,#258db8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:800}.brand-name{font-size:24px;font-weight:800;white-space:nowrap}.brand-name span{color:#159e9d}
+.header-right{display:flex;align-items:center;gap:12px;margin-left:auto}.nav-links{display:flex;gap:31px;margin-right:228px}.nav-links a{color:#12345b;text-decoration:none;font-size:14px}.nav-links a:hover,.nav-links a.active{color:#159e9d}
+.header-icon{width:49px;height:46px;border:0;border-radius:12px;background:#eef8f8;color:#f2ad32;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:21px}.profile-wrap{display:flex;align-items:center;gap:10px;margin-right:20px}.profile-btn{width:46px;height:46px;border:0;border-radius:50%;background:linear-gradient(135deg,#1b9c9b,#12345b);color:#fff;font-weight:800;cursor:pointer}.profile-info{line-height:1.2}.staff-name{font-size:13px;font-weight:700}.hospital-name{font-size:11px;color:#71839a;margin-top:3px}.logout-btn{height:46px;padding:0 21px;border:1px solid #cbd9e6;border-radius:10px;background:#fff;color:#12345b;font-size:15px;font-weight:700;cursor:pointer}
+.page{padding:28px 18px 40px;max-width:1550px;margin:auto}.heading{margin-bottom:25px}.heading h1{font-size:30px;margin:0 0 7px}.heading p{margin:0;color:#71839a;font-size:14px}
+.card{background:#fff;border:1px solid #dce7ef;border-radius:15px;padding:22px 23px 28px;box-shadow:0 8px 25px rgba(18,52,91,.05)}.card h2{font-size:28px;margin:0 0 24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.field{display:flex;flex-direction:column;gap:8px}.full{grid-column:1/-1}label{font-size:13px;font-weight:600}input,select,textarea{width:100%;border:1px solid #cfdde8;border-radius:9px;background:#fff;color:#12345b;font-size:14px;padding:12px 13px;outline:none}input:focus,select:focus,textarea:focus{border-color:#1d9c96;box-shadow:0 0 0 3px rgba(29,156,150,.09)}input[readonly]{background:#f8fafc}textarea{height:112px;resize:vertical;font-family:inherit}.time-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.time-box{display:flex;flex-direction:column;gap:7px}.time-box span{font-size:11px;color:#71839a}.actions{margin-top:25px;display:flex;align-items:center;gap:15px}.save{border:0;background:#12345b;color:#fff;border-radius:9px;padding:12px 20px;font-weight:700;cursor:pointer}.success{display:none;color:#168b70;background:#e9f8f3;border:1px solid #bde8da;border-radius:8px;padding:9px 13px;font-size:13px}.success.show{display:block}
+@media(max-width:1200px){.brand{min-width:250px}.nav-links{gap:18px;margin-right:14px}}@media(max-width:950px){.nav-links{display:none}.form-grid,.grid{grid-template-columns:1fr}.full{grid-column:auto}.brand{min-width:auto}}@media(max-width:600px){.brand-name{font-size:19px}.brand-mark{width:40px;height:40px}.profile-info{display:none}.page{padding:20px 12px}.card{padding:20px 15px}.time-row{grid-template-columns:1fr}}
+.ampm-time{
+    display:grid;
+    grid-template-columns:1fr 15px 1fr 1fr;
+    gap:6px;
+    align-items:center;
+}
+
+.ampm-time select{
+    padding:12px 8px;
+    cursor:pointer;
+}
+
+.ampm-time .colon{
+    text-align:center;
+    font-size:18px;
+    font-weight:700;
+    color:#12345b;
+}
+
+@media(max-width:600px){
+    .ampm-time{
+        grid-template-columns:1fr 12px 1fr 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<header class="top-header">
+<div class="brand"><div class="brand-mark">+</div><div class="brand-name">BOOK <span>N</span> MEET</div></div>
+<div class="header-right">
+<nav class="nav-links">
+<a href="admin.html">Home</a><a href="appointments.html">Appointments</a><a href="doctors.html">Doctors</a><a href="patients.html">Patients</a><a href="doctor-schedule.html">Schedule</a><a href="reports.html">Reports</a>
+<a href="settings.html">
+            Settings
+        </a>
+</nav>
+<a class="header-icon" href="admin-notifications.html">🔔</a>
+<div class="profile-wrap"><button class="profile-btn" id="profileBtn">HS</button><div class="profile-info"><div class="staff-name" id="headerStaff">Hospital Staff</div><div class="hospital-name" id="headerHospital">Hospital</div></div></div>
+<button class="logout-btn" id="logout">Logout</button>
+</div>
+</header>
+<main class="page">
+<div class="heading"><h1>Settings</h1><p>Manage hospital and dashboard preferences.</p></div>
+<section class="card"><h2>Hospital Information</h2>
+<form id="form"><div class="grid">
+<div class="field"><label>Hospital Name</label><input id="hospitalName"></div>
+<div class="field"><label>Staff Name</label><input id="staffName"></div>
+<div class="field"><label>Contact Number</label><input id="contact" maxlength="10"></div>
+<div class="field"><label>Email</label><input id="email"></div>
+<div class="field full"><label>Hospital Address</label><textarea id="address" placeholder="Enter hospital address"></textarea></div>
+<div class="field"><label>Appointment Duration</label><select id="duration"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option></select></div>
+<!-- <div class="field"><label>Working Hours</label><div class="time-row"><div class="time-box"><span>Start Time</span><input id="start" type="time" step="900"></div><div class="time-box"><span>End Time</span><input id="end" type="time" step="900"></div></div></div> -->
+<div class="field">
+    <label>Working Hours</label>
+
+    <div class="time-row">
+
+        <div class="time-box">
+            <span>Start Time</span>
+            <div class="ampm-time">
+                <select id="startHour">
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09" selected>09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                <span class="colon">:</span>
+
+                <!-- <select id="startMinute">
+                    <option value="00" selected>00</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                </select> -->
+                <select id="startMinute">
+    <option value="00" selected>00</option>
+    <option value="01">01</option>
+    <option value="02">02</option>
+    <option value="03">03</option>
+    <option value="04">04</option>
+    <option value="05">05</option>
+    <option value="06">06</option>
+    <option value="07">07</option>
+    <option value="08">08</option>
+    <option value="09">09</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="21">21</option>
+    <option value="22">22</option>
+    <option value="23">23</option>
+    <option value="24">24</option>
+    <option value="25">25</option>
+    <option value="26">26</option>
+    <option value="27">27</option>
+    <option value="28">28</option>
+    <option value="29">29</option>
+    <option value="30">30</option>
+    <option value="31">31</option>
+    <option value="32">32</option>
+    <option value="33">33</option>
+    <option value="34">34</option>
+    <option value="35">35</option>
+    <option value="36">36</option>
+    <option value="37">37</option>
+    <option value="38">38</option>
+    <option value="39">39</option>
+    <option value="40">40</option>
+    <option value="41">41</option>
+    <option value="42">42</option>
+    <option value="43">43</option>
+    <option value="44">44</option>
+    <option value="45">45</option>
+    <option value="46">46</option>
+    <option value="47">47</option>
+    <option value="48">48</option>
+    <option value="49">49</option>
+    <option value="50">50</option>
+    <option value="51">51</option>
+    <option value="52">52</option>
+    <option value="53">53</option>
+    <option value="54">54</option>
+    <option value="55">55</option>
+    <option value="56">56</option>
+    <option value="57">57</option>
+    <option value="58">58</option>
+    <option value="59">59</option>
+</select>
+
+                <select id="startPeriod">
+                    <option value="AM" selected>AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="time-box">
+            <span>End Time</span>
+            <div class="ampm-time">
+                <select id="endHour">
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                <span class="colon">:</span>
+
+                <!-- <select id="endMinute">
+                    <option value="00" selected>00</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                </select> -->
+                <select id="endMinute">
+    <option value="00" selected>00</option>
+    <option value="01">01</option>
+    <option value="02">02</option>
+    <option value="03">03</option>
+    <option value="04">04</option>
+    <option value="05">05</option>
+    <option value="06">06</option>
+    <option value="07">07</option>
+    <option value="08">08</option>
+    <option value="09">09</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="21">21</option>
+    <option value="22">22</option>
+    <option value="23">23</option>
+    <option value="24">24</option>
+    <option value="25">25</option>
+    <option value="26">26</option>
+    <option value="27">27</option>
+    <option value="28">28</option>
+    <option value="29">29</option>
+    <option value="30">30</option>
+    <option value="31">31</option>
+    <option value="32">32</option>
+    <option value="33">33</option>
+    <option value="34">34</option>
+    <option value="35">35</option>
+    <option value="36">36</option>
+    <option value="37">37</option>
+    <option value="38">38</option>
+    <option value="39">39</option>
+    <option value="40">40</option>
+    <option value="41">41</option>
+    <option value="42">42</option>
+    <option value="43">43</option>
+    <option value="44">44</option>
+    <option value="45">45</option>
+    <option value="46">46</option>
+    <option value="47">47</option>
+    <option value="48">48</option>
+    <option value="49">49</option>
+    <option value="50">50</option>
+    <option value="51">51</option>
+    <option value="52">52</option>
+    <option value="53">53</option>
+    <option value="54">54</option>
+    <option value="55">55</option>
+    <option value="56">56</option>
+    <option value="57">57</option>
+    <option value="58">58</option>
+    <option value="59">59</option>
+</select>
+
+                <select id="endPeriod">
+                    <option value="AM">AM</option>
+                    <option value="PM" selected>PM</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div><div class="actions"><button class="save" type="submit">Save Changes</button><div id="ok" class="success">Settings saved successfully.</div></div></form>
+</section></main>
+<script>
+(function(){
+const U="bookNMeetCurrentUser",S="bookNMeetHospitalSettings";
+function read(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}
+function norm(v){return String(v||"").trim().toLowerCase().replace(/\s+/g," ")}
+let user=read(U,{})||{};
+let hospital=user.hospital||user.hospitalName||user.hospitalId||"";
+let staff=user.name||user.fullName||user.staffName||"";
+let email=user.email||user.staffEmail||"";
+let phone=user.contact||user.contactNumber||user.phone||"";
+let all=read(S,{})||{},saved=(all.hospitalSettings&&all.hospitalSettings[norm(hospital)])||{};
+document.getElementById("hospitalName").value=saved.hospitalName||hospital;
+document.getElementById("staffName").value=saved.staffName||staff;
+document.getElementById("email").value=saved.email||email;
+document.getElementById("contact").value=saved.contactNumber||phone;
+document.getElementById("address").value=saved.hospitalAddress||"";
+document.getElementById("duration").value=["15","30","45","60"].includes(String(saved.appointmentDuration))?saved.appointmentDuration:"30";
+// document.getElementById("start").value=saved.workingStart||"09:00";
+// document.getElementById("end").value=saved.workingEnd||"17:00";
+function setTimeFields(time, prefix){
+    time = time || (prefix === "start" ? "09:00" : "17:00");
+
+    let [hour, minute] = time.split(":");
+    hour = Number(hour);
+
+    let period = hour >= 12 ? "PM" : "AM";
+
+    if(hour === 0) hour = 12;
+    else if(hour > 12) hour -= 12;
+
+    document.getElementById(prefix + "Hour").value =
+        String(hour).padStart(2,"0");
+
+    document.getElementById(prefix + "Minute").value = minute;
+    document.getElementById(prefix + "Period").value = period;
+}
+
+setTimeFields(saved.workingStart, "start");
+setTimeFields(saved.workingEnd, "end");
+function header(){let n=user.name||user.fullName||staff||"Hospital Staff",h=user.hospital||user.hospitalName||hospital||"Hospital";document.getElementById("headerStaff").textContent=n;document.getElementById("headerHospital").textContent=h;document.getElementById("profileBtn").textContent=n.split(/\s+/).slice(0,2).map(x=>x[0].toUpperCase()).join("")||"HS"}
+header();
+document.getElementById("profileBtn").onclick=()=>location.href="settings.html";
+document.getElementById("logout").onclick=()=>{localStorage.removeItem(U);location.href="landing.html"};
+document.getElementById("form").onsubmit=function(e){
+// e.preventDefault();let st=document.getElementById("start").value,en=document.getElementById("end").value;
+e.preventDefault();
+
+function get24HourTime(prefix){
+    let hour = Number(document.getElementById(prefix + "Hour").value);
+    let minute = document.getElementById(prefix + "Minute").value;
+    let period = document.getElementById(prefix + "Period").value;
+
+    if(period === "AM"){
+        if(hour === 12) hour = 0;
+    }else{
+        if(hour !== 12) hour += 12;
+    }
+
+    return String(hour).padStart(2,"0") + ":" + minute;
+}
+
+let st = get24HourTime("start");
+let en = get24HourTime("end");
+if(st>=en){alert("Working hours end time must be later than start time.");return}
+let h=document.getElementById("hospitalName").value.trim(),n=document.getElementById("staffName").value.trim();
+let data={hospitalName:h,staffName:n,email:document.getElementById("email").value.trim(),contactNumber:document.getElementById("contact").value.trim(),hospitalAddress:document.getElementById("address").value.trim(),appointmentDuration:Number(document.getElementById("duration").value),workingStart:st,workingEnd:en,updatedAt:new Date().toISOString()};
+all.hospitalSettings=all.hospitalSettings||{};all.hospitalSettings[norm(h)]=data;localStorage.setItem(S,JSON.stringify(all));
+user.name=n;user.fullName=n;user.staffName=n;user.hospital=h;user.hospitalName=h;user.email=data.email;user.contact=data.contactNumber;user.contactNumber=data.contactNumber;user.hospitalAddress=data.hospitalAddress;user.appointmentDuration=data.appointmentDuration;user.workingStart=st;user.workingEnd=en;localStorage.setItem(U,JSON.stringify(user));header();
+document.getElementById("ok").classList.add("show");setTimeout(()=>document.getElementById("ok").classList.remove("show"),2500);
+};
+})();
+</script>
+</body>
+</html>

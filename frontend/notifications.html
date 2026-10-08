@@ -842,61 +842,105 @@ function loadNotifications(){
         getBookings();
 
 
+    // const userEmail =
+    //     currentUser.email
+    //         ? currentUser.email
+    //             .trim()
+    //             .toLowerCase()
+    //         : "";
+
+
+    // const userBookings =
+    //     bookings.filter(
+    //         booking => {
+
+    //             const bookedByEmail =
+    //                 booking.bookedByEmail ||
+    //                 booking.createdByEmail ||
+    //                 booking.accountEmail ||
+    //                 booking.email;
+
+    //             if(!bookedByEmail){
+    //                 return false;
+    //             }
+
+    //             return (
+    //                 bookedByEmail
+    //                     .trim()
+    //                     .toLowerCase()
+    //                 ===
+    //                 userEmail
+    //             );
+
+    //         }
+    //     );
+
+
+    // if(userBookings.length === 0){
+
+    //     container.innerHTML = `
+
+    //         <div class="empty-state">
+
+    //             <div class="empty-icon">
+    //                 🔔
+    //             </div>
+
+    //             <h3>
+    //                 No notifications yet
+    //             </h3>
+
+    //             <p>
+    //                 Your appointment updates will appear here.
+    //             </p>
+
+    //         </div>
+
+    //     `;
+
+    //     updateNotificationCount();
+
+    //     return;
+
+    // }
     const userEmail =
-        currentUser.email
-            ? currentUser.email
-                .trim()
-                .toLowerCase()
-            : "";
+    String(currentUser.email || "")
+        .trim()
+        .toLowerCase();
 
+const userName =
+    String(currentUser.name || "")
+        .trim()
+        .toLowerCase();
 
-    const userBookings =
-        bookings.filter(
-            booking => {
+const userBookings = bookings.filter(booking => {
 
-                if(!booking.email){
-                    return false;
-                }
+    const bookedByEmail = String(
+        booking.bookedByEmail ||
+        booking.createdByEmail ||
+        booking.accountEmail ||
+        ""
+    )
+    .trim()
+    .toLowerCase();
 
-                return (
-                    booking.email
-                        .trim()
-                        .toLowerCase()
-                    ===
-                    userEmail
-                );
+    const bookedByName = String(
+        booking.bookedByName || ""
+    )
+    .trim()
+    .toLowerCase();
 
-            }
-        );
+    /*
+       Show only appointments that were booked
+       through the currently logged-in account.
+    */
 
+    return (
+        (userEmail && bookedByEmail === userEmail) ||
+        (!bookedByEmail && userName && bookedByName === userName)
+    );
 
-    if(userBookings.length === 0){
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    🔔
-                </div>
-
-                <h3>
-                    No notifications yet
-                </h3>
-
-                <p>
-                    Your appointment updates will appear here.
-                </p>
-
-            </div>
-
-        `;
-
-        updateNotificationCount();
-
-        return;
-
-    }
+});
 
 
     let notifications = [];
@@ -910,14 +954,18 @@ function loadNotifications(){
     userBookings.forEach(
         booking => {
 
-            const status =
-                booking.status ||
-                "Pending";
-
+            // const status =
+            //     booking.status ||
+            //     "Pending";
+           const status = String(
+        booking.status || "Pending"
+    )
+    .trim()
+    .toLowerCase();
 
             /* ================= PENDING ================= */
 
-            if(status === "Pending"){
+            if(status === "pending"){
 
                 notifications.push({
 
@@ -928,7 +976,7 @@ function loadNotifications(){
                     title:"Appointment Pending",
 
                     description:
-                        `Your appointment with
+                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
                         <strong>${booking.doctor}</strong>
                         at <strong>${booking.hospital}</strong>
                         is waiting for confirmation.`,
@@ -943,8 +991,8 @@ function loadNotifications(){
             /* ================= UPCOMING ================= */
 
             else if(
-                status === "Upcoming" ||
-                status === "Confirmed"
+                status === "upcoming" ||
+                status === "confirmed"
             ){
 
                 notifications.push({
@@ -956,7 +1004,7 @@ function loadNotifications(){
                     title:"Appointment Upcoming",
 
                     description:
-                        `Your appointment with
+                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
                         <strong>${booking.doctor}</strong>
                         at <strong>${booking.hospital}</strong>
                         has been confirmed and is upcoming.`,
@@ -971,7 +1019,8 @@ function loadNotifications(){
             /* ================= COMPLETED ================= */
 
             else if(
-                status === "Completed"
+                status === "completed" ||
+        status === "complete"
             ){
 
                 notifications.push({
@@ -983,7 +1032,7 @@ function loadNotifications(){
                     title:"Appointment Completed",
 
                     description:
-                        `Your appointment with
+                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
                         <strong>${booking.doctor}</strong>
                         at <strong>${booking.hospital}</strong>
                         has been marked as completed.`,
@@ -998,7 +1047,8 @@ function loadNotifications(){
             /* ================= MISSED ================= */
 
             else if(
-                status === "Missed"
+                status === "missed" ||
+        status === "miss"
             ){
 
                 notifications.push({
@@ -1010,7 +1060,7 @@ function loadNotifications(){
                     title:"Appointment Missed",
 
                     description:
-                        `Your appointment with
+                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
                         <strong>${booking.doctor}</strong>
                         at <strong>${booking.hospital}</strong>
                         was marked as missed.`,
@@ -1025,7 +1075,9 @@ function loadNotifications(){
             /* ================= CANCELED ================= */
 
             else if(
-                status === "Canceled"
+                status === "cancelled"  ||
+        status === "canceled" ||
+        status === "cancel"
             ){
 
                 notifications.push({
@@ -1034,10 +1086,10 @@ function loadNotifications(){
 
                     type:"canceled",
 
-                    title:"Appointment Canceled",
+                    title:"Appointment Cancelled",
 
                     description:
-                        `Your appointment with
+                        `Patient <strong>${booking.patientName || "Patient"}</strong> has an appointment with
                         <strong>${booking.doctor}</strong>
                         at <strong>${booking.hospital}</strong>
                         has been canceled.`,
@@ -1153,13 +1205,33 @@ function updateNotificationCount(){
 
     const userBookings =
         bookings.filter(
-            booking =>
-                booking.email &&
-                booking.email
-                    .trim()
-                    .toLowerCase()
-                ===
-                userEmail
+            booking => {
+                // const bookedByEmail =
+                //     booking.bookedByEmail ||
+                //     booking.createdByEmail ||
+                //     booking.accountEmail ||
+                //     booking.email;
+
+                // return bookedByEmail &&
+                //     bookedByEmail
+                //         .trim()
+                //         .toLowerCase()
+                //     ===
+                //     userEmail;
+                const bookedByEmail = String(
+            booking.bookedByEmail ||
+            booking.createdByEmail ||
+            booking.accountEmail ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
+
+        return (
+            userEmail &&
+            bookedByEmail === userEmail
+        );
+            }
         );
 
 

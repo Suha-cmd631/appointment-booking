@@ -89,7 +89,7 @@ button,input{
     align-items:center;
     gap:30px;
 
-    margin-left:370px;
+    margin-left:270px;
 }
 
 .nav a{
@@ -639,7 +639,12 @@ tr:hover td{
         <a href="doctor-schedule.html">
             Schedule
         </a>
-
+        <a href="reports.html">
+            Reports
+        </a>
+          <a href="settings.html">
+            Settings
+        </a>
     </nav>
 
 
@@ -964,7 +969,7 @@ if(
 ){
 
     window.location.href =
-        "first.html";
+        "landing.html";
 
 }
 
@@ -1048,7 +1053,43 @@ function getDoctors(){
     );
 
 }
+function getRemovedDoctorIds(){
 
+    try{
+
+        const removed = JSON.parse(
+            localStorage.getItem(
+                "bookNMeetRemovedDoctors"
+            ) || "[]"
+        );
+
+        return Array.isArray(removed)
+            ? removed.map(String)
+            : [];
+
+    }catch(error){
+
+        return [];
+
+    }
+
+}
+
+
+function isDoctorRemoved(doctor){
+
+    const doctorId =
+        doctor.id ||
+        doctor.doctorId;
+
+    if(!doctorId){
+        return false;
+    }
+
+    return getRemovedDoctorIds()
+        .includes(String(doctorId));
+
+}
 
 /* =========================================================
    NORMALIZE STATUS
@@ -1176,17 +1217,34 @@ function getHospitalDoctors(){
             .toLowerCase();
 
 
-    return getDoctors()
-        .filter(
-            doctor =>
-                String(
-                    doctor.hospital || ""
-                )
-                .trim()
-                .toLowerCase()
-                ===
-                hospital
-        );
+    // return getDoctors()
+    //     .filter(
+    //         doctor =>
+    //             String(
+    //                 doctor.hospital || ""
+    //             )
+    //             .trim()
+    //             .toLowerCase()
+    //             ===
+    //             hospital
+    //     );
+     return getDoctors()
+        .filter(function(doctor){
+
+            // Do not count removed doctors
+            if(isDoctorRemoved(doctor)){
+                return false;
+            }
+
+            return String(
+                doctor.hospital || ""
+            )
+            .trim()
+            .toLowerCase()
+            ===
+            hospital;
+
+        });
 
 }
 
@@ -1538,7 +1596,66 @@ document.getElementById(
     }
 );
 
+function addAdminNotification({
+    type = "system",
+    title,
+    message,
+    hospital
+}) {
 
+    const key =
+        "bookNMeetNotifications";
+
+    let notifications = [];
+
+    try {
+
+        notifications =
+            JSON.parse(
+                localStorage.getItem(key)
+            ) || [];
+
+    } catch (error) {
+
+        notifications = [];
+
+    }
+
+
+    notifications.push({
+
+        id:
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .substring(2, 8),
+
+        type,
+
+        title,
+
+        message,
+
+        hospital:
+            hospital || "",
+
+        timestamp:
+            new Date().toISOString(),
+
+        read: false
+
+    });
+
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(
+            notifications
+        )
+    );
+
+}
 /* =========================================================
    INITIAL LOAD
 ========================================================= */

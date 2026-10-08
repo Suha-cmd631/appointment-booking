@@ -128,11 +128,17 @@ body {
 }
 
 .header-right {
-    display: flex;
+    /* display: flex;
     align-items: center;
     gap: 0px;
-    margin-left: 260px;
-    
+    margin-left: 160px;
+    margin-right: 5%; */
+     display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    margin-right: 0;
+    flex-shrink: 0;
 }
 
 .header-button {
@@ -162,11 +168,16 @@ margin-left: 150px;
 }
 
 .profile-button {
-    width: 42px;
+    /* width: 42px;
     height: 42px;
 margin-left: 30px;
     border-radius: 50%;
-margin-right: 50px;
+margin-right: 50px; */
+width: 42px;
+    height: 42px;
+    margin-left: 0;
+    border-radius: 50%;
+    margin-right: 0;
     border: none;
 
     background: linear-gradient(
@@ -917,6 +928,31 @@ margin-right: 50px;
     opacity: 1;
 }
 
+
+/* REMOVE DOCTOR BUTTON */
+.remove-doctor-btn{
+    border:1px solid #f1c8c6;
+    background:#fff5f4;
+    color:#c0392b;
+    padding:9px 13px;
+    border-radius:9px;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.2s;
+}
+.remove-doctor-btn:hover{
+    background:#ffe8e6;
+    border-color:#e8aaa6;
+    transform:translateY(-1px);
+}
+.doctor-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
 /* =========================
    RESPONSIVE
 ========================= */
@@ -1000,19 +1036,35 @@ margin-right: 50px;
     cursor:pointer;
 }
 
-.login{
+/* .login{
     background:white;
     border:1px solid #cbd7e4;
     color:#12345b;
     margin-left: 90px;
     align-items: center;
     margin-bottom: 30px;
-    margin-right: 1900px;
+   margin-right: 2900px;
     margin-left: 0px;
     margin-top: 30px;
 }
 .login:hover{
     color:#1d9c96;
+} */
+ .login {
+    padding: 10px 18px;
+    border-radius: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #cbd7e4;
+    color: #12345b;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.login:hover {
+    color: #1d9c96;
+    border-color: #1d9c96;
 }
 </style>
 </head>
@@ -1059,6 +1111,12 @@ margin-right: 50px;
         <a href="doctor-schedule.html">
             Schedule
         </a>
+         <a href="reports.html">
+            Reports
+        </a>
+        <a href="settings.html">
+            Settings
+        </a>
 
     </nav>
 
@@ -1097,7 +1155,7 @@ margin-right: 50px;
             </div>
 
         </div>
-<button class="login" onclick="window.location.href='landing.html'">
+          <button class="login" onclick="window.location.href='landing.html'">
     Logout
 </button>
     </div>
@@ -1203,7 +1261,8 @@ margin-right: 50px;
         </h3>
 
         <p>
-            Add a doctor to this hospital using
+            There are no active doctors registered
+            under this hospital. Add a doctor using
             the Add Doctor button.
         </p>
 
@@ -1430,7 +1489,7 @@ let currentUser =
 if (!currentUser) {
 
     window.location.href =
-        "first.html";
+        "landing.html";
 
 }
 
@@ -1542,7 +1601,53 @@ function cleanHospitalName(name) {
 
 }
 
+/* =========================================================
+   ADMIN NOTIFICATION
+========================================================= */
 
+function addAdminNotification({
+    type,
+    title,
+    message,
+    hospital
+}) {
+    const key = "bookNMeetNotifications";
+
+    let notifications = [];
+
+    try {
+        notifications =
+            JSON.parse(
+                localStorage.getItem(key)
+            ) || [];
+    } catch (error) {
+        notifications = [];
+    }
+
+    notifications.push({
+        id:
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .substring(2, 8),
+
+        type: type,
+        title: title,
+        message: message,
+        hospital: hospital,
+
+        timestamp:
+            new Date().toISOString(),
+
+        read: false
+    });
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(notifications)
+    );
+}
 /* =========================================================
    GET DOCTORS
 ========================================================= */
@@ -1589,6 +1694,85 @@ function saveDoctors(doctors) {
 
 }
 
+/* =========================================================
+   REMOVED DOCTORS
+   Removed doctors stay recorded so hospitals/home search
+   can exclude them everywhere.
+========================================================= */
+
+function getRemovedDoctorIds() {
+    try {
+        const removed = JSON.parse(
+            localStorage.getItem("bookNMeetRemovedDoctors") || "[]"
+        );
+        return Array.isArray(removed) ? removed : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveRemovedDoctorIds(ids) {
+    localStorage.setItem(
+        "bookNMeetRemovedDoctors",
+        JSON.stringify([...new Set(ids.map(String))])
+    );
+}
+
+function isDoctorRemoved(doctor) {
+    const id = doctor.id || doctor.doctorId;
+    if (!id) return false;
+    return getRemovedDoctorIds().includes(String(id));
+}
+
+function removeDoctor(doctorId) {
+    const id = String(doctorId);
+    const doctors = getDoctors();
+    const doctor = doctors.find(d =>
+        String(d.id || d.doctorId || "") === id
+    );
+
+    if (!doctor) return;
+
+    const name = doctor.name || doctor.doctorName || "this doctor";
+
+    if (!confirm(
+        `Remove ${name} from this hospital?\n\n` +
+        `This doctor will no longer appear on the Doctors page, ` +
+        `Hospitals page, or Home page hospital search.`
+    )) {
+        return;
+    }
+
+    const removedIds = getRemovedDoctorIds();
+    removedIds.push(id);
+    saveRemovedDoctorIds(removedIds);
+
+    /* Keep the doctor record for old bookings/history, but mark it removed. */
+    const updatedDoctors = doctors.map(d => {
+        const currentId = String(d.id || d.doctorId || "");
+        if (currentId !== id) return d;
+
+        return {
+            ...d,
+            status: "Removed",
+            removed: true,
+            removedAt: new Date().toISOString()
+        };
+    });
+
+    saveDoctors(updatedDoctors);
+
+    addAdminNotification({
+        type: "doctor",
+        title: "Doctor removed",
+        message: name + " was removed from " + (currentUser.hospital || "the hospital") + ".",
+        hospital: currentUser.hospital || "Hospital"
+    });
+
+    loadDoctors();
+    showToast("Doctor removed successfully");
+}
+
 
 /* =========================================================
    GET DOCTORS FOR CURRENT HOSPITAL
@@ -1619,6 +1803,15 @@ function getHospitalDoctors() {
 
     return allDoctors.filter(
         doctor => {
+
+            /*
+             Removed doctors remain in storage for
+             old bookings/history, but must never be
+             displayed in active doctor lists.
+            */
+            if (isDoctorRemoved(doctor) || doctor.removed === true) {
+                return false;
+            }
 
             /*
              Doctor records created in
@@ -1977,16 +2170,29 @@ function loadDoctors() {
                     </div>
 
 
-                    <div class="profile-status">
+                    <div class="doctor-actions">
 
-                        <span class="status-dot"></span>
+                        <div class="profile-status">
 
-                        ${
-                            escapeHTML(
-                                doctor.status ||
-                                "Available"
-                            )
-                        }
+                            <span class="status-dot"></span>
+
+                            ${
+                                escapeHTML(
+                                    doctor.status ||
+                                    "Available"
+                                )
+                            }
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="remove-doctor-btn"
+                            data-doctor-id="${escapeHTML(doctor.id)}"
+                            title="Remove doctor"
+                        >
+                            Remove Doctor
+                        </button>
 
                     </div>
 
@@ -1998,6 +2204,18 @@ function loadDoctors() {
             doctorGrid.appendChild(
                 card
             );
+
+            const removeButton =
+                card.querySelector(".remove-doctor-btn");
+
+            if (removeButton) {
+                removeButton.addEventListener(
+                    "click",
+                    () => removeDoctor(
+                        removeButton.dataset.doctorId
+                    )
+                );
+            }
 
         }
     );
@@ -2281,7 +2499,16 @@ doctorForm.addEventListener(
             doctors
         );
 
-
+addAdminNotification({
+    type: "doctor",
+    title: "New doctor added",
+    message:
+        name +
+        " was added to " +
+        hospital +
+        ".",
+    hospital: hospital
+});
         /*
            Close popup.
         */
@@ -2442,7 +2669,7 @@ profileButton.addEventListener(
     () => {
 
         window.location.href =
-            "profile.html";
+            "settingss.html";
 
     }
 );

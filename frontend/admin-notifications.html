@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications - BOOK N MEET</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f9fc;
+            color: #12345b;
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .top-header {
+            height: 74px;
+            background: white;
+            border-bottom: 1px solid #dce6ef;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 18px;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            min-width: 350px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 13px;
+
+            background: linear-gradient(
+                135deg,
+                #1d9c96,
+                #123f70
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+            font-weight: bold;
+
+            box-shadow:
+                0 7px 18px rgba(18, 63, 112, 0.18);
+        }
+
+        .logo-text {
+            margin-left: 12px;
+
+            font-size: 24px;
+            font-weight: 800;
+
+            color: #12345b;
+        }
+
+        .logo-text .n {
+            color: #1d9c96;
+        }
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+
+            flex: 1;
+            justify-content: center;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+
+            color: #64788e;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            padding: 27px 0;
+
+            position: relative;
+        }
+
+        .main-nav a:hover {
+            color: #168d88;
+        }
+
+        .main-nav a.active {
+            color: #168d88;
+        }
+
+        .main-nav a.active::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            height: 3px;
+
+            background: #1d9c96;
+
+            border-radius: 5px 5px 0 0;
+        }
+
+        /* =====================================================
+           RIGHT HEADER
+        ===================================================== */
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .notification-button {
+            width: 48px;
+            height: 48px;
+
+            border: 1px solid #d9e4ec;
+
+            border-radius: 13px;
+
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+
+            cursor: pointer;
+
+            position: relative;
+        }
+
+        .notification-button:hover {
+            background: #f5f9fc;
+        }
+
+        .notification-badge {
+            position: absolute;
+
+            top: -4px;
+            right: -4px;
+
+            min-width: 19px;
+            height: 19px;
+
+            padding: 0 5px;
+
+            border-radius: 20px;
+
+            background: #e85d5d;
+
+            color: white;
+
+            font-size: 10px;
+            font-weight: bold;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-circle {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #1d9c96,
+                #123f70
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .profile-details {
+            min-width: 120px;
+        }
+
+        .profile-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #173a5f;
+        }
+
+        .profile-hospital {
+            font-size: 13px;
+            color: #8092a5;
+            margin-top: 3px;
+        }
+
+        .logout-btn {
+            border: 1px solid #cbd9e5;
+
+            background: white;
+
+            color: #12345b;
+
+            padding: 11px 20px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #f5f9fc;
+        }
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .page {
+            padding: 28px 8px 50px 8px;
+        }
+
+        .page-title {
+            padding-left: 2px;
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+            color: #12345b;
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: #71869c;
+            font-size: 15px;
+        }
+
+        /* =====================================================
+           NOTIFICATION CARD
+        ===================================================== */
+
+        .notifications-card {
+            width: 100%;
+
+            background: white;
+
+            border: 1px solid #dce6ef;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 5px 20px rgba(18, 52, 91, 0.05);
+        }
+
+        .notification-item {
+            min-height: 92px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 18px 20px;
+
+            border-bottom: 1px solid #e3eaf0;
+
+            cursor: pointer;
+
+            transition: background 0.2s ease;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #f9fcfd;
+        }
+
+        .notification-item.unread {
+            background: #fbfeff;
+        }
+
+        /* =====================================================
+           ICON
+        ===================================================== */
+
+        .notification-icon {
+            width: 45px;
+            height: 45px;
+
+            min-width: 45px;
+
+            margin-right: 16px;
+
+            border-radius: 12px;
+
+            background: #eaf6f6;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .notification-icon.appointment {
+            background: #e9f5f6;
+        }
+
+        .notification-icon.confirmed {
+            background: #e5f7ef;
+        }
+
+        .notification-icon.cancelled {
+            background: #fff0f0;
+        }
+
+        .notification-icon.doctor {
+            background: #edf2fb;
+        }
+
+        .notification-icon.schedule {
+            background: #f4eefb;
+        }
+
+        .notification-icon.patient {
+            background: #fff5e6;
+        }
+
+        .notification-icon.system {
+            background: #edf4f9;
+        }
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .notification-content {
+            flex: 1;
+
+            min-width: 0;
+        }
+
+        .notification-title {
+            color: #12345b;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            margin-bottom: 4px;
+        }
+
+        .notification-description {
+            color: #71869c;
+
+            font-size: 13px;
+
+            line-height: 1.4;
+
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            color: #8295a7;
+
+            font-size: 11px;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+
+            min-width: 8px;
+
+            background: #1d9c96;
+
+            border-radius: 50%;
+
+            margin-left: 15px;
+        }
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty-state {
+            padding: 65px 20px;
+
+            text-align: center;
+
+            display: none;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #edf5f7;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+        .empty-state h3 {
+            color: #12345b;
+
+            font-size: 18px;
+
+            margin-bottom: 6px;
+        }
+
+        .empty-state p {
+            color: #8092a5;
+
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           CLEAR BUTTON
+        ===================================================== */
+
+        .notifications-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+        .hospital-label {
+            font-size: 13px;
+
+            color: #8092a5;
+        }
+
+        .hospital-label strong {
+            color: #12345b;
+        }
+
+        .clear-btn {
+            border: none;
+
+            background: transparent;
+
+            color: #168d88;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .clear-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            background: #12345b;
+
+            color: white;
+
+            padding: 13px 18px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.2);
+
+            opacity: 0;
+
+            transform: translateY(60px);
+
+            transition: 0.3s;
+
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media(max-width: 1000px) {
+
+            .logo-section {
+                min-width: auto;
+            }
+
+            .main-nav {
+                gap: 18px;
+            }
+
+            .main-nav a {
+                font-size: 14px;
+            }
+
+            .profile-details {
+                display: none;
+            }
+
+        }
+
+        @media(max-width: 700px) {
+
+            .top-header {
+                height: auto;
+
+                padding: 12px;
+
+                flex-wrap: wrap;
+            }
+
+            .logo-section {
+                width: 100%;
+            }
+
+            .main-nav {
+                order: 3;
+
+                width: 100%;
+
+                overflow-x: auto;
+
+                justify-content: flex-start;
+            }
+
+            .main-nav a {
+                padding: 10px 0;
+            }
+
+            .page {
+                padding: 20px 10px;
+            }
+
+            .notification-item {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <div class="logo-icon">
+            +
+        </div>
+
+        <div class="logo-text">
+            BOOK <span class="n">N</span> MEET
+        </div>
+
+    </div>
+
+
+    <nav class="main-nav">
+
+        <a href="admin.html">
+            Home
+        </a>
+
+        <a href="appointments.html">
+            Appointments
+        </a>
+
+        <a href="doctors.html">
+            Doctors
+        </a>
+
+        <a href="patients.html">
+            Patients
+        </a>
+
+        <a href="doctor-schedule.html">
+            Schedule
+        </a>
+        <a href="reports.html">
+            Reports
+        </a>
+         <a href="settings.html">
+            Settings
+        </a>
+    </nav>
+
+
+    <div class="header-right">
+
+        <button
+            class="notification-button"
+            title="Notifications">
+
+            🔔
+
+            <span
+                class="notification-badge"
+                id="notificationBadge">
+                0
+            </span>
+
+        </button>
+
+
+        <div class="profile-section">
+
+            <!-- <div
+                class="profile-circle"
+                id="profileInitial">
+                J
+            </div>
+
+            <div class="profile-details">
+
+                <div
+                    class="profile-name"
+                    id="profileName">
+                    Jahnavi
+                </div>
+
+                <div
+                    class="profile-hospital"
+                    id="profileHospital">
+                    Trinity Hospital
+                </div>
+
+            </div> -->
+            <div
+    class="profile-circle"
+    id="profileInitial">
+    U
+</div>
+
+<div class="profile-details">
+
+    <div
+        class="profile-name"
+        id="profileName">
+        User
+    </div>
+
+    <div
+        class="profile-hospital"
+        id="profileHospital">
+        Hospital
+    </div>
+
+</div>
+
+        </div>
+ 
+        <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     PAGE
+===================================================== -->
+
+<main class="page">
+
+    <div class="page-title">
+
+        <h1>
+            Notifications
+        </h1>
+
+        <p>
+            Appointment and hospital activity alerts.
+        </p>
+
+    </div>
+
+
+    <div class="notifications-top">
+
+        <div class="hospital-label">
+
+            Hospital:
+
+            <strong id="currentHospital">
+                 Hospital
+            </strong>
+
+        </div>
+
+
+        <button
+            class="clear-btn"
+            onclick="markAllRead()">
+
+            Mark all as read
+
+        </button>
+
+    </div>
+
+
+    <div class="notifications-card">
+
+        <div id="notificationsList">
+        </div>
+
+
+        <div
+            class="empty-state"
+            id="emptyState">
+
+            <div class="empty-icon">
+                🔔
+            </div>
+
+            <h3>
+                No notifications
+            </h3>
+
+            <p>
+                New hospital activity will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
+
+<script>
+
+/* ============================================================
+   BOOK N MEET - ADMIN NOTIFICATIONS
+============================================================ */
+
+/*
+   Notification structure:
+
+   {
+       id,
+       type,
+       title,
+       message,
+       hospital,
+       timestamp,
+       read
+   }
+
+
+   IMPORTANT:
+
+   Appointment notifications use:
+
+       booking.patientName
+
+   and NOT:
+
+       loggedInUser.name
+
+   Example:
+
+       Dharani logs in
+             ↓
+       books for Ram
+             ↓
+       notification:
+       "Ram requested an appointment..."
+*/
+
+
+/* ============================================================
+   STORAGE KEY
+============================================================ */
+
+const NOTIFICATION_KEY =
+    "bookNMeetNotifications";
+
+
+/* ============================================================
+   GET CURRENT STAFF
+============================================================ */
+
+function getCurrentStaff() {
+
+    const keys = [
+
+        "bookNMeetCurrentUser",
+
+        "currentUser",
+
+        "loggedInUser",
+
+        "currentStaff",
+
+        "bookNMeetCurrentStaff",
+
+        "staffUser"
+
+    ];
+
+
+    for (const key of keys) {
+
+        try {
+
+            const value =
+                localStorage.getItem(key);
+
+            if (!value) continue;
+
+            const data =
+                JSON.parse(value);
+
+            if (
+                data &&
+                typeof data === "object"
+            ) {
+
+                return data;
+
+            }
+
+        } catch (error) {}
+
+    }
+
+
+    return {};
+
+}
+
+
+/* ============================================================
+   CURRENT HOSPITAL
+============================================================ */
+
+function getCurrentHospital() {
+
+    // const staff =
+    //     getCurrentStaff();
+
+
+    // return (
+
+    //     staff.hospital ||
+
+    //     staff.hospitalName ||
+
+    //     staff.selectedHospital ||
+
+    //     staff.hospital_name ||
+
+    //     "Trinity Hospital"
+
+    // ).trim();
+     const staff = getCurrentStaff();
+
+    return String(
+        staff.hospital ||
+        staff.hospitalName ||
+        staff.selectedHospital ||
+        staff.hospital_name ||
+        ""
+    ).trim();
+
+
+}
+
+
+/* ============================================================
+   LOAD NOTIFICATIONS
+============================================================ */
+
+function getNotifications() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                NOTIFICATION_KEY
+            )
+        ) || [];
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+/* ============================================================
+   SAVE NOTIFICATIONS
+============================================================ */
+
+function saveNotifications(
+    notifications
+) {
+
+    localStorage.setItem(
+        NOTIFICATION_KEY,
+        JSON.stringify(
+            notifications
+        )
+    );
+
+}
+
+
+/* ============================================================
+   NORMALIZE HOSPITAL
+============================================================ */
+
+function normalizeHospital(value) {
+
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+
+}
+
+
+/* ============================================================
+   ESCAPE HTML
+============================================================ */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* ============================================================
+   TIME FORMAT
+============================================================ */
+
+function timeAgo(timestamp) {
+
+    const date =
+        new Date(timestamp);
+
+
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "Recently";
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    const seconds =
+        Math.floor(
+            (
+                now - date
+            ) / 1000
+        );
+
+
+    if (seconds < 60) {
+
+        return "Just now";
+
+    }
+
+
+    const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+
+    if (minutes < 60) {
+
+        return minutes +
+            (
+                minutes === 1
+                    ? " minute ago"
+                    : " minutes ago"
+            );
+
+    }
+
+
+    const hours =
+        Math.floor(
+            minutes / 60
+        );
+
+
+    if (hours < 24) {
+
+        return hours +
+            (
+                hours === 1
+                    ? " hour ago"
+                    : " hours ago"
+            );
+
+    }
+
+
+    const days =
+        Math.floor(
+            hours / 24
+        );
+
+
+    if (days < 7) {
+
+        return days +
+            (
+                days === 1
+                    ? " day ago"
+                    : " days ago"
+            );
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* ============================================================
+   ICON
+============================================================ */
+
+function getNotificationIcon(
+    type
+) {
+
+    const icons = {
+
+        appointment:
+            "🗓️",
+
+        confirmed:
+            "✅",
+
+        cancelled:
+            "❌",
+
+        doctor:
+            "🧑‍⚕️",
+
+        schedule:
+            "📅",
+
+        patient:
+            "👤",
+
+        hospital:
+            "🏥",
+
+        system:
+            "🔔"
+
+    };
+
+
+    return (
+        icons[type] ||
+        icons.system
+    );
+
+}
+
+
+/* ============================================================
+   RENDER
+============================================================ */
+
+function renderNotifications() {
+
+    const hospital =
+        getCurrentHospital();
+
+
+    const all =
+        getNotifications();
+
+
+    /*
+       Only notifications belonging to this
+       hospital are shown.
+
+       Notifications without a hospital are
+       considered general admin notifications.
+    */
+
+    const notifications =
+        all.filter(
+            notification => {
+
+                if (
+                    !notification.hospital
+                ) {
+
+                    return true;
+
+                }
+
+
+                return (
+                    normalizeHospital(
+                        notification.hospital
+                    ) ===
+                    normalizeHospital(
+                        hospital
+                    )
+                );
+
+            }
+        );
+
+
+    /*
+       Latest notification first.
+    */
+
+    notifications.sort(
+        (a, b) => {
+
+            return (
+                new Date(
+                    b.timestamp
+                ) -
+                new Date(
+                    a.timestamp
+                )
+            );
+
+        }
+    );
+
+
+    const list =
+        document.getElementById(
+            "notificationsList"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "emptyState"
+        );
+
+
+    list.innerHTML = "";
+
+
+    if (
+        notifications.length === 0
+    ) {
+
+        empty.style.display =
+            "block";
+
+        updateBadge([]);
+
+        return;
+
+    }
+
+
+    empty.style.display =
+        "none";
+
+
+    notifications.forEach(
+        notification => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "notification-item" +
+                (
+                    notification.read
+                        ? ""
+                        : " unread"
+                );
+
+
+            item.onclick = () => {
+
+                markRead(
+                    notification.id
+                );
+
+            };
+
+
+            const iconClass =
+                notification.type ||
+                "system";
+
+
+            item.innerHTML = `
+
+                <div
+                    class="notification-icon ${escapeHTML(
+                        iconClass
+                    )}">
+
+                    ${getNotificationIcon(
+                        notification.type
+                    )}
+
+                </div>
+
+
+                <div class="notification-content">
+
+                    <div class="notification-title">
+
+                        ${escapeHTML(
+                            notification.title
+                        )}
+
+                    </div>
+
+
+                    <div class="notification-description">
+
+                        ${escapeHTML(
+                            notification.message
+                        )}
+
+                    </div>
+
+
+                    <div class="notification-time">
+
+                        ${timeAgo(
+                            notification.timestamp
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                ${
+                    notification.read
+                        ? ""
+                        : `<div class="unread-dot"></div>`
+                }
+
+            `;
+
+
+            list.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    updateBadge(
+        notifications
+    );
+
+}
+
+
+/* ============================================================
+   BADGE
+============================================================ */
+
+function updateBadge(
+    notifications
+) {
+
+    const unread =
+        notifications.filter(
+            item =>
+                !item.read
+        ).length;
+
+
+    const badge =
+        document.getElementById(
+            "notificationBadge"
+        );
+
+
+    badge.textContent =
+        unread > 99
+            ? "99+"
+            : unread;
+
+
+    badge.style.display =
+        unread === 0
+            ? "none"
+            : "flex";
+
+}
+
+
+/* ============================================================
+   MARK ONE READ
+============================================================ */
+
+function markRead(id) {
+
+    const notifications =
+        getNotifications();
+
+
+    const notification =
+        notifications.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+
+    if (notification) {
+
+        notification.read =
+            true;
+
+    }
+
+
+    saveNotifications(
+        notifications
+    );
+
+
+    renderNotifications();
+
+}
+
+
+/* ============================================================
+   MARK ALL READ
+============================================================ */
+
+function markAllRead() {
+
+    const notifications =
+        getNotifications();
+
+
+    const hospital =
+        getCurrentHospital();
+
+
+    notifications.forEach(
+        notification => {
+
+            const belongsToHospital =
+
+                !notification.hospital ||
+
+                normalizeHospital(
+                    notification.hospital
+                ) ===
+                normalizeHospital(
+                    hospital
+                );
+
+
+            if (
+                belongsToHospital
+            ) {
+
+                notification.read =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    saveNotifications(
+        notifications
+    );
+
+
+    renderNotifications();
+
+
+    showToast(
+        "All notifications marked as read."
+    );
+
+}
+
+
+/* ============================================================
+   TOAST
+============================================================ */
+
+function showToast(
+    message
+) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        2500
+    );
+
+}
+
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+
+function logout() {
+
+    localStorage.removeItem(
+        "bookNMeetCurrentUser"
+    );
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    localStorage.removeItem(
+        "loggedInUser"
+    );
+
+
+    window.location.href =
+        "landing.html";
+
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+function loadHeader() {
+
+    const staff =
+        getCurrentStaff();
+
+
+    const name =
+
+        staff.name ||
+
+        staff.fullName ||
+
+        staff.username ||
+
+        staff.staffName ||
+
+        "User";
+
+
+    const hospital =
+        getCurrentHospital();
+
+
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "profileHospital"
+    ).textContent =
+        hospital;
+
+
+    document.getElementById(
+        "profileInitial"
+    ).textContent =
+        name
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        "currentHospital"
+    ).textContent =
+        hospital;
+
+}
+
+
+/* ============================================================
+   REAL-TIME LOCAL UPDATE
+============================================================ */
+
+window.addEventListener(
+    "storage",
+    function(event) {
+
+        if (
+            event.key ===
+            NOTIFICATION_KEY
+        ) {
+
+            renderNotifications();
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "focus",
+    function() {
+
+        loadHeader();
+
+        renderNotifications();
+
+    }
+);
+
+
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (
+            !document.hidden
+        ) {
+
+            loadHeader();
+
+            renderNotifications();
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   INITIAL LOAD
+============================================================ */
+
+loadHeader();
+
+renderNotifications();
+
+</script>
+
+</body>
+</html>

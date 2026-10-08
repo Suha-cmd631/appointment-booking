@@ -677,130 +677,216 @@ const hospitals = {
 };
 
 
-// function applySearchResults(){
+function getHospitalIdFromCard(card){
+    const visitButton = card.querySelector(".visit-btn");
 
-//     const params = new URLSearchParams(window.location.search);
-//     const speciality = params.get("speciality");
-//     const searched = params.get("searched") === "true";
+    if(!visitButton){
+        return null;
+    }
 
-//     const hospitalCards = document.querySelectorAll("#hospitalList .hospital");
-//     const bookButtons = document.querySelectorAll(".search-book-btn");
+    const onclick = visitButton.getAttribute("onclick") || "";
+    const match = onclick.match(/visitHospital\(\s*[\"\']([^\"\']+)[\"\']\s*\)/);
 
-//     // Normal visit to hospitals.html: show every hospital and no Book Now buttons.
-//     if(!searched || !speciality){
-//         hospitalCards.forEach(card => card.style.display = "block");
-//         bookButtons.forEach(btn => btn.style.display = "none");
+    return match ? match[1] : null;
+}
 
-//         document.getElementById("listTitle").textContent = "Available Hospitals";
-//         document.getElementById("listDescription").textContent =
-//             "Explore hospitals and view their doctors, specialities, ratings and reviews.";
-//         document.getElementById("searchInfo").style.display = "none";
-//         return;
-//     }
+function specialityDisplayName(name){
+    const key = specialityKey(name);
 
-//     let found = 0;
+    const names = {
+        "cardiology":"Cardiology",
+        "neurology":"Neurology",
+        "general medicine":"General Medicine",
+        "orthopedics":"Orthopedics",
+        "dermatology":"Dermatology",
+        "gynecology":"Gynecology",
+        "pediatrics":"Pediatrics",
+        "ophthalmology":"Ophthalmology",
+        "ent":"ENT"
+    };
 
-//     hospitalCards.forEach(card => {
+    if(names[key]){
+        return names[key];
+    }
 
-//         const id = card.querySelector(".search-book-btn").dataset.hospital;
-//         const hospital = hospitals[id];
+    return String(name || "Specialist")
+        .trim()
+        .replace(/\b\w/g, function(letter){
+            return letter.toUpperCase();
+        });
+}
 
-//         if(hospital.specialities.includes(speciality)){
-//             card.style.display = "block";
-//             found++;
-//         }else{
-//             card.style.display = "none";
-//         }
-//     });
+function getHospitalSpecialities(hospital){
+    const specialities = Array.isArray(hospital.specialities)
+        ? hospital.specialities.slice()
+        : [];
 
-//     bookButtons.forEach(btn => {
-//         const card = btn.closest(".hospital");
-//         btn.style.display = card.style.display === "none" ? "none" : "inline-block";
-//     });
+    /* Add specialities automatically from doctors added by admin. */
+    getHospitalDoctors(hospital).forEach(function(doctor){
+        const doctorSpeciality =
+            doctor.specialityKey ||
+            doctor.speciality ||
+            "";
 
-//     document.getElementById("listTitle").textContent =
-//         speciality + " Hospitals";
+        if(!doctorSpeciality){
+            return;
+        }
 
-//     document.getElementById("listDescription").textContent =
-//         "Hospitals offering " + speciality + " services.";
+        const displayName = specialityDisplayName(doctorSpeciality);
+        const key = specialityKey(displayName);
 
-//     const searchInfo = document.getElementById("searchInfo");
-//     searchInfo.style.display = "block";
+        const alreadyExists = specialities.some(function(existing){
+            return specialityKey(existing) === key;
+        });
 
-//     const date = params.get("date");
-//     const age = params.get("age");
+        if(!alreadyExists){
+            specialities.push(displayName);
+        }
+    });
 
-//     searchInfo.textContent =
-//         "Search results for " + speciality +
-//         (date ? " • Date: " + date : "") +
-//         (age ? " • Age: " + age : "");
+    return specialities;
+}
 
-//     if(found === 0){
-//         searchInfo.textContent =
-//             "No hospitals found for " + speciality + ".";
-//     }
+function updateHospitalCardSpecialities(card, hospital){
+    const specialityBox = card.querySelector(".specialities");
 
-//     window.scrollTo({top:0, behavior:"smooth"});
-// }
+    if(!specialityBox){
+        return;
+    }
+
+    const specialities = getHospitalSpecialities(hospital);
+
+    specialityBox.innerHTML = specialities.map(function(speciality){
+        return '<span class="speciality">' +
+            escapeHtml(speciality) +
+            '</span>';
+    }).join("");
+}
 
 function applySearchResults(){
 
     const params = new URLSearchParams(window.location.search);
 
-    const speciality = params.get("speciality");
-    const searched = params.get("searched") === "true";
+    const speciality =
+        params.get("speciality") || "";
+
+    const searched =
+        params.get("searched") === "true";
 
     const hospitalCards =
-        document.querySelectorAll("#hospitalList .hospital");
-
-    /* Normal visit to hospitals.html */
-    if(!searched || !speciality){
-
-        hospitalCards.forEach(function(card){
-            card.style.display = "block";
-        });
-
-        document.getElementById("listTitle").textContent =
-            "Available Hospitals";
-
-        document.getElementById("listDescription").textContent =
-            "Explore hospitals and view their doctors, specialities, ratings and reviews.";
-
-        document.getElementById("searchInfo").style.display = "none";
-
-        return;
-    }
-
+        document.querySelectorAll(
+            "#hospitalList .hospital"
+        );
 
     let found = 0;
 
     hospitalCards.forEach(function(card){
 
+        const hospitalId =
+            getHospitalIdFromCard(card);
+
+        const hospital =
+            hospitalId
+                ? hospitals[hospitalId]
+                : null;
+
+        if(!hospital){
+            card.style.display = "none";
+            return;
+        }
+
         /*
-         * Read all speciality names displayed
-         * inside this hospital card.
-         */
-        const specialityElements =
-            card.querySelectorAll(".speciality");
+          IMPORTANT:
+          Read both the original doctors in hospitals.html
+          and doctors added by the hospital admin.
+        */
+        const allDoctors =
+            getHospitalDoctors(hospital);
 
-        let hospitalHasSpeciality = false;
+        /*
+          Build the hospital's speciality list dynamically.
 
-        specialityElements.forEach(function(element){
+          Example:
+          Trinity originally:
+          Cardiology, Neurology, General Medicine, Orthopedics
 
-            const hospitalSpeciality =
-                element.textContent.trim().toLowerCase();
+          Admin adds:
+          Dr. X -> Dermatologist
 
-            if(
-                hospitalSpeciality ===
-                speciality.trim().toLowerCase()
-            ){
-                hospitalHasSpeciality = true;
-            }
+          Result:
+          Cardiology, Neurology, General Medicine,
+          Orthopedics, Dermatology
+        */
+        const hospitalSpecialities =
+            getHospitalSpecialities(hospital);
 
-        });
+        updateHospitalCardSpecialities(
+            card,
+            hospital
+        );
 
+        /*
+          Normal hospitals page:
+          show every hospital.
+        */
+        if(!searched || !speciality){
+            card.style.display = "block";
+            return;
+        }
 
-        if(hospitalHasSpeciality){
+        const requestedKey =
+            specialityKey(speciality);
+
+        /*
+          Match using the dynamically generated
+          speciality list.
+        */
+        const hospitalHasSpeciality =
+            hospitalSpecialities.some(function(item){
+
+                return (
+                    specialityKey(item) ===
+                    requestedKey
+                );
+
+            });
+
+        /*
+          Also check the actual doctor records.
+          This is the important part for a newly
+          added Trinity dermatologist.
+        */
+        /*
+          Also check the raw admin doctor records directly.
+          This makes the search independent of how the doctor
+          was saved (hospital / hospitalName / hospitalId).
+        */
+        const storedDoctors = getStoredDoctors();
+
+        const hasMatchingDoctor =
+            allDoctors.some(function(doctor){
+                return doctorMatchesSpeciality(
+                    doctor,
+                    speciality
+                );
+            }) ||
+            storedDoctors.some(function(doctor){
+                const doctorHospital =
+                    doctor.hospital ||
+                    doctor.hospitalName ||
+                    doctor.hospitalId ||
+                    "";
+
+                return (
+                    hospitalNamesMatch(doctorHospital, hospital.name) &&
+                    doctorMatchesSpeciality(doctor, speciality)
+                );
+            });
+
+        if(
+            hospitalHasSpeciality ||
+            hasMatchingDoctor
+        ){
 
             card.style.display = "block";
             found++;
@@ -813,35 +899,64 @@ function applySearchResults(){
 
     });
 
+    /*
+      Heading
+    */
+    if(!searched || !speciality){
 
-    /* Update heading */
+        document.getElementById(
+            "listTitle"
+        ).textContent =
+            "Available Hospitals";
 
-    document.getElementById("listTitle").textContent =
+        document.getElementById(
+            "listDescription"
+        ).textContent =
+            "Explore hospitals and view their doctors, specialities, ratings and reviews.";
+
+        document.getElementById(
+            "searchInfo"
+        ).style.display = "none";
+
+        return;
+    }
+
+    document.getElementById(
+        "listTitle"
+    ).textContent =
         speciality + " Hospitals";
 
-    document.getElementById("listDescription").textContent =
-        "Hospitals offering " + speciality + " services.";
-
-
-    /* Search information */
+    document.getElementById(
+        "listDescription"
+    ).textContent =
+        "Hospitals offering " +
+        speciality +
+        " services.";
 
     const searchInfo =
-        document.getElementById("searchInfo");
+        document.getElementById(
+            "searchInfo"
+        );
 
     searchInfo.style.display = "block";
 
+    const date =
+        params.get("date");
 
-    const date = params.get("date");
-    const age = params.get("age");
-
+    const age =
+        params.get("age");
 
     if(found > 0){
 
         searchInfo.textContent =
             "Search results for " +
             speciality +
-            (date ? " • Date: " + date : "") +
-            (age ? " • Age: " + age : "");
+            (date
+                ? " • Date: " + date
+                : "") +
+            (age
+                ? " • Age: " + age
+                : "");
 
     }else{
 
@@ -852,12 +967,12 @@ function applySearchResults(){
 
     }
 
-
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+        top: 0,
+        behavior: "smooth"
     });
 }
+
 
 function bookHospital(hospitalName){
     const params = new URLSearchParams(window.location.search);
@@ -882,6 +997,41 @@ function bookHospital(hospitalName){
         .trim()
         .toLowerCase()
         .replace(/\s+/g, " ");
+}
+
+/* 
+   Hospital names can come from different pages/localStorage.
+   Treat small naming differences as the same hospital.
+   Examples:
+   Trinity / Trinity Hospital
+   Gowthami / Goutami / Gowthami Hospital
+*/
+function hospitalKey(name){
+    let value = cleanHospitalName(name);
+
+    value = value
+        .replace(/\bgoutami\b/g, "gowthami")
+        .replace(/\bhospital\b/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+
+    return value;
+}
+
+function hospitalNamesMatch(first, second){
+    const a = hospitalKey(first);
+    const b = hospitalKey(second);
+
+    if(!a || !b){
+        return false;
+    }
+
+    return (
+        a === b ||
+        a.includes(b) ||
+        b.includes(a)
+    );
 }
 
 function cleanSpeciality(name){
@@ -942,7 +1092,30 @@ function getStoredDoctors(){
         return [];
     }
 }
+function getRemovedDoctorIds(){
+    try{
+        const removed = JSON.parse(
+            localStorage.getItem("bookNMeetRemovedDoctors") || "[]"
+        );
 
+        return Array.isArray(removed)
+            ? removed.map(String)
+            : [];
+    }catch(error){
+        console.error("Unable to read removed doctors:", error);
+        return [];
+    }
+}
+
+function isDoctorRemoved(doctor){
+    const doctorId = doctor.id || doctor.doctorId;
+
+    if(!doctorId){
+        return false;
+    }
+
+    return getRemovedDoctorIds().includes(String(doctorId));
+}
 function getHospitalDoctors(hospital){
     /*
       Keep the doctors already present in this patient page,
@@ -951,7 +1124,28 @@ function getHospitalDoctors(hospital){
       This means an admin-added doctor is visible to patients
       without removing the existing hospital doctors.
     */
-    const existingDoctors = (hospital.doctors || []).map(function(doctor){
+    // const existingDoctors = (hospital.doctors || []).map(function(doctor){
+    //     return {
+    //         ...doctor,
+    //         hospital: doctor.hospital || hospital.name,
+    //         hospitalName: doctor.hospitalName || hospital.name,
+    //         specialityKey:
+    //             doctor.specialityKey ||
+    //             specialityKey(doctor.speciality || "")
+    //     };
+    // });
+    const existingDoctors = (hospital.doctors || [])
+    .filter(function(doctor){
+
+        // Do not show removed doctors
+        if(isDoctorRemoved(doctor)){
+            return false;
+        }
+
+        return true;
+    })
+    .map(function(doctor){
+
         return {
             ...doctor,
             hospital: doctor.hospital || hospital.name,
@@ -960,14 +1154,21 @@ function getHospitalDoctors(hospital){
                 doctor.specialityKey ||
                 specialityKey(doctor.speciality || "")
         };
+
     });
 
     const storedDoctors = getStoredDoctors().filter(function(doctor){
+        if(isDoctorRemoved(doctor)){
+        return false;
+    }
         const doctorHospital = cleanHospitalName(
             doctor.hospital || doctor.hospitalName || ""
         );
 
-        return doctorHospital === cleanHospitalName(hospital.name);
+        return hospitalNamesMatch(
+            doctorHospital,
+            hospital.name
+        );
     }).map(function(doctor){
         return {
             ...doctor,
@@ -1040,7 +1241,7 @@ function visitHospital(id){
 
     /* Show hospital specialities */
     document.getElementById("detailSpecialities").innerHTML =
-        hospital.specialities.map(function(s){
+        getHospitalSpecialities(hospital).map(function(s){
             return '<span class="speciality-large">' +
                 escapeHtml(s) +
                 '</span>';
@@ -1196,6 +1397,10 @@ applySearchResults();
 */
 window.addEventListener("storage", function(event){
     if(event.key === "bookNMeetDoctors"){
+
+        /* Refresh hospital cards so newly-added specialities appear immediately. */
+        applySearchResults();
+
         const detailsVisible =
             document.getElementById("hospitalDetails").style.display !== "none";
 

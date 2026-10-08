@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOOK N MEET - Doctor Schedule</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f9fc;color:#12345b}
+.header{height:72px;background:#fff;border-bottom:1px solid #dfe8ef;display:flex;align-items:center;padding:0 30px;gap:35px;position:sticky;top:0;z-index:20}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#12345b;font-weight:800;font-size:19px;white-space:nowrap}.logo span{color:#1d9c96}.logo-icon{width:38px;height:38px;border-radius:11px;background:#12345b;color:#fff;display:grid;place-items:center;font-size:25px}
+.nav{display:flex;gap:25px;align-items:center;flex:1;margin-left: 300px;}.nav a{text-decoration:none;color:#61758a;font-size:13px;font-weight:700}.nav a:hover,.nav a.active{color:#1d9c96}
+.header-right{display:flex;align-items:center;gap:12px}.notify{width:38px;height:38px;border:1px solid #d9e4ec;border-radius:10px;background:#fff;text-decoration:none;display:grid;place-items:center;font-size:18px}.profile{width:38px;height:38px;border-radius:50%;border:0;background:#12345b;color:#fff;font-weight:800}.staff{font-size:12px;min-width:125px;line-height:1.25}.staff strong{display:block;font-size:13px;color:#12345b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.staff span{color:#71859a;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.logout{border:1px solid #d5e0e8;background:#fff;color:#12345b;padding:9px 14px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer}.logout:hover{border-color:#1d9c96;color:#1d9c96}
+.main{padding:32px;max-width:1500px;margin:auto}.heading{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}.heading h1{font-size:30px;margin-bottom:6px}.heading p{color:#71859a;font-size:14px}.date-box{display:flex;align-items:center;gap:9px}.date-box label{font-size:12px;font-weight:700;color:#60778e}.date-box input{padding:11px 13px;border:1px solid #d5e0e8;border-radius:9px;background:#fff;color:#12345b}
+.info{background:#eef9f8;border:1px solid #d6efec;border-radius:12px;padding:15px 18px;color:#166f70;font-size:13px;margin-bottom:22px}
+.card{background:#fff;border:1px solid #dfe8ef;border-radius:15px;box-shadow:0 5px 20px rgba(18,52,91,.05);overflow:hidden}.card-head{padding:20px 24px;border-bottom:1px solid #e7eef3;display:flex;justify-content:space-between;align-items:center}.card-head h2{font-size:18px}.add-btn{border:0;background:#12345b;color:#fff;border-radius:9px;padding:11px 17px;font-weight:700;cursor:pointer}.add-btn:hover{background:#1d9c96}
+table{width:100%;border-collapse:collapse}th{text-align:left;background:#f8fafc;color:#62778d;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:14px 18px;border-bottom:1px solid #e5edf3}td{padding:17px 18px;border-bottom:1px solid #edf2f5;font-size:13px;vertical-align:middle}tbody tr:hover{background:#fbfdfe}.doctor-name{font-weight:700;color:#12345b}.speciality{color:#60778e}.hours{white-space:nowrap}.count{font-weight:700}.available-count{color:#138a69}.busy-count{color:#d55a51}.status-buttons{display:flex;gap:7px}.status-btn{border:1px solid #d9e4ec;background:#fff;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:700;cursor:pointer;color:#60778e}.status-btn.available.active{background:#e7f8f1;border-color:#bcebd9;color:#16845f}.status-btn.busy.active{background:#fff0ef;border-color:#ffd0cc;color:#d55249}.time-range{font-size:11px;color:#71859a;margin-top:6px}.edit-btn{border:0;background:#edf7f8;color:#126e72;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer}.empty{text-align:center;padding:55px 20px;color:#71859a}.empty h3{color:#12345b;margin-bottom:7px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,31,51,.48);z-index:50;align-items:center;justify-content:center;padding:20px}.overlay.show{display:flex}.modal{width:min(620px,100%);background:#fff;border-radius:16px;box-shadow:0 20px 70px rgba(0,0,0,.2);overflow:hidden}.modal-head{padding:20px 24px;border-bottom:1px solid #e5edf3;display:flex;justify-content:space-between;align-items:center}.modal-head h2{font-size:19px}.close{border:0;background:#f2f6f8;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer}.modal-body{padding:22px 24px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field.full{grid-column:1/-1}.field label{display:block;font-size:12px;font-weight:700;color:#526a80;margin-bottom:7px}.field select,.field input{width:100%;padding:11px 12px;border:1px solid #d5e0e8;border-radius:9px;outline:none;background:#fff;color:#12345b}.field select:focus,.field input:focus{border-color:#1d9c96}.mode{display:flex;gap:9px}.mode button{flex:1;padding:11px;border-radius:9px;border:1px solid #d5e0e8;background:#fff;font-weight:700;cursor:pointer}.mode button.available.active{background:#e7f8f1;border-color:#bcebd9;color:#16845f}.mode button.busy.active{background:#fff0ef;border-color:#ffd0cc;color:#d55249}.busy-fields{display:none;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.busy-fields.show{display:grid}.help{font-size:11px;color:#71859a;margin-top:6px}.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #e5edf3}.cancel{border:1px solid #d5e0e8;background:#fff;color:#60778e;padding:10px 15px;border-radius:8px;font-weight:700;cursor:pointer}.save{border:0;background:#12345b;color:#fff;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer}.save:hover{background:#1d9c96}.toast{position:fixed;right:25px;bottom:25px;background:#12345b;color:#fff;padding:13px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.2);opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s;z-index:100;font-size:13px}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1050px){.nav{display:none}.header{justify-content:space-between}.staff{display:none}th,td{padding:13px 10px}.main{padding:22px 15px}.table-wrap{overflow-x:auto}table{min-width:1050px}}
+</style>
+</head>
+<body>
+<header class="header">
+<a href="admin.html" class="logo"><div class="logo-icon">+</div><div>BOOK <span>N</span> MEET</div></a>
+<nav class="nav">
+<a href="admin.html">Home</a><a href="appointments.html">Appointments</a><a href="doctors.html">Doctors</a><a href="patients.html">Patients</a><a href="schedule.html" class="active">Schedule</a>
+ <a href="reports.html">
+            Reports
+        </a>
+         <a href="settings.html">
+            Settings
+        </a>
+</nav>
+<div class="header-right">
+<a class="notify" href="admin-notifications.html" title="Notifications">🔔</a>
+<button class="profile" id="profileButton" title="Profile">U</button>
+<div class="staff">
+<strong id="staffName">Staff</strong>
+<span id="staffHospital">Hospital</span>
+</div>
+<button class="logout" id="logoutButton">Logout</button>
+</div>
+</header>
+
+<main class="main">
+<div class="heading">
+<div><h1>Doctor Schedule</h1><p>Manage doctor availability and appointment slots.</p></div>
+<div class="date-box"><label for="scheduleDate">Schedule date</label><input type="date" id="scheduleDate"></div>
+</div>
+<div class="info">Patients will only see slots that are available in the doctor schedule. By default, every doctor is <b>Available</b> for the full working hours. Use <b>Busy</b> only when a doctor is unavailable for a specific time.</div>
+
+<section class="card">
+<div class="card-head"><h2>Today's Doctor Schedule</h2><button class="add-btn" id="addSlotBtn">+ Add Slot</button></div>
+<div class="table-wrap"><table><thead><tr><th>Doctor</th><th>Speciality</th><th>Working Hours</th><th>Booked</th><th>Available</th><th>Status</th><th>Action</th></tr></thead><tbody id="scheduleBody"></tbody></table></div>
+</section>
+</main>
+
+<div class="overlay" id="overlay">
+<div class="modal">
+<div class="modal-head"><div><h2 id="modalTitle">Add Doctor Slot</h2><div style="font-size:12px;color:#71859a;margin-top:4px">Create or update the doctor's availability for the selected date.</div></div><button class="close" id="closeModal">×</button></div>
+<div class="modal-body">
+<form id="scheduleForm">
+<div class="form-grid">
+<div class="field full"><label>Doctor</label><select id="doctorSelect" required></select></div>
+<div class="field"><label>Working From</label><select id="workingFrom" required></select></div>
+<div class="field"><label>Working To</label><select id="workingTo" required></select></div>
+<div class="field full"><label>Doctor Status</label><div class="mode"><button type="button" class="available active" id="availableBtn">✓ Available</button><button type="button" class="busy" id="busyBtn">Busy</button></div></div>
+</div>
+<div class="busy-fields" id="busyFields">
+<div class="field"><label>Busy From</label><select id="busyFrom"></select></div>
+<div class="field"><label>Busy To</label><select id="busyTo"></select></div>
+<div class="field full"><label>Available Again From</label><select id="availableAgain"></select><div class="help">Patients will be able to select slots again from this time.</div></div>
+</div>
+</form>
+</div>
+<div class="modal-footer"><button class="cancel" id="cancelModal">Cancel</button><button class="save" id="saveSchedule">Save Slot</button></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const currentUser = JSON.parse(localStorage.getItem("bookNMeetCurrentUser") || "null");
+if(!currentUser){ window.location.href="landing.html"; }
+
+document.getElementById("staffName").textContent=currentUser?.name || "Staff";
+document.getElementById("staffHospital").textContent=currentUser?.hospital || "Hospital";
+document.getElementById("profileButton").textContent=(currentUser?.name || "U").charAt(0).toUpperCase();
+document.getElementById("profileButton").onclick=()=>window.location.href="settings.html";
+document.getElementById("logoutButton").onclick=()=>{ localStorage.removeItem("bookNMeetCurrentUser"); window.location.href="landing.html"; };
+
+const STORAGE_DOCTORS="bookNMeetDoctors";
+const STORAGE_SCHEDULES="bookNMeetDoctorSchedules";
+const STORAGE_BOOKINGS="bookNMeetBookings";
+const STORAGE_ADMIN_NOTIFICATIONS="bookNMeetNotifications";
+const STORAGE_PATIENT_NOTIFICATIONS="bookNMeetPatientNotifications";
+
+let selectedStatus="Available";
+let editingId=null;
+
+function clean(value){return String(value||"").trim().toLowerCase().replace(/\s+/g," ");}
+function sameHospital(a,b){
+    const x=clean(a), y=clean(b);
+    if(x===y) return true;
+    return x.replace(/gowthami/g,"goutami")===y.replace(/gowthami/g,"goutami");
+}
+function read(key){try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}}
+function write(key,value){localStorage.setItem(key,JSON.stringify(value));}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function timeOptions(){let a=[];for(let h=0;h<24;h++){for(let m=0;m<60;m+=30){const hh=String(h).padStart(2,"0"), mm=String(m).padStart(2,"0");a.push(hh+":"+mm);}}return a;}
+function formatTime(t){if(!t)return "-";let [h,m]=t.split(":").map(Number);const ap=h>=12?"PM":"AM";h=h%12||12;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+" "+ap;}
+function minutes(t){if(!t)return 0;const [h,m]=t.split(":").map(Number);return h*60+m;}
+function addMinutes(t,n){let x=minutes(t)+n; x=Math.min(x,1439);return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0");}
+// function getDoctors(){return read(STORAGE_DOCTORS).filter(d=>sameHospital(d.hospital||d.hospitalName,currentUser?.hospital));}
+function getDoctors(){
+    return read(STORAGE_DOCTORS).filter(d => {
+
+        // Must belong to the current hospital
+        if(!sameHospital(
+            d.hospital || d.hospitalName,
+            currentUser?.hospital
+        )){
+            return false;
+        }
+
+        // Do not show doctors that were removed/deleted
+        if(
+            d.deleted === true ||
+            d.isDeleted === true ||
+            d.removed === true ||
+            d.isRemoved === true ||
+            d.active === false ||
+            d.status === "Deleted" ||
+            d.status === "Removed"
+        ){
+            return false;
+        }
+
+        return true;
+    });
+}
+function removeSchedulesForDeletedDoctors(){
+    // const currentDoctors = getDoctors();
+
+    // const currentDoctorIds = new Set(
+    //     currentDoctors.map(d => String(getDoctorId(d)))
+    // );
+
+    // const schedules = getSchedules();
+
+    // const validSchedules = schedules.filter(s => {
+    //     return currentDoctorIds.has(String(s.doctorId));
+    // });
+
+    // if(validSchedules.length !== schedules.length){
+    //     saveSchedules(validSchedules);
+    // }
+      const currentDoctors = getDoctors();
+
+    const validDoctorIds = new Set(
+        currentDoctors.map(d => String(getDoctorId(d)))
+    );
+
+    const validDoctorNames = new Set(
+        currentDoctors.map(d =>
+            clean(d.name || d.doctorName || "")
+        )
+    );
+
+    const schedules = getSchedules();
+
+    const validSchedules = schedules.filter(s => {
+
+        // Check doctor ID
+        const idMatch =
+            validDoctorIds.has(String(s.doctorId));
+
+        // Also check doctor name
+        const nameMatch =
+            validDoctorNames.has(
+                clean(s.doctorName || s.name || "")
+            );
+
+        // Keep only schedules belonging to existing doctors
+        return idMatch || nameMatch;
+    });
+
+    if(validSchedules.length !== schedules.length){
+        saveSchedules(validSchedules);
+    }
+}
+function getSchedules(){return read(STORAGE_SCHEDULES);}
+function saveSchedules(v){write(STORAGE_SCHEDULES,v);}
+function getDoctorId(d){return d.id||d.doctorId||clean(d.name);}
+function scheduleKey(doctorId,date){return String(doctorId)+"__"+date;}
+
+function getOrCreateSchedule(doctor,date){
+    const all=getSchedules();
+    const id=getDoctorId(doctor);
+    let s=all.find(x=>String(x.key||scheduleKey(x.doctorId,x.date))===scheduleKey(id,date) && sameHospital(x.hospital,currentUser.hospital));
+    if(s) return s;
+    s={key:scheduleKey(id,date),id:"schedule_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),doctorId:id,doctorName:doctor.name||doctor.doctorName||"Doctor",speciality:doctor.speciality||doctor.specialty||"",hospital:currentUser.hospital,date,workingFrom:"09:00",workingTo:"17:00",status:"Available",busyFrom:"",busyTo:"",availableAgainFrom:"",updatedAt:new Date().toISOString()};
+    return s;
+}
+
+function bookedForDoctor(doctor,date){
+    const id=getDoctorId(doctor), name=clean(doctor.name||doctor.doctorName);
+    return read(STORAGE_BOOKINGS).filter(b=>sameHospital(b.hospital,currentUser.hospital) && b.date===date && (clean(b.doctorId)===clean(id) || clean(b.doctor)===name));
+}
+function slotCount(from,to){return Math.max(0,Math.floor((minutes(to)-minutes(from))/30));}
+function availableCount(s,booked){
+    let total=slotCount(s.workingFrom,s.workingTo), unavailable=0;
+    if(s.status==="Busy" && s.busyFrom && s.busyTo) unavailable=slotCount(s.busyFrom,s.busyTo);
+    return Math.max(0,total-unavailable-booked);
+     // Every doctor has 16 slots per working day
+    // const TOTAL_SLOTS = 16;
+
+    // let busySlots = 0;
+
+    // if(s.status === "Busy" && s.busyFrom && s.busyTo){
+    //     busySlots = slotCount(s.busyFrom, s.busyTo);
+    // }
+
+    // const bookedSlots = Number(booked) || 0;
+
+    // return Math.max(
+    //     0,
+    //     TOTAL_SLOTS - bookedSlots - busySlots
+    // );
+}
+
+function loadDoctorOptions(){
+    // const select=document.getElementById("doctorSelect");
+    // const doctors=getDoctors();
+    // if(doctors.length){
+    //     select.innerHTML=doctors.map(d=>
+    //         `<option value="${esc(getDoctorId(d))}">${esc(d.name||d.doctorName||"Doctor")} — ${esc(d.speciality||d.specialty||"")}</option>`
+    //     ).join("");
+    // }else{
+    //     select.innerHTML=`<option value="">No doctors added</option>`;
+    // }
+    const select=document.getElementById("doctorSelect");
+    const doctors=getDoctors();
+
+    // Remember the currently selected doctor
+    const currentValue = select.value;
+
+    if(doctors.length){
+        select.innerHTML = doctors.map(d =>
+            `<option value="${esc(getDoctorId(d))}">
+                ${esc(d.name || d.doctorName || "Doctor")} — ${esc(d.speciality || d.specialty || "")}
+            </option>`
+        ).join("");
+
+        // Keep the selected doctor after refreshing
+        if(doctors.some(d => String(getDoctorId(d)) === String(currentValue))){
+            select.value = currentValue;
+        }
+    }else{
+        select.innerHTML=`<option value="">No doctors added</option>`;
+    }
+}
+function fillTimes(){
+    const opts=timeOptions().map(t=>`<option value="${t}">${formatTime(t)}</option>`).join("");
+    ["workingFrom","workingTo","busyFrom","busyTo","availableAgain"].forEach(id=>document.getElementById(id).innerHTML=opts);
+}
+function loadTable(){
+     removeSchedulesForDeletedDoctors();
+    const date=document.getElementById("scheduleDate").value||today();
+    const body=document.getElementById("scheduleBody"), doctors=getDoctors();
+    if(!doctors.length){body.innerHTML=`<tr><td colspan="7"><div class="empty"><h3>No doctors added yet</h3><p>Add doctors from the Doctors page first.</p></div></td></tr>`;return;}
+    body.innerHTML=doctors.map(doctor=>{
+        const s=getOrCreateSchedule(doctor,date), booked=bookedForDoctor(doctor,date), avail=availableCount(s,booked.length);
+        const status=s.status||"Available";
+        const busyText=status==="Busy"?`<div class="time-range">Busy ${formatTime(s.busyFrom)} – ${formatTime(s.busyTo)} · Available again ${formatTime(s.availableAgainFrom||s.busyTo)}</div>`:"<div class=\"time-range\">Available for all working hours</div>";
+        return `<tr>
+<td><div class="doctor-name">${esc(doctor.name||doctor.doctorName||"Doctor")}</div></td>
+<td><div class="speciality">${esc(doctor.speciality||doctor.specialty||"-")}</div></td>
+<td class="hours">${formatTime(s.workingFrom)} – ${formatTime(s.workingTo)}</td>
+<td class="count">${booked.length}</td><td class="count ${avail>0?"available-count":"busy-count"}">${avail}</td>
+<td><div class="status-buttons"><button class="status-btn available ${status==="Available"?"active":""}" onclick="quickStatus('${esc(getDoctorId(doctor))}','Available')">✓ Available</button><button class="status-btn busy ${status==="Busy"?"active":""}" onclick="quickStatus('${esc(getDoctorId(doctor))}','Busy')">Busy</button></div>${busyText}</td>
+<td><button class="edit-btn" onclick="editSchedule('${esc(getDoctorId(doctor))}')">Edit</button></td>
+</tr>`;
+    }).join("");
+}
+
+function openModal(doctorId=null){
+    editingId=doctorId; loadDoctorOptions();
+    const date=document.getElementById("scheduleDate").value||today();
+    const doctors=getDoctors();
+    const doctor=doctors.find(d=>String(getDoctorId(d))===String(doctorId))||doctors[0];
+    if(!doctor)return;
+    document.getElementById("doctorSelect").value=getDoctorId(doctor);
+    const s=getOrCreateSchedule(doctor,date);
+    document.getElementById("workingFrom").value=s.workingFrom||"09:00";
+    document.getElementById("workingTo").value=s.workingTo||"17:00";
+    document.getElementById("busyFrom").value=s.busyFrom||"11:00";
+    document.getElementById("busyTo").value=s.busyTo||"13:00";
+    document.getElementById("availableAgain").value=s.availableAgainFrom||s.busyTo||"13:00";
+    setStatus(s.status||"Available");
+    document.getElementById("modalTitle").textContent=editingId?"Edit Doctor Slot":"Add Doctor Slot";
+    document.getElementById("overlay").classList.add("show");
+}
+function closeModal(){document.getElementById("overlay").classList.remove("show");editingId=null;}
+function setStatus(status){selectedStatus=status;document.getElementById("availableBtn").classList.toggle("active",status==="Available");document.getElementById("busyBtn").classList.toggle("active",status==="Busy");document.getElementById("busyFields").classList.toggle("show",status==="Busy");}
+function doctorById(id){return getDoctors().find(d=>String(getDoctorId(d))===String(id));}
+
+function notifyAdmin(data){
+    const list=read(STORAGE_ADMIN_NOTIFICATIONS);
+    list.push({id:Date.now()+"-"+Math.random().toString(36).slice(2,8),timestamp:new Date().toISOString(),read:false,...data});
+    write(STORAGE_ADMIN_NOTIFICATIONS,list);
+}
+function notifyPatient(patientEmail,patientName,data){
+    const list=read(STORAGE_PATIENT_NOTIFICATIONS);
+    list.push({id:Date.now()+"-"+Math.random().toString(36).slice(2,8),patientEmail:patientEmail||"",patientName:patientName||"",timestamp:new Date().toISOString(),read:false,...data});
+    write(STORAGE_PATIENT_NOTIFICATIONS,list);
+}
+function updateDoctorStatus(doctor,s,date){
+    const all=read(STORAGE_DOCTORS); const id=getDoctorId(doctor);
+    const idx=all.findIndex(d=>String(getDoctorId(d))===String(id) && sameHospital(d.hospital||d.hospitalName,currentUser.hospital));
+    if(idx>=0){
+        all[idx].available=s.status!=="Busy";
+        all[idx].status=s.status;
+        all[idx].availabilityDate=date;
+        all[idx].busyFrom=s.busyFrom||"";
+        all[idx].busyTo=s.busyTo||"";
+        all[idx].availableAgainFrom=s.availableAgainFrom||"";
+        all[idx].workingFrom=s.workingFrom;
+        all[idx].workingTo=s.workingTo;
+        all[idx].scheduleUpdatedAt=new Date().toISOString();
+        write(STORAGE_DOCTORS,all);
+    }
+}
+function affectExistingBookings(doctor,s,date){
+    if(s.status!=="Busy" || !s.busyFrom || !s.busyTo)return 0;
+    const bookings=read(STORAGE_BOOKINGS); let affected=0;
+    bookings.forEach(b=>{
+        const sameDoc=clean(b.doctor)==clean(doctor.name||doctor.doctorName) || clean(b.doctorId)==clean(getDoctorId(doctor));
+        if(!sameDoc || !sameHospital(b.hospital,currentUser.hospital) || b.date!==date || !b.slot)return;
+        const t=minutes((b.slot.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i)||[]).slice(1).join(":"));
+        const normalizedSlot=to24(b.slot);
+        if(minutes(normalizedSlot)>=minutes(s.busyFrom) && minutes(normalizedSlot)<minutes(s.busyTo) && !b.scheduleConflictNotified){
+            b.scheduleConflictNotified=true; b.doctorUnavailable=true; affected++;
+            notifyPatient(b.email,b.patientName,{type:"doctor-unavailable",title:"Doctor unavailable",message:(doctor.name||"Doctor")+" is unavailable at your booked time of "+b.slot+". Please book another doctor or choose another available time.",hospital:b.hospital,doctor:doctor.name||doctor.doctorName,date:b.date,bookedSlot:b.slot,availableAgain:formatTime(s.availableAgainFrom||s.busyTo)});
+        }
+    });
+    if(affected)write(STORAGE_BOOKINGS,bookings);
+    return affected;
+}
+function to24(slot){
+    if(!slot)return "00:00";
+    const m=String(slot).trim().match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if(!m)return slot;
+    let h=Number(m[1]), min=Number(m[2]); const ap=m[3].toUpperCase(); if(ap==="PM"&&h!==12)h+=12;if(ap==="AM"&&h===12)h=0;return String(h).padStart(2,"0")+":"+String(min).padStart(2,"0");
+}
+
+function saveCurrentSchedule(){
+    const date=document.getElementById("scheduleDate").value||today();
+    const doctor=doctorById(document.getElementById("doctorSelect").value); if(!doctor)return;
+    const wf=document.getElementById("workingFrom").value, wt=document.getElementById("workingTo").value;
+    if(minutes(wt)<=minutes(wf)){alert("Working To must be later than Working From.");return;}
+    let bf="",bt="",again="";
+    if(selectedStatus==="Busy"){
+        bf=document.getElementById("busyFrom").value; bt=document.getElementById("busyTo").value; again=document.getElementById("availableAgain").value;
+        if(minutes(bt)<=minutes(bf)){alert("Busy To must be later than Busy From.");return;}
+        if(minutes(bf)<minutes(wf)||minutes(bt)>minutes(wt)){alert("Busy time must be inside the doctor's working hours.");return;}
+        if(minutes(again)<minutes(bt)||minutes(again)>minutes(wt)){alert("Available Again From must be at or after Busy To and inside working hours.");return;}
+    }
+    const all=getSchedules(); const key=scheduleKey(getDoctorId(doctor),date); const old=all.find(x=>String(x.key||scheduleKey(x.doctorId,x.date))===key && sameHospital(x.hospital,currentUser.hospital));
+    const s={...(old||{}),key,id:(old&&old.id)||("schedule_"+Date.now()),doctorId:getDoctorId(doctor),doctorName:doctor.name||doctor.doctorName||"Doctor",speciality:doctor.speciality||doctor.specialty||"",hospital:currentUser.hospital,date,workingFrom:wf,workingTo:wt,status:selectedStatus,busyFrom:bf,busyTo:bt,availableAgainFrom:again,updatedAt:new Date().toISOString()};
+    const idx=all.findIndex(x=>String(x.key||scheduleKey(x.doctorId,x.date))===key && sameHospital(x.hospital,currentUser.hospital)); if(idx>=0)all[idx]=s;else all.push(s); saveSchedules(all); updateDoctorStatus(doctor,s,date);
+    const affected=affectExistingBookings(doctor,s,date);
+    notifyAdmin({type:"schedule",title:selectedStatus==="Busy"?"Doctor marked busy":"Doctor availability updated",message:selectedStatus==="Busy"?(doctor.name||"Doctor")+" is unavailable on "+date+" from "+formatTime(bf)+" to "+formatTime(bt)+". Available again from "+formatTime(again)+(affected?". "+affected+" existing appointment(s) affected.":"."):(doctor.name||"Doctor")+" is available for the full working hours on "+date+".",hospital:currentUser.hospital,doctor:doctor.name||doctor.doctorName,date,status:selectedStatus,busyFrom:bf,busyTo:bt,availableAgainFrom:again});
+    closeModal(); loadTable(); showToast(selectedStatus==="Busy"?"Doctor marked busy and schedule updated":"Doctor marked available");
+}
+function quickStatus(id,status){openModal(id);setTimeout(()=>{setStatus(status);},0);}
+function editSchedule(id){openModal(id);}
+window.quickStatus=quickStatus;window.editSchedule=editSchedule;
+
+document.getElementById("scheduleDate").value=today();
+document.getElementById("scheduleDate").addEventListener("change",loadTable);
+document.getElementById("addSlotBtn").onclick=()=>openModal();
+
+document.getElementById("doctorSelect").addEventListener("change",()=>{
+    if(!editingId) return;
+    const selected=doctorById(document.getElementById("doctorSelect").value);
+    if(selected){
+        const s=getOrCreateSchedule(selected,document.getElementById("scheduleDate").value||today());
+        document.getElementById("workingFrom").value=s.workingFrom||"09:00";
+        document.getElementById("workingTo").value=s.workingTo||"17:00";
+        document.getElementById("busyFrom").value=s.busyFrom||"11:00";
+        document.getElementById("busyTo").value=s.busyTo||"13:00";
+        document.getElementById("availableAgain").value=s.availableAgainFrom||s.busyTo||"13:00";
+        setStatus(s.status||"Available");
+    }
+});
+document.getElementById("closeModal").onclick=closeModal;
+document.getElementById("cancelModal").onclick=closeModal;
+document.getElementById("availableBtn").onclick=()=>setStatus("Available");
+document.getElementById("busyBtn").onclick=()=>setStatus("Busy");
+document.getElementById("saveSchedule").onclick=saveCurrentSchedule;
+document.getElementById("overlay").onclick=e=>{if(e.target.id==="overlay")closeModal();};
+fillTimes();
+ removeSchedulesForDeletedDoctors();loadDoctorOptions();loadTable();
+window.addEventListener("storage",e=>{if([STORAGE_DOCTORS,STORAGE_SCHEDULES,STORAGE_BOOKINGS,STORAGE_ADMIN_NOTIFICATIONS].includes(e.key)){loadDoctorOptions();loadTable();}});
+// setInterval(()=>{loadDoctorOptions();loadTable();},2000);
+// setInterval(()=>{
+//     // Don't rebuild the doctor dropdown while the popup is open.
+//     // // Rebuilding it causes the selected doctor to jump to the first doctor.
+//     // if(!document.getElementById("overlay").classList.contains("show")){
+//     //     loadDoctorOptions();
+//     // }
+
+//     // loadTable();
+//      const overlayOpen =
+//         document.getElementById("overlay").classList.contains("show");
+
+//     // Always refresh the schedule table.
+//     // It automatically removes doctors deleted from Doctors page.
+//     loadTable();
+
+//     // Only refresh dropdown when popup is closed.
+//     // This prevents the selected doctor from changing automatically.
+//     if(!overlayOpen){
+//         loadDoctorOptions();
+//     }
+// },2000);
+window.addEventListener("storage", function(e) {
+    if (e.key === "bookNMeetDoctors") {
+        loadDoctorOptions();
+        loadTable();
+    }
+});
+
+setInterval(() => {
+    loadTable();
+
+    // Don't rebuild dropdown while popup is open
+    if (!document.getElementById("overlay").classList.contains("show")) {
+        loadDoctorOptions();
+    }
+}, 1000);
+function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2600);}
+</script>
+</body>
+</html>

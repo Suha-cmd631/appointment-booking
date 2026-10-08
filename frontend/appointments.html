@@ -101,7 +101,7 @@ body {
     align-items:center;
     gap:30px;
 
-    margin-left:170px;
+    margin-left:70px;
 }
 
 .nav a {
@@ -141,7 +141,7 @@ text-decoration: none;
 .header-right ,.login{
     display: flex;
     align-items: center;
-    margin-left: 500px;
+    margin-left: 400px;
     gap: 12px;
 }
 
@@ -1040,7 +1040,12 @@ tbody tr:hover {
         <a href="doctor-schedule.html">
             Schedule
         </a>
-
+         <a href="reports.html">
+            Reports
+        </a>
+<a href="settings.html">
+            Settings
+        </a>
     </nav>
 
 
@@ -1481,7 +1486,7 @@ let currentUser =
 
 if (!currentUser) {
 
-    window.location.href = "first.html";
+    window.location.href = "landing.html";
 
 }
 
@@ -1716,12 +1721,125 @@ function getHospitalAppointments() {
     return hospitalBookings;
 
 }
+/* =========================================================
+   CREATE ADMIN NOTIFICATION
+========================================================= */
 
+function addAdminNotification({
+    type,
+    title,
+    message,
+    hospital
+}) {
+
+    const key = "bookNMeetNotifications";
+
+    let notifications = [];
+
+    try {
+
+        notifications =
+            JSON.parse(
+                localStorage.getItem(key)
+            ) || [];
+
+    } catch (error) {
+
+        notifications = [];
+
+    }
+
+    notifications.push({
+
+        id:
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .substring(2, 8),
+
+        type: type,
+
+        title: title,
+
+        message: message,
+
+        hospital: hospital,
+
+        timestamp:
+            new Date().toISOString(),
+
+        read: false
+
+    });
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(notifications)
+    );
+}
 
 /* =========================================================
    UPDATE STATUS
 ========================================================= */
 
+// function updateBookingStatus(
+//     bookingId,
+//     newStatus
+// ) {
+
+//     let bookings =
+//         getBookings();
+
+
+//     let found = false;
+
+
+//     bookings =
+//         bookings.map(booking => {
+
+//             if (
+//                 String(booking.id) ===
+//                 String(bookingId)
+//             ) {
+
+//                 booking.status =
+//                     newStatus;
+
+//                 found = true;
+
+//             }
+
+//             return booking;
+
+//         });
+
+
+//     if (!found) {
+
+//         showToast(
+//             "Appointment not found"
+//         );
+
+//         return;
+
+//     }
+
+
+//     localStorage.setItem(
+//         "bookNMeetBookings",
+//         JSON.stringify(bookings)
+//     );
+
+
+//     showToast(
+//         "Appointment updated successfully"
+//     );
+
+
+//     loadAppointments();
+
+// }
 function updateBookingStatus(
     bookingId,
     newStatus
@@ -1731,7 +1849,7 @@ function updateBookingStatus(
         getBookings();
 
 
-    let found = false;
+    let foundBooking = null;
 
 
     bookings =
@@ -1742,19 +1860,27 @@ function updateBookingStatus(
                 String(bookingId)
             ) {
 
+                // Keep the original booking details
+                foundBooking = {
+                    ...booking
+                };
+
+
+                // Update appointment status
                 booking.status =
                     newStatus;
 
-                found = true;
-
             }
+
 
             return booking;
 
         });
 
 
-    if (!found) {
+    /* Appointment not found */
+
+    if (!foundBooking) {
 
         showToast(
             "Appointment not found"
@@ -1765,21 +1891,163 @@ function updateBookingStatus(
     }
 
 
+    /* Save updated appointment */
+
     localStorage.setItem(
         "bookNMeetBookings",
         JSON.stringify(bookings)
     );
 
 
+    /* =====================================================
+       CREATE ADMIN NOTIFICATION
+    ===================================================== */
+
+    const patientName =
+        foundBooking.patientName ||
+        "Patient";
+
+
+    const doctorName =
+        foundBooking.doctor ||
+        "Doctor";
+
+
+    const hospitalName =
+        foundBooking.hospital ||
+        currentHospital;
+
+
+    let notificationTitle = "";
+
+    let notificationMessage = "";
+
+    let notificationType = "system";
+
+
+    /* APPOINTMENT CONFIRMED */
+
+    if (
+        newStatus === "Upcoming"
+    ) {
+
+        notificationType =
+            "confirmed";
+
+        notificationTitle =
+            "Appointment confirmed";
+
+        notificationMessage =
+            patientName +
+            "'s appointment with " +
+            doctorName +
+            " was confirmed.";
+
+    }
+
+
+    /* APPOINTMENT COMPLETED */
+
+    else if (
+        newStatus === "Completed"
+    ) {
+
+        notificationType =
+            "confirmed";
+
+        notificationTitle =
+            "Appointment completed";
+
+        notificationMessage =
+            patientName +
+            "'s appointment with " +
+            doctorName +
+            " was completed.";
+
+    }
+
+
+    /* APPOINTMENT MISSED */
+
+    else if (
+        newStatus === "Missed"
+    ) {
+
+        notificationType =
+            "appointment";
+
+        notificationTitle =
+            "Appointment marked as missed";
+
+        notificationMessage =
+            patientName +
+            "'s appointment with " +
+            doctorName +
+            " was marked as missed.";
+
+    }
+
+
+    /* APPOINTMENT CANCELLED */
+
+    else if (
+        newStatus === "Canceled"
+    ) {
+
+        notificationType =
+            "cancelled";
+
+        notificationTitle =
+            "Appointment cancelled";
+
+        notificationMessage =
+            patientName +
+            "'s appointment with " +
+            doctorName +
+            " was cancelled.";
+
+    }
+
+
+    /* =====================================================
+       SAVE NOTIFICATION
+    ===================================================== */
+
+    if (
+        notificationMessage
+    ) {
+
+        addAdminNotification({
+
+            type:
+                notificationType,
+
+            title:
+                notificationTitle,
+
+            message:
+                notificationMessage,
+
+            hospital:
+                hospitalName
+
+        });
+
+    }
+
+
+    /* Refresh appointments */
+
+    loadAppointments();
+
+
+    /* Success message */
+
     showToast(
         "Appointment updated successfully"
     );
 
-
-    loadAppointments();
-
 }
-
 
 /* =========================================================
    FORMAT DATE
@@ -2632,7 +2900,7 @@ profileButton.addEventListener(
     () => {
 
         window.location.href =
-            "profile.html";
+            "settings.html";
 
     }
 );

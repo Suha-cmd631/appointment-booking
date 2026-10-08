@@ -1463,7 +1463,7 @@ let currentUser =
 
 if(!currentUser){
 
-    window.location.href = "first.html";
+    window.location.href = "landing.html";
 
 }
 
@@ -1753,11 +1753,21 @@ function saveProfile(){
                 booking.email =
                     email;
 
-                booking.patientName =
-                    name;
+                /*
+                   Keep the actual patient's name and phone unchanged.
+                   Only update the account/owner information.
+                */
+                if(booking.bookedByEmail){
+                    booking.bookedByEmail = email;
+                }
 
-                booking.phone =
-                    phone;
+                if(booking.accountEmail){
+                    booking.accountEmail = email;
+                }
+
+                if(booking.userEmail){
+                    booking.userEmail = email;
+                }
 
                 bookingsChanged = true;
 
@@ -1832,17 +1842,24 @@ function loadAppointmentHistory(){
     const userAppointments =
         bookings.filter(booking => {
 
-            if(!booking.email){
-                return false;
-            }
+            /*
+               An account can book an appointment for another patient.
+               Never use patientName to decide account ownership.
 
-            return (
-                booking.email
-                    .trim()
-                    .toLowerCase()
-                ===
-                userEmail
-            );
+               New bookings store the account that created the booking
+               in bookedByEmail/accountEmail. Older bookings fall back
+               to booking.email.
+            */
+
+            const accountEmail = String(
+                booking.bookedByEmail ||
+                booking.accountEmail ||
+                booking.userEmail ||
+                booking.email ||
+                ""
+            ).trim().toLowerCase();
+
+            return accountEmail === userEmail;
 
         });
 
@@ -1998,6 +2015,22 @@ function createAppointmentCard(
 
 
         <div class="appointment-details">
+
+
+            <div class="appointment-detail">
+
+                <span>
+                    Patient Name
+                </span>
+
+                <strong>
+                    ${escapeHTML(
+                        booking.patientName ||
+                        "-"
+                    )}
+                </strong>
+
+            </div>
 
 
             <div class="appointment-detail">

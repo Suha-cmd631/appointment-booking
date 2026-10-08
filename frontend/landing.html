@@ -515,7 +515,7 @@
                   <select id="suHospital">
                     <option value="" disabled selected>Select your hospital</option>
                     <option value="Trinity Hospital">Trinity Hospital</option>
-                    <option value="Goutami Hospital">Goutami Hospital</option>
+                    <option value="Gowthami Hospital">Gowthami Hospital</option>
                   </select>
                 </label>
                 <span class="field-error" id="errHospital"></span>
@@ -742,7 +742,7 @@
   }
   function validateHospital(showErr){
     if(suRole.value !== 'staff') return true;
-    const ok = suHospital.value === 'Trinity Hospital' || suHospital.value === 'Goutami Hospital';
+    const ok = suHospital.value === 'Trinity Hospital' || suHospital.value === 'Gowthami Hospital';
     if(showErr) setError(errHospital, suHospital, ok ? '' : 'Please select your hospital.');
     return ok;
   }
