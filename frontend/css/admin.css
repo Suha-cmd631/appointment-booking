@@ -579,3 +579,11 @@ tr:hover td{
 .login:hover{
     color:#1d9c96;
 }
+
+/* "next 7 days" label next to the Upcoming Appointments title */
+.card-sub{
+    margin-left:6px;
+    font-size:13px;
+    font-weight:600;
+    color:#71839a;
+}

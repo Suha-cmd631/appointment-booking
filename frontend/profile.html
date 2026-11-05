@@ -20,6 +20,9 @@
 
 <link rel="stylesheet" href="css/profile.css">
 
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 
@@ -78,7 +81,7 @@
     <span class="notification-dot"></span>
 </a>
 
- <button class="login" onclick="window.location.href='landing.html'">
+ <button class="login" type="button" onclick="BNMSync.logOut()">
     Logout
 </button>
 
@@ -977,10 +980,42 @@ function createAppointmentCard(
 
     `;
 
+    /*
+       Patients can cancel an appointment that is still
+       waiting or confirmed, as long as its date has not passed.
+    */
+    const today = new Date();
+    const todayText =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+
+    if(
+        (status === "Pending" || status === "Upcoming") &&
+        String(booking.date || "") >= todayText
+    ){
+        const cancelButton = document.createElement("button");
+        cancelButton.type = "button";
+        cancelButton.className = "cancel-appointment-btn";
+        cancelButton.textContent = "Cancel appointment";
+
+        cancelButton.addEventListener("click", function(){
+            const sure = confirm(
+                "Cancel your appointment with " +
+                (booking.doctor || "the doctor") + " on " +
+                (booking.date || "") + " at " + (booking.slot || "") + "?"
+            );
+            if(sure){
+                updateBookingStatus(booking.id, "Canceled");
+            }
+        });
+
+        card.appendChild(cancelButton);
+    }
 
     container.appendChild(card);
-
 }
+
 function updateBookingStatus(bookingId, newStatus) {
 
     let bookings =
@@ -997,12 +1032,16 @@ function updateBookingStatus(bookingId, newStatus) {
         return booking;
     });
 
-    localStorage.setItem(
-        "bookNMeetBookings",
-        JSON.stringify(bookings)
-    );
-
-    loadAppointments();
+    try{
+        // js/sync.js sends this to the server (and explains if it is refused)
+        localStorage.setItem(
+            "bookNMeetBookings",
+            JSON.stringify(bookings)
+        );
+    }catch(error){
+        // nothing more to do: the saved copy was put back
+    }
+    loadAppointmentHistory();
 }
 
 /* =====================================================

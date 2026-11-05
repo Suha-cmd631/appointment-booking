@@ -30,3 +30,14 @@
         grid-template-columns:1fr 12px 1fr 1fr;
     }
 }
+
+/* added: several cards on one page, help text, error message, shorter address box */
+.page form > .card{ margin-bottom:22px; }
+.card h2{ font-size:22px; margin:0 0 6px; }
+.card-help{ margin:0 0 20px; color:#71839a; font-size:13px; }
+.card h2 + .grid{ margin-top:18px; }
+textarea.short{ height:76px; }
+.success.error{ color:#b3261e; background:#fdecea; border-color:#f5c2bd; }
+.save:disabled{ opacity:.7; cursor:wait; }
+.field-help{ font-size:12px; color:#71839a; line-height:1.4; }
+#joinCode{ font-weight:700; letter-spacing:.12em; }

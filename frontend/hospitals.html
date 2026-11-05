@@ -13,6 +13,9 @@
 <title>Hospitals in Tadepalligudem: Doctors, Services and Timings | Book N Meet</title>
 
 <link rel="stylesheet" href="css/hospitals.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 <body>
@@ -37,7 +40,7 @@
         🔔
         <span class="notification-dot"></span>
     </a>
-     <button class="login" onclick="window.location.href='landing.html'">
+     <button class="login" type="button" onclick="BNMSync.logOut()">
     Logout
 </button>
 </div>
@@ -55,131 +58,8 @@
     <p id="listDescription">Explore hospitals and view their doctors, specialities, ratings and reviews.</p>
 </div>
 
-<!-- TRINITY -->
-<div class="hospital">
-
-<div class="hospital-top">
-<img class="hospital-image"
-src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=800&q=80"
-alt="Trinity Hospital">
-
-<div class="hospital-info">
-<h2>Trinity Hospital</h2>
-<p>📍 Tadepalligudem</p>
-<p class="rating">★★★★★ 4.8</p>
-<p>A multi-speciality hospital providing quality healthcare and experienced doctors.</p>
-
-<div class="specialities">
-<span class="speciality">Cardiology</span>
-<span class="speciality">Neurology</span>
-<span class="speciality">General Medicine</span>
-<span class="speciality">Orthopedics</span>
-</div>
-
-<button class="visit-btn" onclick="visitHospital('trinity')">Visit Hospital</button>
-</div>
-</div>
-</div>
-
-<!-- GOWTHAMI -->
-<div class="hospital">
-
-<div class="hospital-top">
-<img class="hospital-image"
-src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80"
-alt="Gowthami Hospital">
-
-<div class="hospital-info">
-<h2>Gowthami Hospital</h2>
-<p>📍 Tadepalligudem</p>
-<p class="rating">★★★★★ 4.7</p>
-<p>Modern healthcare facilities with specialists across multiple departments.</p>
-
-<div class="specialities">
-<span class="speciality">Dermatology</span>
-<span class="speciality">Gynecology</span>
-<span class="speciality">Pediatrics</span>
-<span class="speciality">General Medicine</span>
-</div>
-
-<button class="visit-btn" onclick="visitHospital('gowthami')">Visit Hospital</button>
-</div>
-</div>
-</div>
-
-<!-- NEOKIDZ -->
-<div class="hospital">
-
-<div class="hospital-top">
-<img class="hospital-image"
-src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=800&q=80"
-alt="Neokidz ENT">
-
-<div class="hospital-info">
-<h2>Neokidz ENT</h2>
-<p>📍 Tadepalligudem</p>
-<p class="rating">★★★★★ 4.6</p>
-<p>Specialized healthcare services with a focus on ENT and children's healthcare.</p>
-
-<div class="specialities">
-<span class="speciality">ENT</span>
-<span class="speciality">Pediatrics</span>
-<span class="speciality">Ophthalmology</span>
-</div>
-
-<button class="visit-btn" onclick="visitHospital('neokidz')">Visit Hospital</button>
-</div>
-</div>
-</div>
-
-<!-- LALITHA -->
-<div class="hospital">
-
-<div class="hospital-top">
-<img class="hospital-image"
-src="https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=800&q=80"
-alt="Lalitha Hospital">
-
-<div class="hospital-info">
-<h2>Lalitha Hospital</h2>
-<p>📍 Tadepalligudem</p>
-<p class="rating">★★★★★ 4.9 (160 reviews)</p>
-<p>Private hospital open 24 hours, known for orthopaedic surgery, maternity care and general check-ups.</p>
-
-<div class="specialities">
-<span class="speciality">Orthopedics</span>
-<span class="speciality">Gynecology</span>
-<span class="speciality">General Medicine</span>
-</div>
-
-<button class="visit-btn" onclick="visitHospital('lalitha')">Visit Hospital</button>
-</div>
-</div>
-</div>
-
-<!-- AVIDEEP -->
-<div class="hospital">
-
-<div class="hospital-top">
-<img class="hospital-image"
-src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80"
-alt="Avideep Mother and Children Hospital">
-
-<div class="hospital-info">
-<h2>Avideep Mother and Children Hospital</h2>
-<p>📍 Tadepalligudem</p>
-<p class="rating">★★★★★ 4.9 (715 reviews)</p>
-<p>Mother and child hospital open 24 hours, with maternity, gynecology, pediatric and newborn intensive care.</p>
-
-<div class="specialities">
-<span class="speciality">Gynecology</span>
-<span class="speciality">Pediatrics</span>
-</div>
-
-<button class="visit-btn" onclick="visitHospital('avideep')">Visit Hospital</button>
-</div>
-</div>
-</div>
+<!-- Hospital cards are added here from the database (see renderHospitalCards) -->
+<div id="hospitalCards"></div>
 
 </section>
 
@@ -244,7 +124,6 @@ alt="Avideep Mother and Children Hospital">
 </div>
 </footer>
 
-<script src="js/seed-doctors.js"></script>
 <script src="js/hospital-data.js"></script>
 
 <script>
@@ -257,52 +136,60 @@ alt="Avideep Mother and Children Hospital">
   Searching and booking happen in search.html
 */
 
-function getHospitalIdFromCard(card){
-    const visitButton = card.querySelector(".visit-btn");
+/* Show every hospital as a card, with its up-to-date speciality list. */
+function renderHospitalCards(){
 
-    if(!visitButton){
-        return null;
-    }
+    const box = document.getElementById("hospitalCards");
+    const ids = Object.keys(hospitals);
 
-    const onclick = visitButton.getAttribute("onclick") || "";
-    const match = onclick.match(/visitHospital\(\s*[\"\']([^\"\']+)[\"\']\s*\)/);
-
-    return match ? match[1] : null;
-}
-
-function updateHospitalCardSpecialities(card, hospital){
-    const specialityBox = card.querySelector(".specialities");
-
-    if(!specialityBox){
+    if(ids.length === 0){
+        box.innerHTML =
+            '<p class="no-doctors">Hospitals could not be loaded. Please check your connection and reload the page.</p>';
         return;
     }
 
-    specialityBox.innerHTML =
-        getHospitalSpecialities(hospital).map(function(speciality){
-            return '<span class="speciality">' +
-                escapeHtml(speciality) +
-                '</span>';
-        }).join("");
+    box.innerHTML = ids.map(function(id){
+
+        const hospital = hospitals[id];
+
+        const specialities = getHospitalSpecialities(hospital)
+            .map(function(speciality){
+                return '<span class="speciality">' + escapeHtml(speciality) + '</span>';
+            }).join("");
+
+        return `
+            <div class="hospital">
+                <div class="hospital-top">
+                    <img class="hospital-image"
+                         src="${escapeHtml(hospital.image)}"
+                         alt="${escapeHtml(hospital.name)}">
+
+                    <div class="hospital-info">
+                        <h2>${escapeHtml(hospital.name)}</h2>
+                        <p>${escapeHtml(hospital.location)}</p>
+                        <p class="rating">${escapeHtml(hospital.rating)}</p>
+                        <p>${escapeHtml(hospital.description)}</p>
+
+                        <div class="specialities">${specialities}</div>
+
+                        <button class="visit-btn" type="button" data-hospital="${escapeHtml(id)}">
+                            Visit Hospital
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
 }
 
-/* Show every hospital card with its up-to-date speciality list. */
-function renderHospitalCards(){
+document.getElementById("hospitalCards").addEventListener("click", function(event){
 
-    document.querySelectorAll("#hospitalList .hospital")
-        .forEach(function(card){
+    const button = event.target.closest(".visit-btn");
 
-            const hospitalId = getHospitalIdFromCard(card);
-            const hospital = hospitalId ? hospitals[hospitalId] : null;
-
-            if(!hospital){
-                card.style.display = "none";
-                return;
-            }
-
-            updateHospitalCardSpecialities(card, hospital);
-            card.style.display = "block";
-        });
-}
+    if(button){
+        visitHospital(button.dataset.hospital);
+    }
+});
 
 /* One labelled box in the "Contact & Timings" grid. */
 function infoItem(label, value){
@@ -517,12 +404,21 @@ function showHospitalList(){
 
 renderHospitalCards();
 
+/* Home page "View Hospital" links open that hospital straight away */
+(function(){
+    const wanted = new URLSearchParams(window.location.search).get("hospital");
+    if(wanted && hospitals[wanted]){
+        visitHospital(wanted);
+    }
+})();
+
 /*
   If an admin adds/updates a doctor in another tab,
   refresh this page when localStorage changes.
 */
 window.addEventListener("storage", function(event){
     if(
+        event.key === "bookNMeetHospitals" ||
         event.key === "bookNMeetDoctors" ||
         event.key === "bookNMeetRemovedDoctors"
     ){

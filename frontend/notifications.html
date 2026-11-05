@@ -12,6 +12,9 @@
 <title>Notifications | Book N Meet</title>
 
 <link rel="stylesheet" href="css/notifications.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 <body>
@@ -45,7 +48,7 @@
     <span class="notification-dot"></span>
 </a>
 
- <button class="login" onclick="window.location.href='landing.html'">
+ <button class="login" type="button" onclick="BNMSync.logOut()">
     Logout
 </button>
 

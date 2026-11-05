@@ -15,6 +15,9 @@
 
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="css/admin-common.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 <body>
@@ -229,6 +232,29 @@
 
 
     <!-- =================================================
+         UPCOMING APPOINTMENTS (next 7 days)
+    ================================================= -->
+    <section class="card appointment-card">
+        <div class="card-header">
+            <h2>
+                Upcoming Appointments
+                <span class="card-sub">next 7 days</span>
+            </h2>
+            <a
+                href="appointments.html"
+                class="view-all"
+            >
+                View All
+            </a>
+        </div>
+        <div
+            class="table-container"
+            id="upcomingContainer"
+        >
+        </div>
+    </section>
+
+    <!-- =================================================
          BOTTOM CARDS
     ================================================= -->
 
@@ -317,8 +343,6 @@
 </main>
 
 
-<!-- Doctors already listed for Lalitha and Avideep hospitals -->
-<script src="js/seed-doctors.js"></script>
 
 <script>
 
@@ -757,6 +781,27 @@ function loadDashboard(){
         todayAppointments
     );
 
+    /* UPCOMING (next 7 days, still waiting or confirmed) */
+    const lastDay =
+        dateAfterDays(7);
+
+    const upcoming =
+        appointments.filter(
+            appointment =>
+                appointment.date > today &&
+                appointment.date <= lastDay &&
+                ["Pending", "Upcoming"].includes(
+                    normalizeStatus(appointment.status)
+                )
+        );
+
+    renderAppointments(
+        upcoming,
+        "upcomingContainer",
+        "No upcoming appointments",
+        "Appointments for the next 7 days will appear here.",
+        true
+    );
 }
 
 
@@ -765,12 +810,16 @@ function loadDashboard(){
 ========================================================= */
 
 function renderAppointments(
-    appointments
+    appointments,
+    containerId,
+    emptyTitle,
+    emptyText,
+    showDate
 ){
 
     const container =
         document.getElementById(
-            "appointmentContainer"
+            containerId || "appointmentContainer"
         );
 
 
@@ -787,16 +836,15 @@ function renderAppointments(
                 </div>
 
                 <h3>
-                    No appointments today
+                    ${escapeHTML(emptyTitle || "No appointments today")}
                 </h3>
-
                 <p>
-                    Patient bookings for
                     ${escapeHTML(
-                        currentHospital ||
-                        "this hospital"
+                        emptyText ||
+                        ("Patient bookings for " +
+                            (currentHospital || "this hospital") +
+                            " will appear here automatically.")
                     )}
-                    will appear here automatically.
                 </p>
 
             </div>
@@ -808,17 +856,15 @@ function renderAppointments(
     }
 
 
+    /* Earliest first: by date, then by time of day */
     appointments.sort(
         function(a,b){
+            const byDate =
+                String(a.date || "").localeCompare(String(b.date || ""));
 
-            return String(
-                a.slot || ""
-            ).localeCompare(
-                String(
-                    b.slot || ""
-                )
-            );
-
+            return byDate !== 0
+                ? byDate
+                : slotMinutes(a.slot) - slotMinutes(b.slot);
         }
     );
 
@@ -857,8 +903,9 @@ function renderAppointments(
 
                         <td>
                             ${escapeHTML(
-                                appointment.slot ||
-                                "-"
+                                showDate
+                                    ? formatShortDate(appointment.date) + " • " + (appointment.slot || "-")
+                                    : (appointment.slot || "-")
                             )}
                         </td>
 
@@ -897,7 +944,7 @@ function renderAppointments(
 
                     <th>Patient</th>
                     <th>Doctor</th>
-                    <th>Time</th>
+                    <th>${showDate ? "Date & Time" : "Time"}</th>
                     <th>Speciality</th>
                     <th>Status</th>
 
@@ -913,6 +960,54 @@ function renderAppointments(
 
     `;
 
+}
+
+
+/* "10:30 AM" -> minutes after midnight, so times sort correctly */
+function slotMinutes(slot){
+
+    const match =
+        String(slot || "").match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+
+    if(!match){
+        return 0;
+    }
+
+    let hour = Number(match[1]) % 12;
+
+    if(match[3].toUpperCase() === "PM"){
+        hour += 12;
+    }
+
+    return hour * 60 + Number(match[2]);
+}
+
+
+/* "2026-11-05" -> "5 Nov" */
+function formatShortDate(value){
+
+    const date = new Date(String(value) + "T00:00:00");
+
+    if(isNaN(date.getTime())){
+        return value || "-";
+    }
+
+    return date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short"
+    });
+}
+
+
+/* Date N days from today as YYYY-MM-DD */
+function dateAfterDays(days){
+
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+
+    return date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
 }
 
 

@@ -18,6 +18,9 @@
 
 <link rel="stylesheet" href="css/appointments.css">
 <link rel="stylesheet" href="css/admin-common.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 <body>
@@ -1912,10 +1915,10 @@ window.addEventListener(
                 );
 
 
-            if (!currentUser) {
+            if (!currentUser || currentUser.role !== "staff") {
 
                 window.location.href =
-                    "first.html";
+                    "landing.html";
 
                 return;
 

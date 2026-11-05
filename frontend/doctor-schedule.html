@@ -14,6 +14,9 @@
 <title>Doctor Schedule | Book N Meet Hospital Admin</title>
 <link rel="stylesheet" href="css/doctor-schedule.css">
 <link rel="stylesheet" href="css/admin-common.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 <body>
 <!-- =====================================================
@@ -97,8 +100,6 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- Doctors already listed for Lalitha and Avideep hospitals -->
-<script src="js/seed-doctors.js"></script>
 
 <script>
 const currentUser = JSON.parse(localStorage.getItem("bookNMeetCurrentUser") || "null");

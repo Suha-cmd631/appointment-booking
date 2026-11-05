@@ -14,6 +14,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="css/booking.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 <body>
@@ -1002,7 +1005,7 @@ selectSlotBtn.addEventListener("click", function(){
 /* =====================================================
    BOOK APPOINTMENT
 ===================================================== */
-document.getElementById("bookingForm").addEventListener("submit",function(e){e.preventDefault();const patientName=document.getElementById("patientName").value.trim(),patientPhone=document.getElementById("patientPhone").value.trim(),patientEmail=document.getElementById("patientEmail").value.trim();if(!patientName){showMessage("Please enter patient name.","error");return}if(!/^[0-9]{10}$/.test(patientPhone)){showMessage("Please enter a valid 10-digit phone number.","error");return}if(!patientEmail){showMessage("Please enter patient email.","error");return}if(!selectedSlot){showMessage("Please select an available time slot.","error");return}let r=unavailableReason(selectedSlot);if(r){showMessage(r==="Booked"?"This slot has already been booked by another patient.":r==="Doctor Busy"?"Doctor is busy during this time.":r==="Past"?"This time has already passed. Please select another slot.":"This slot is outside the doctor's working hours.","error");selectedSlot="";temporarySelectedSlot="";document.getElementById("selectedSlot").textContent="Please select a slot";displaySlots();return}const currentUser=JSON.parse(localStorage.getItem("bookNMeetCurrentUser")||"null");const newBooking={id:Date.now(),patientName,phone:patientPhone,email:patientEmail,bookedByEmail:currentUser?.email||"",bookedByName:currentUser?.name||"",hospital,doctor,speciality,date,age,slot:selectedSlot,status:"Pending",bookedAt:new Date().toLocaleString()};bookings.push(newBooking);localStorage.setItem("bookNMeetBookings",JSON.stringify(bookings));notifyHospitalOfBooking(newBooking);showMessage("Appointment booked successfully!","success");temporarySelectedSlot="";displaySlots();const bookButton=document.querySelector(".book-btn");bookButton.disabled=true;bookButton.textContent="Appointment Booked";setTimeout(()=>{alert("Appointment booked successfully!\n\nHospital: "+hospital+"\nDoctor: "+doctor+"\nDate: "+date+"\nTime: "+selectedSlot);window.location.href="first.html"},500)});
+document.getElementById("bookingForm").addEventListener("submit",function(e){e.preventDefault();const patientName=document.getElementById("patientName").value.trim(),patientPhone=document.getElementById("patientPhone").value.trim(),patientEmail=document.getElementById("patientEmail").value.trim();if(!patientName){showMessage("Please enter patient name.","error");return}if(!/^[0-9]{10}$/.test(patientPhone)){showMessage("Please enter a valid 10-digit phone number.","error");return}if(!patientEmail){showMessage("Please enter patient email.","error");return}if(!selectedSlot){showMessage("Please select an available time slot.","error");return}let r=unavailableReason(selectedSlot);if(r){showMessage(r==="Booked"?"This slot has already been booked by another patient.":r==="Doctor Busy"?"Doctor is busy during this time.":r==="Past"?"This time has already passed. Please select another slot.":"This slot is outside the doctor's working hours.","error");selectedSlot="";temporarySelectedSlot="";document.getElementById("selectedSlot").textContent="Please select a slot";displaySlots();return}const currentUser=JSON.parse(localStorage.getItem("bookNMeetCurrentUser")||"null");const newBooking={id:Date.now(),patientName,phone:patientPhone,email:patientEmail,bookedByEmail:currentUser?.email||"",bookedByName:currentUser?.name||"",hospital,doctor,speciality,date,age,slot:selectedSlot,status:"Pending",bookedAt:new Date().toLocaleString()};try{localStorage.setItem("bookNMeetBookings",JSON.stringify(bookings.concat([newBooking])));}catch(saveError){/* js/sync.js already told the patient why */bookings=JSON.parse(localStorage.getItem("bookNMeetBookings")||"[]");selectedSlot="";temporarySelectedSlot="";document.getElementById("selectedSlot").textContent="Please select a slot";showMessage("The appointment was not booked. Please choose another slot.","error");displaySlots();return}bookings.push(newBooking);showMessage("Appointment booked successfully!","success");temporarySelectedSlot="";displaySlots();const bookButton=document.querySelector(".book-btn");bookButton.disabled=true;bookButton.textContent="Appointment Booked";setTimeout(()=>{alert("Appointment booked successfully!\n\nHospital: "+hospital+"\nDoctor: "+doctor+"\nDate: "+date+"\nTime: "+selectedSlot);window.location.href="first.html"},500)});
 
 /* =====================================================
    MESSAGE FUNCTION
@@ -1021,50 +1024,6 @@ function showMessage(text, type){
         "message " + type;
 
 }
-/* =====================================================
-   TELL THE HOSPITAL ABOUT A NEW BOOKING
-   Adds an alert to the hospital staff's Notifications
-   page (admin-notifications.html).
-===================================================== */
-
-function notifyHospitalOfBooking(booking){
-
-    try{
-
-        const key = "bookNMeetNotifications";
-
-        let notifications =
-            JSON.parse(localStorage.getItem(key) || "[]");
-
-        if(!Array.isArray(notifications)){
-            notifications = [];
-        }
-
-        notifications.push({
-            id:
-                Date.now() +
-                "-" +
-                Math.random().toString(36).substring(2, 8),
-            type: "appointment",
-            title: "New appointment request",
-            message:
-                booking.patientName +
-                " requested an appointment with " +
-                booking.doctor +
-                " on " + booking.date +
-                " at " + booking.slot + ".",
-            hospital: booking.hospital,
-            timestamp: new Date().toISOString(),
-            read: false
-        });
-
-        localStorage.setItem(key, JSON.stringify(notifications));
-
-    }catch(error){
-        console.error("Could not notify the hospital:", error);
-    }
-}
-
 /* =====================================================
    FILL IN THE LOGGED-IN PATIENT'S DETAILS
    (they can still change them, for example when

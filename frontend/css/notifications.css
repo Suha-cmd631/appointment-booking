@@ -542,3 +542,11 @@ a{
 .login:hover{
     color:#1d9c96;
 }
+
+/* fix: the menu bar no longer runs off the screen on smaller screens */
+@media (max-width:1180px){
+    .nav-links{ margin-right:0; }
+}
+@media (max-width:800px){
+    .nav-links{ display:none; }
+}

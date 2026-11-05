@@ -15,6 +15,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/landing.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 <body>
 
@@ -149,6 +152,11 @@
                     <option value="Avideep Mother and Children Hospital">Avideep Mother and Children Hospital</option>
                   </select>
                   <span class="field-error" id="errHospital"></span>
+                </div>
+                <div class="field">
+                  <label for="suJoinCode">Hospital join code</label>
+                  <input type="text" id="suJoinCode" name="join-code" placeholder="Ask your hospital's staff for this code" maxlength="12" autocomplete="off" autocapitalize="characters" />
+                  <span class="field-error" id="errJoinCode"></span>
                 </div>
               </div>
 
@@ -298,6 +306,8 @@
             <option value="Lalitha Hospital">Lalitha Hospital</option>
             <option value="Avideep Mother and Children Hospital">Avideep Mother and Children Hospital</option>
           </select>
+          <label for="gpJoinCode" class="join-label">Hospital join code</label>
+          <input type="text" id="gpJoinCode" placeholder="Ask your hospital's staff for this code" maxlength="12" autocomplete="off" />
         </div>
         <p class="form-msg" id="completeMsg"></p>
         <div class="modal-actions">
@@ -308,7 +318,6 @@
     </div>
   </div>
 
-<script src="js/config.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
   // ---------- Auth flip + segmented toggle ----------
@@ -353,16 +362,14 @@
   //  Sign up and log in use the backend server (backend/server.js),
   //  which saves accounts in the Supabase database.
   //
-  //  If the server is not running, the page falls back to accounts
-  //  saved in this browser only.
+  //  After logging in, js/sync.js keeps the pages connected to the
+  //  server (appointments, doctors, notifications...).
   // =====================================================================
 
   const API_URL = String((window.BNM_CONFIG && BNM_CONFIG.API_URL) || '').replace(/\/+$/, '');
   const GOOGLE_CLIENT_ID = String((window.BNM_CONFIG && BNM_CONFIG.GOOGLE_CLIENT_ID) || '').trim();
 
-  // Accounts saved in this browser (used only when the server is off)
-  let accounts = [];
-  try { accounts = JSON.parse(localStorage.getItem('bookNMeetUsers')) || []; } catch (e) { accounts = []; }
+  const SERVER_OFF_MESSAGE = 'Cannot reach the server. Please make sure the backend is running and try again.';
 
   /*
     Talk to the backend server.
@@ -405,7 +412,7 @@
   }
 
   // Save who is logged in, then open the right dashboard.
-  function finishLogin(user, messageElement){
+  function finishLogin(session, user, messageElement){
     const currentUser = {
       id: user.id || '',
       name: user.name || '',
@@ -414,12 +421,31 @@
       role: user.role || 'patient',
       hospital: user.hospital || null
     };
-    localStorage.setItem('bookNMeetCurrentUser', JSON.stringify(currentUser));
+    // Remember the log-in and load this person's data (js/sync.js)
+    BNMSync.logIn(session, currentUser);
     setMsg(messageElement, 'Login successful! Redirecting...', 'success');
     setTimeout(() => {
       window.location.href = currentUser.role === 'staff' ? 'admin.html' : 'first.html';
     }, 500);
   }
+
+  // ---------- Hospital lists (sign up + Google profile) come from the database ----------
+  (function fillHospitalLists(){
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('bookNMeetHospitals')) || {}; } catch (e) { saved = {}; }
+    const names = Object.values(saved).map(h => h.name).filter(Boolean).sort();
+    if(!names.length) return;   // keep the built-in list
+    ['suHospital', 'gpHospital'].forEach(id => {
+      const select = document.getElementById(id);
+      select.innerHTML = '<option value="" disabled selected>Select your hospital</option>' +
+        names.map(name => {
+          const option = document.createElement('option');
+          option.value = name;
+          option.textContent = name;
+          return option.outerHTML;
+        }).join('');
+    });
+  })();
 
   // ---------- Show / hide password (eye button) ----------
   document.querySelectorAll('.eye-btn').forEach(button => {
@@ -450,6 +476,8 @@
   const errContact = document.getElementById('errContact');
   const errRole = document.getElementById('errRole');
   const errHospital = document.getElementById('errHospital');
+  const suJoinCode = document.getElementById('suJoinCode');
+  const errJoinCode = document.getElementById('errJoinCode');
 
   const passwordRules = [
     { element: document.getElementById('ruleLength'),  test: v => v.length >= 8 },
@@ -458,7 +486,7 @@
     { element: document.getElementById('ruleSpecial'), test: v => /[^A-Za-z0-9]/.test(v) }
   ];
 
-  const touched = { name:false, email:false, contact:false, password:false, role:false, hospital:false };
+  const touched = { name:false, email:false, contact:false, password:false, role:false, hospital:false, joinCode:false };
   let signupBusy = false;
 
   function setError(span, input, message){
@@ -517,6 +545,14 @@
     return ok;
   }
 
+  // Staff only: the secret code of their hospital (shown on the admin Settings page)
+  function validateJoinCode(showErr){
+    if(suRole.value !== 'staff') return true;
+    const ok = /^[A-Za-z0-9]{4,12}$/.test(suJoinCode.value.trim());
+    if(showErr) setError(errJoinCode, suJoinCode, ok ? '' : 'Enter the join code you got from your hospital.');
+    return ok;
+  }
+
   function refreshSignupState(){
     const okName = validateName(touched.name);
     const okEmail = validateEmail(touched.email);
@@ -524,8 +560,9 @@
     const okPassword = validatePassword();
     const okRole = validateRole(touched.role);
     const okHospital = validateHospital(touched.hospital);
+    const okJoinCode = validateJoinCode(touched.joinCode);
 
-    signupBtn.disabled = signupBusy || !(okName && okEmail && okContact && okPassword && okRole && okHospital);
+    signupBtn.disabled = signupBusy || !(okName && okEmail && okContact && okPassword && okRole && okHospital && okJoinCode);
     setAuthHeight();
   }
 
@@ -550,19 +587,23 @@
     touched.role = true;
     const isStaff = suRole.value === 'staff';
     hospitalField.classList.toggle('open', isStaff);
-    if(!isStaff){ suHospital.value = ''; touched.hospital = false; setError(errHospital, suHospital, ''); suHospital.classList.remove('field-ok'); }
+    if(!isStaff){
+      suHospital.value = ''; touched.hospital = false; setError(errHospital, suHospital, ''); suHospital.classList.remove('field-ok');
+      suJoinCode.value = ''; touched.joinCode = false; setError(errJoinCode, suJoinCode, ''); suJoinCode.classList.remove('field-ok');
+    }
     refreshSignupState();
     setTimeout(setAuthHeight, 420);
   });
 
   suHospital.addEventListener('change', () => { touched.hospital = true; refreshSignupState(); });
+  suJoinCode.addEventListener('input', () => { touched.joinCode = true; refreshSignupState(); });
 
   function resetSignupForm(){
     document.getElementById('signupForm').reset();
     hospitalField.classList.remove('open');
     Object.keys(touched).forEach(key => { touched[key] = false; });
-    [errName, errEmail, errContact, errRole, errHospital].forEach(s => { s.textContent=''; s.classList.remove('show'); });
-    [suName, suEmail, suContact, suRole, suHospital, suPassword].forEach(el => el.classList.remove('field-ok','field-bad'));
+    [errName, errEmail, errContact, errRole, errHospital, errJoinCode].forEach(s => { s.textContent=''; s.classList.remove('show'); });
+    [suName, suEmail, suContact, suRole, suHospital, suPassword, suJoinCode].forEach(el => el.classList.remove('field-ok','field-bad'));
     passwordRules.forEach(rule => { rule.element.classList.remove('valid'); rule.element.classList.add('invalid'); rule.element.querySelector('.mark').textContent='✕'; });
     signupBtn.disabled = true;
     setMsg(signupMsg, '');
@@ -580,7 +621,8 @@
       contact: suContact.value.trim(),
       password: suPassword.value,
       role: suRole.value,
-      hospital: suRole.value === 'staff' ? suHospital.value : null
+      hospital: suRole.value === 'staff' ? suHospital.value : null,
+      joinCode: suRole.value === 'staff' ? suJoinCode.value.trim().toUpperCase() : null
     };
 
     signupBusy = true;
@@ -592,26 +634,16 @@
     signupBusy = false;
     setBusy(signupBtn, false);
 
-    let successText = 'Account created! Taking you to login...';
-
-    if(result){
-      // The server answered
-      if(!result.data.success){
-        setMsg(signupMsg, result.data.message || 'Account could not be created.', 'error');
-        return;
-      }
-    } else {
-      // Server is off: save the account in this browser only
-      if(accounts.some(a => a.email === newAccount.email)){
-        setMsg(signupMsg, 'An account with this email already exists. Please log in instead.', 'error');
-        return;
-      }
-      accounts.push(newAccount);
-      localStorage.setItem('bookNMeetUsers', JSON.stringify(accounts));
-      successText = 'Account saved in this browser. Taking you to login...';
+    if(!result){
+      setMsg(signupMsg, SERVER_OFF_MESSAGE, 'error');
+      return;
+    }
+    if(!result.data.success){
+      setMsg(signupMsg, result.data.message || 'Account could not be created.', 'error');
+      return;
     }
 
-    setMsg(signupMsg, successText, 'success');
+    setMsg(signupMsg, 'Account created! Taking you to login...', 'success');
 
     setTimeout(() => {
       resetSignupForm();
@@ -644,26 +676,17 @@
 
     setBusy(loginBtn, false);
 
-    if(result && result.data.success){
-      finishLogin(result.data.user, loginMsg);
+    if(!result){
+      setMsg(loginMsg, SERVER_OFF_MESSAGE, 'error');
       return;
     }
 
-    // Not found on the server (or server is off): try accounts saved in this browser
-    const account = accounts.find(a => String(a.email || '').trim().toLowerCase() === email);
-
-    if(account && account.password === password){
-      finishLogin(account, loginMsg);
-      return;
-    }
-
-    if(result){
+    if(!result.data.success){
       setMsg(loginMsg, result.data.message || 'Invalid email or password.', 'error');
-    } else if(!account){
-      setMsg(loginMsg, 'No account found with this email.', 'error');
-    } else {
-      setMsg(loginMsg, 'Incorrect password.', 'error');
+      return;
     }
+
+    finishLogin(result.data.session, result.data.user, loginMsg);
   });
 
   // ---------- Popups (forgot password, complete Google profile) ----------
@@ -709,7 +732,7 @@
     setBusy(forgotBtn, false);
 
     if(!result){
-      setMsg(forgotMsg, 'The server is not running, so the reset email cannot be sent right now.', 'error');
+      setMsg(forgotMsg, SERVER_OFF_MESSAGE, 'error');
     } else if(!result.data.success){
       setMsg(forgotMsg, result.data.message || 'The reset email could not be sent.', 'error');
     } else {
@@ -727,7 +750,7 @@
   const completeMsg = document.getElementById('completeMsg');
   const completeBtn = document.getElementById('completeBtn');
 
-  let googleAccessToken = '';
+  let googleSession = null;
 
   function activeAuthMsg(){
     return authFlip.classList.contains('flipped') ? signupMsg : loginMsg;
@@ -741,7 +764,7 @@
     const result = await callServer('/api/google-login', { credential: response.credential });
 
     if(!result){
-      setMsg(message, 'Google sign-in needs the server to be running.', 'error');
+      setMsg(message, SERVER_OFF_MESSAGE, 'error');
       return;
     }
     if(!result.data.success){
@@ -751,7 +774,7 @@
 
     if(result.data.needsProfile){
       // First time with Google: ask for contact number, role and hospital
-      googleAccessToken = result.data.access_token;
+      googleSession = result.data.session;
       gpEmail.textContent = result.data.user.email;
       setMsg(message, '');
       setMsg(completeMsg, '');
@@ -759,7 +782,7 @@
       return;
     }
 
-    finishLogin(result.data.user, message);
+    finishLogin(result.data.session, result.data.user, message);
   }
 
   gpContact.addEventListener('input', () => {
@@ -781,22 +804,26 @@
     if(gpRole.value === 'staff' && !gpHospital.value){
       setMsg(completeMsg, 'Please select your hospital.', 'error'); return;
     }
+    if(gpRole.value === 'staff' && !/^[A-Za-z0-9]{4,12}$/.test(document.getElementById('gpJoinCode').value.trim())){
+      setMsg(completeMsg, 'Enter the join code you got from your hospital.', 'error'); return;
+    }
 
     setBusy(completeBtn, true, 'Saving...');
     const result = await callServer('/api/google-complete', {
-      access_token: googleAccessToken,
+      access_token: googleSession ? googleSession.access_token : '',
       contact: gpContact.value,
       role: gpRole.value,
-      hospital: gpRole.value === 'staff' ? gpHospital.value : null
+      hospital: gpRole.value === 'staff' ? gpHospital.value : null,
+      joinCode: gpRole.value === 'staff' ? document.getElementById('gpJoinCode').value.trim().toUpperCase() : null
     });
     setBusy(completeBtn, false);
 
     if(!result){
-      setMsg(completeMsg, 'The server is not running. Please try again.', 'error');
+      setMsg(completeMsg, SERVER_OFF_MESSAGE, 'error');
     } else if(!result.data.success){
       setMsg(completeMsg, result.data.message || 'Your profile could not be saved.', 'error');
     } else {
-      finishLogin(result.data.user, completeMsg);
+      finishLogin(googleSession, result.data.user, completeMsg);
     }
   });
 

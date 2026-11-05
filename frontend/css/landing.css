@@ -507,3 +507,9 @@ button.forgot:hover{ text-decoration:underline; }
   font-family:var(--font-body); font-weight:600; font-size:0.95rem; cursor:pointer;
 }
 .btn-secondary:hover{ background:#F6F8FA; }
+
+/* staff sign up: hospital + join code */
+.hospital-field.open{ max-height:280px; }
+#suJoinCode, #gpJoinCode{ text-transform:uppercase; letter-spacing:0.08em; }
+#suJoinCode::placeholder, #gpJoinCode::placeholder{ text-transform:none; letter-spacing:0; }
+.modal-card .join-label{ margin-top:14px; }

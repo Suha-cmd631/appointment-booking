@@ -13,6 +13,9 @@
 <title>Find Hospitals and Doctors Near You | Book N Meet</title>
 
 <link rel="stylesheet" href="css/first.css">
+<!-- Connection to the server (see js/sync.js) -->
+<script src="js/config.js"></script>
+<script src="js/sync.js"></script>
 </head>
 
 <body>
@@ -44,7 +47,7 @@
     <span class="notification-dot"></span>
 </a>
 
- <button class="login" onclick="window.location.href='landing.html'">
+ <button class="login" type="button" onclick="BNMSync.logOut()">
     Logout
 </button>
 
@@ -151,92 +154,7 @@ View All →
 </div>
 
 
-<div class="cards">
-
-
-<div class="card">
-
-<img
-class="card-img"
-src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=700&q=80"
-alt="Trinity Hospital">
-
-<div class="card-content">
-
-<h3>Trinity Hospital</h3>
-
-<div class="location">
-📍 Tadepalligudem
-</div>
-
-<div class="rating">
-★★★★★ 4.8
-</div>
-
-<a href="hospitals.html?hospital=trinity" class="card-btn">
-View Hospital
-</a>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<img
-class="card-img"
-src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=700&q=80"
-alt="Gowthami Hospital">
-
-<div class="card-content">
-
-<h3>Gowthami Hospital</h3>
-
-<div class="location">
-📍 Tadepalligudem
-</div>
-
-<div class="rating">
-★★★★★ 4.7
-</div>
-
-<a href="hospitals.html?hospital=gowthami" class="card-btn">
-View Hospital
-</a>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<img
-class="card-img"
-src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=700&q=80"
-alt="Neokidz ENT">
-
-<div class="card-content">
-
-<h3>Neokidz ENT</h3>
-
-<div class="location">
-📍 Tadepalligudem
-</div>
-
-<div class="rating">
-★★★★★ 4.6
-</div>
-
-<a href="hospitals.html?hospital=neokidz" class="card-btn">
-View Hospital
-</a>
-
-</div>
-
-</div>
-
+<div class="cards" id="topHospitals">
 </div>
 
 </section>
@@ -251,83 +169,93 @@ View Hospital
 </div>
 
 
-<div class="cards">
-
-
-<div class="card">
-
-<img
-class="doctor-img"
-src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=700&q=80"
-alt="Dr. Ananya Rao">
-
-<div class="card-content">
-
-<h3>Dr. Ananya Rao</h3>
-
-<div class="speciality">
-Cardiologist
-</div>
-
-<div class="rating">
-★★★★★ 4.9
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<img
-class="doctor-img"
-src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=700&q=80"
-alt="Dr. Priya Sharma">
-
-<div class="card-content">
-
-<h3>Dr. Priya Sharma</h3>
-
-<div class="speciality">
-Dermatologist
-</div>
-
-<div class="rating">
-★★★★★ 4.8
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<img
-class="doctor-img"
-src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=700&q=80"
-alt="Dr. Vikram Rao">
-
-<div class="card-content">
-
-<h3>Dr. Vikram Rao</h3>
-
-<div class="speciality">
-ENT Specialist
-</div>
-
-<div class="rating">
-★★★★★ 4.7
-</div>
-
-</div>
-
-</div>
-
+<div class="cards" id="topDoctors">
 </div>
 
 </section>
+
+<script>
+/*
+  TOP RATED HOSPITALS / TOP DOCTORS
+  Filled in from the database copy kept by js/sync.js,
+  so new hospitals, edits and new doctors show up here too.
+*/
+(function(){
+
+    function readCopy(key, fallback){
+        try{
+            const value = JSON.parse(localStorage.getItem(key));
+            return value || fallback;
+        }catch(error){
+            return fallback;
+        }
+    }
+
+    function esc(value){
+        return String(value ?? "").replace(/[&<>"']/g, function(c){
+            return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+        });
+    }
+
+    /* "★★★★★ 4.8 (160 reviews)" -> 4.8 */
+    function score(rating){
+        const match = String(rating || "").match(/\d+(\.\d+)?/);
+        return match ? Number(match[0]) : 0;
+    }
+
+    function render(){
+
+        const hospitals = Object.values(readCopy("bookNMeetHospitals", {}));
+        const doctors = readCopy("bookNMeetDoctors", []);
+
+        const topHospitals = hospitals
+            .slice()
+            .sort(function(a, b){ return score(b.rating) - score(a.rating); })
+            .slice(0, 3);
+
+        document.getElementById("topHospitals").innerHTML = topHospitals.map(function(h){
+            return `
+<div class="card">
+<img class="card-img" src="${esc(h.image)}" alt="${esc(h.name)}">
+<div class="card-content">
+<h3>${esc(h.name)}</h3>
+<div class="location">${esc(h.location)}</div>
+<div class="rating">${esc(h.rating)}</div>
+<a href="hospitals.html?hospital=${encodeURIComponent(h.id)}" class="card-btn">View Hospital</a>
+</div>
+</div>`;
+        }).join("");
+
+        const topDoctors = (Array.isArray(doctors) ? doctors : [])
+            .filter(function(d){ return !d.removed && d.status !== "Removed" && d.rating; })
+            .sort(function(a, b){ return score(b.rating) - score(a.rating); })
+            .slice(0, 3);
+
+        document.getElementById("topDoctors").innerHTML = topDoctors.map(function(d){
+            return `
+<div class="card">
+<img class="doctor-img" src="${esc(d.image || "images/doctor.png")}" alt="${esc(d.name)}">
+<div class="card-content">
+<h3>${esc(d.name)}</h3>
+<div class="speciality">${esc(d.speciality)}</div>
+<div class="rating">${esc(d.rating)}</div>
+</div>
+</div>`;
+        }).join("");
+    }
+
+    render();
+
+    window.addEventListener("storage", function(event){
+        if(event.key === "bookNMeetHospitals" || event.key === "bookNMeetDoctors"){
+            render();
+        }
+    });
+
+})();
+</script>
+
+
 <!-- =====================================================
      HOW IT WORKS
 ===================================================== -->
@@ -359,7 +287,7 @@ ENT Specialist
             </div>
 
             <div class="step-icon">
-                <img src=" images/user-icon.png" alt="Create Account">
+                <img src="images/user-icon.png" alt="Create Account">
             </div>
 
             <h3>

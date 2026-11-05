@@ -1128,3 +1128,28 @@ a{
 .login:hover{
     color:#1d9c96;
 }
+
+/* fix: the menu bar no longer runs off the screen on smaller screens */
+@media (max-width:1180px){
+    .nav-links{ margin-right:0; }
+}
+@media (max-width:800px){
+    .nav-links{ display:none; }
+}
+
+/* "Cancel appointment" button on an appointment card */
+.cancel-appointment-btn{
+    margin-top:14px;
+    padding:9px 16px;
+    border:1px solid #f0c4bf;
+    border-radius:9px;
+    background:#fff;
+    color:#c0392b;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+}
+.cancel-appointment-btn:hover{
+    background:#fdf1f0;
+}
