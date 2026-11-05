@@ -1,136 +1,143 @@
 # BOOK N MEET - setup guide
 
-The website works in two ways:
+Everything the website saves (accounts, hospitals, doctors, doctor
+schedules, appointments, notifications, hospital settings) is stored in
+your **Supabase database**. The **backend server** (`backend` folder) is
+the only thing that talks to the database, and it checks every change:
 
-- **Server off** - accounts are saved only in the browser you are using.
-  Good for a quick demo. Google sign-in and "Forgot password" do not work.
-- **Server on** - accounts are saved in your Supabase database, so they
-  work on any computer. Google sign-in and "Forgot password" work.
+- Patients can book, see their own appointments and edit their own profile.
+- Hospital staff can only see and change their own hospital: its
+  appointments, doctors, schedules, notifications and details.
+- People who are not logged in can only see hospitals, doctors and which
+  time slots are already taken (never other patients' names or numbers).
 
-Appointments, doctors, schedules and notifications are still saved in the
-browser in both cases. Only accounts (sign up / log in) use the database.
-
-
-## 1. Open the website
-
-1. Open the project folder in VS Code.
-2. Right-click `frontend/landing.html` and choose **Open with Live Server**.
-3. The address looks like `http://127.0.0.1:5501/frontend/landing.html`.
-
-Always open the site through Live Server. Do not double-click the file,
-because Google sign-in does not work that way.
+So the site needs two things running: **the server** and **the website**.
 
 
-## 2. Turn the server on
+## 1. One-time setup
+
+### a) Supabase keys
 
 You need the three keys of your Supabase project. Whoever created the
-Supabase project can find them in **Project Settings -> API Keys**.
+project finds them in Supabase under **Project Settings -> API Keys**
+(and the project URL under **Project Settings -> Data API**).
 
 1. In the `backend` folder, make a copy of `.env.example` and name the
    copy `.env`.
-2. Open `.env` and paste your three Supabase values. Leave `PORT=5050`.
-3. Open a terminal in the `backend` folder and run:
+2. Open `.env` and paste the three values. Leave `PORT=5050`.
 
-   ```
-   npm install
-   npm start
-   ```
+Keep `.env` private. It is listed in `backend/.gitignore`, so it is never
+uploaded to GitHub.
 
-4. You should see `Server running on http://localhost:5050`.
-5. Reload the login page. New accounts are now saved in Supabase.
+### b) Create the tables
 
-Keep the `.env` file private. It is already listed in `backend/.gitignore`
-so it is not uploaded to GitHub.
+1. In Supabase open **SQL Editor -> New query**.
+2. Open `backend/database/setup.sql`, copy everything, paste it, press **Run**.
 
-The port number in `backend/.env` and in `frontend/js/config.js` must be
-the same. (Port 5000 is avoided because macOS uses it for AirPlay.)
+This creates all the tables and adds the 5 hospitals with their doctors.
+It is safe to run again (nothing is added twice, nothing is deleted).
 
-### The table the server needs
+### c) Install the server
 
-The server saves each account in a table called `profiles`. If it does
-not exist yet in your Supabase project, open **SQL Editor** in Supabase
-and run this once:
+Open a terminal in the `backend` folder and run:
 
-```sql
-create table if not exists profiles (
-  id uuid primary key references auth.users (id) on delete cascade,
-  name text not null,
-  email text not null,
-  contact text,
-  role text not null check (role in ('patient', 'staff')),
-  hospital text,
-  created_at timestamptz default now()
-);
+```
+npm install
 ```
 
 
-## 3. Turn on "Continue with Google"
+## 2. Every time you work on the project
+
+In a terminal in the main `appointment-booking` folder type:
+
+```
+npm run dev
+```
+
+This starts the server and the website together and opens the home
+page (`landing.html`) in your browser. From there you move through all
+pages with the menu. Leave the terminal open; press **Ctrl + C** to stop.
+
+(Stop VS Code's Live Server first if it is running - both use port 5501.)
+
+If the server is not running, pages show a small yellow note
+"Can't reach the server - showing the last saved data", and nothing can
+be saved until the server is back.
+
+The port number in `backend/.env` and in `frontend/js/config.js` must be
+the same (5050). Port 5000 is avoided because macOS uses it for AirPlay.
+
+
+## 3. First accounts and staff join codes
+
+Every hospital has a secret **join code**. Anyone signing up as
+**Hospital Staff** must type their hospital's code, so strangers cannot
+make a staff account and see patients' details.
+
+- **See the codes (first time):** in the `backend` folder run
+  `node check-accounts.js`. It lists every account and every hospital's code.
+- **After that:** any staff member sees their own hospital's code on the
+  admin **Settings** page and can give it to new colleagues.
+- **Change a code:** Supabase -> Table Editor -> `hospitals` -> `join_code`.
+
+Then:
+
+- **Hospital staff:** Sign up -> Role "Hospital Staff" -> choose the
+  hospital -> type the join code.
+- **Patients:** Sign up -> Role "Patient" (no code needed).
+
+If you ran `setup.sql` before join codes existed, run it once more
+(Supabase -> SQL Editor). It only adds what is missing.
+
+
+## 4. Optional: "Continue with Google"
 
 The button is already on the login and sign up forms. It needs a free
 **Google Client ID**, which only you can create.
 
-### a) Create the Client ID
+1. Go to https://console.cloud.google.com, create a project, open
+   **Google Auth Platform** and fill in the app name and your email.
+2. Open **Clients -> Create client -> Web application**.
+3. Under **Authorized JavaScript origins** add `http://localhost:5501`
+   and `http://127.0.0.1:5501`.
+4. Under **Authorized redirect URIs** add the callback address shown on
+   Supabase's Google provider page (step 6).
+5. Click **Create**; copy the **Client ID** and **Client secret**.
+6. In Supabase open **Authentication -> Sign In / Providers -> Google**,
+   turn it on, paste both values and save.
+7. Paste the Client ID into `frontend/js/config.js`:
 
-1. Go to https://console.cloud.google.com and sign in.
-2. Create a project (any name, for example "Book N Meet").
-3. Open **Google Auth Platform**. If it asks, fill in the app name and
-   your email, choose **External**, and save.
-4. Open **Clients -> Create client** and choose **Web application**.
-5. Under **Authorized JavaScript origins** add both of these:
-   - `http://localhost:5501`
-   - `http://127.0.0.1:5501`
-6. Under **Authorized redirect URIs** add the callback address shown on
-   the Google provider page in Supabase (step b).
-7. Click **Create**. Copy the **Client ID** and the **Client secret**.
-
-### b) Tell Supabase about it
-
-1. In Supabase open **Authentication -> Sign In / Providers -> Google**.
-2. Turn it on and paste the Client ID and Client secret. Save.
-
-### c) Tell the website about it
-
-Open `frontend/js/config.js` and paste the Client ID between the quotes:
-
-```js
-GOOGLE_CLIENT_ID: "1234567890-abcdefg.apps.googleusercontent.com"
-```
-
-Reload the login page (with the server on). The Google button now opens
-the Google account chooser. The first time someone uses it, the site asks
-for their contact number, role and hospital.
-
-If 5501 is not your Live Server port, use your own port number in step a5.
+   ```js
+   GOOGLE_CLIENT_ID: "1234567890-abcdefg.apps.googleusercontent.com"
+   ```
 
 
-## 4. Turn on "Forgot your password?"
+## 5. Optional: "Forgot your password?"
 
-Supabase sends the reset email. You only need to allow the page the
-email link opens:
-
-1. In Supabase open **Authentication -> URL Configuration**.
-2. Under **Redirect URLs** add:
-   - `http://127.0.0.1:5501/**`
-   - `http://localhost:5501/**`
-
-The link in the email opens `reset-password.html`, where the person
-types a new password.
+Supabase sends the reset email. Allow the page the email link opens:
+in Supabase open **Authentication -> URL Configuration** and under
+**Redirect URLs** add `http://127.0.0.1:5501/**` and `http://localhost:5501/**`.
 
 
 ## Password rules
 
-A password needs at least 8 characters, a capital letter, a digit and a
-special character. These rules let Chrome / Google Password Manager
-suggest and save a strong password on the sign up form.
+At least 8 characters, a capital letter, a digit and a special character.
 
 
 ## Where things are
 
 | What | File |
 | --- | --- |
+| Database tables + the 5 hospitals and their doctors | `backend/database/setup.sql` |
+| Server: accounts (sign up, log in, Google, password reset) | `backend/server.js` |
+| Server: hospitals, doctors, schedules, appointments, notifications | `backend/data.js` |
+| `npm run dev` (starts server + website, opens browser) | `backend/dev.js` |
 | Server address and Google Client ID | `frontend/js/config.js` |
-| Hospitals and their details | `frontend/js/hospital-data.js` |
-| Doctors of Lalitha and Avideep | `frontend/js/seed-doctors.js` |
+| Connection between every page and the server | `frontend/js/sync.js` |
+| Shared hospital/doctor helper functions | `frontend/js/hospital-data.js` |
 | Patient notifications and the bell dot | `frontend/js/patient-notifications.js` |
+| Admin menu bar look / behaviour | `frontend/css/admin-common.css`, `frontend/js/admin-header.js` |
 | Link between patient site and admin site | `frontend/js/site-links.js` |
-| Server (sign up, log in, Google, password reset) | `backend/server.js` |
+
+Hospital details are changed by that hospital's staff on the admin
+**Settings** page. Doctors are added and removed on the admin **Doctors** page.

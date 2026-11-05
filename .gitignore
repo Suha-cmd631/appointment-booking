@@ -1,0 +1,12 @@
+# Secret keys - never upload
+.env
+backend/.env
+
+# Installed packages - each person runs "npm install" in backend
+node_modules/
+
+# Mac system files
+.DS_Store
+
+# Screenshots from Claude
+Claude outputs/

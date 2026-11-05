@@ -1,0 +1,9 @@
+{
+  "name": "appointment-booking",
+  "private": true,
+  "scripts": {
+    "dev": "node backend/dev.js",
+    "start": "node backend/server.js",
+    "setup": "npm --prefix backend install"
+  }
+}
