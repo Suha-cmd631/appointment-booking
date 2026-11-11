@@ -849,8 +849,16 @@
           width: Math.min(400, Math.max(240, slot.offsetWidth))
         });
       });
+    } else if(!GOOGLE_CLIENT_ID){
+      // Google sign-in is not set up (no Client ID in js/config.js):
+      // hide the button and the "or" line above it.
+      slots.forEach(slot => {
+        slot.style.display = 'none';
+        const line = slot.previousElementSibling;
+        if(line && line.classList.contains('divider')) line.style.display = 'none';
+      });
     } else {
-      // Google is not set up yet: show a plain button that explains why
+      // Google is set up but could not load: show a plain button that explains why
       slots.forEach(slot => {
         slot.innerHTML =
           '<button type="button" class="google-btn">' + GOOGLE_ICON +
