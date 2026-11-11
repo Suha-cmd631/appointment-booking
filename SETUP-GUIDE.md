@@ -64,7 +64,7 @@ If the server is not running, pages show a small yellow note
 "Can't reach the server - showing the last saved data", and nothing can
 be saved until the server is back.
 
-The port number in `backend/.env` and in `frontend/js/config.js` must be
+The port number in `backend/.env` and in `public/js/config.js` must be
 the same (5050). Port 5000 is avoided because macOS uses it for AirPlay.
 
 
@@ -105,7 +105,7 @@ The button is already on the login and sign up forms. It needs a free
 5. Click **Create**; copy the **Client ID** and **Client secret**.
 6. In Supabase open **Authentication -> Sign In / Providers -> Google**,
    turn it on, paste both values and save.
-7. Paste the Client ID into `frontend/js/config.js`:
+7. Paste the Client ID into `public/js/config.js`:
 
    ```js
    GOOGLE_CLIENT_ID: "1234567890-abcdefg.apps.googleusercontent.com"
@@ -132,12 +132,68 @@ At least 8 characters, a capital letter, a digit and a special character.
 | Server: accounts (sign up, log in, Google, password reset) | `backend/server.js` |
 | Server: hospitals, doctors, schedules, appointments, notifications | `backend/data.js` |
 | `npm run dev` (starts server + website, opens browser) | `backend/dev.js` |
-| Server address and Google Client ID | `frontend/js/config.js` |
-| Connection between every page and the server | `frontend/js/sync.js` |
-| Shared hospital/doctor helper functions | `frontend/js/hospital-data.js` |
-| Patient notifications and the bell dot | `frontend/js/patient-notifications.js` |
-| Admin menu bar look / behaviour | `frontend/css/admin-common.css`, `frontend/js/admin-header.js` |
-| Link between patient site and admin site | `frontend/js/site-links.js` |
+| Automatic tests (Jest + Selenium) | `tests/` (settings: `jest.config.js`) |
+| Settings for putting the site online | `render.yaml` |
+| Server address and Google Client ID | `public/js/config.js` |
+| Connection between every page and the server | `public/js/sync.js` |
+| Shared hospital/doctor helper functions | `public/js/hospital-data.js` |
+| Patient notifications and the bell dot | `public/js/patient-notifications.js` |
+| Admin menu bar look / behaviour | `public/css/admin-common.css`, `public/js/admin-header.js` |
+| Link between patient site and admin site | `public/js/site-links.js` |
 
 Hospital details are changed by that hospital's staff on the admin
 **Settings** page. Doctors are added and removed on the admin **Doctors** page.
+
+
+## 6. Testing (Jest + Selenium)
+
+The `tests` folder has 68 automatic tests:
+
+- **Jest** (`tests/api`, 48 tests) checks the server: sign up and log in
+  rules, booking, double-booking, privacy, cancelling, doctors, schedules,
+  settings and join codes.
+- **Selenium WebDriver** (`tests/ui`, 20 tests) opens a real Chrome window
+  and clicks through the website like a patient and a staff member.
+
+First time only, in the main `appointment-booking` folder:
+
+```
+npm install
+```
+
+Run the tests (the server starts by itself if it is not running):
+
+| Command | What it runs |
+| --- | --- |
+| `npm test` | all 68 tests |
+| `npm run test:api` | only the Jest server tests |
+| `npm run test:ui` | only the Selenium website tests (Chrome opens) |
+
+Results: `test-report/test-report.html` (open it in a browser) and a
+screenshot of every website test in `test-report/screenshots`.
+
+The tests use your real Supabase database but only make accounts whose
+email starts with `bnmtest.` and delete everything they made at the end.
+Google Chrome must be installed; Selenium downloads the matching driver
+by itself. To run without the Chrome window, use `HEADLESS=1 npm test`.
+
+
+## 7. Putting the site online (Vercel, free)
+
+Vercel runs the server (`server.js` in the main folder, which loads
+`backend/server.js`) and shows the pages in the `public` folder, all on
+one address like `https://book-n-meet.vercel.app`.
+
+1. Push the latest code to GitHub.
+2. Go to https://vercel.com and sign in with GitHub.
+3. Click **Add New -> Project**, pick `appointment-booking`, click **Import**.
+4. Leave Framework / Root Directory / Build settings as Vercel fills them.
+5. Open **Environment Variables** and add these three (same values as in
+   `backend/.env`): `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
+   `SUPABASE_SECRET_KEY`.
+6. Click **Deploy**. Open the address Vercel shows: it opens the login page.
+7. For "Forgot your password?": in Supabase, **Authentication -> URL
+   Configuration -> Redirect URLs**, add `https://<your-vercel-address>/**`.
+
+Every `git push` to `main` updates the live site by itself.
+(`render.yaml` is kept for Render as a backup option.)

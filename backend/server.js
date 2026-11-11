@@ -10,11 +10,12 @@
 // ======================================================
 
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const { createClient } = require("@supabase/supabase-js");
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 // Stop early with a clear message if the keys are missing.
 ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "SUPABASE_SECRET_KEY"].forEach((name) => {
@@ -169,11 +170,23 @@ async function findHospitalByName(name) {
 // IS THE SERVER RUNNING?
 // ======================================================
 
-app.get("/", (req, res) => {
+function serverRunning(req, res) {
     res.json({
         success: true,
         message: "BOOK N MEET backend is running"
     });
+}
+
+app.get("/api/health", serverRunning);
+
+// Online (e.g. on Render) this same server also shows the website,
+// so the home address opens the login page. On your laptop the
+// website runs separately on port 5501 (npm run dev).
+app.get("/", (req, res) => {
+    if (req.accepts(["html", "json"]) === "html") {
+        return res.redirect("/landing.html");
+    }
+    serverRunning(req, res);
 });
 
 
@@ -718,9 +731,17 @@ require("./data")(app, {
 // START SERVER
 // ======================================================
 
+// The website pages (public folder). On Vercel these are served by
+// Vercel itself; on your laptop and on Render by this line.
+app.use(express.static(
+    path.join(__dirname, "..", "public"),
+    { extensions: ["html"] }
+));
+
 const PORT = process.env.PORT || 5050;
 
-app.listen(PORT, () => {
+// Vercel runs the server by itself (see server.js in the main folder)
+if (!process.env.VERCEL) app.listen(PORT, () => {
     console.log("");
     console.log("======================================");
     console.log("   BOOK N MEET BACKEND");
@@ -729,3 +750,5 @@ app.listen(PORT, () => {
     console.log("======================================");
     console.log("");
 });
+
+module.exports = app;

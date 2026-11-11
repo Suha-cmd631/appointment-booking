@@ -10,3 +10,9 @@ node_modules/
 
 # Screenshots from Claude
 Claude outputs/
+
+# Test results (made by npm test)
+test-report/
+
+# ChromeDriver for the Selenium tests (big files, kept on each laptop only)
+tests/drivers/

@@ -10,9 +10,14 @@ window.BNM_CONFIG = {
 
     /*
       Address of the backend server (backend/server.js).
-      The port number here must be the same as PORT in backend/.env
+      - On your laptop (npm run dev, website on port 5501) the server
+        is on port 5050 - the same number as PORT in backend/.env.
+      - Online (Render) the server and the website share one address,
+        so nothing needs changing here.
     */
-    API_URL: "http://localhost:5050",
+    API_URL: (window.location.port === "5501" || window.location.protocol === "file:")
+        ? "http://localhost:5050"
+        : window.location.origin,
 
     /*
       Google Client ID for the "Continue with Google" button.

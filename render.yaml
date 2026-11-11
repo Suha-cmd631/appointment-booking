@@ -1,0 +1,18 @@
+# Render "Blueprint": puts BOOK N MEET online as one free web service.
+# The same server runs the backend AND shows the website pages.
+services:
+  - type: web
+    name: book-n-meet
+    runtime: node
+    plan: free
+    buildCommand: npm install --prefix backend
+    startCommand: node backend/server.js
+    healthCheckPath: /api/health
+    envVars:
+      # Paste the same 3 values that are in backend/.env (Render asks for them)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
