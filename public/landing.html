@@ -318,7 +318,14 @@
     </div>
   </div>
 
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+  // Load Google sign-in only when a Google Client ID is set in js/config.js
+  if(window.BNM_CONFIG && String(BNM_CONFIG.GOOGLE_CLIENT_ID || "").trim()){
+    const g = document.createElement("script");
+    g.src = "https://accounts.google.com/gsi/client"; g.async = true;
+    document.head.appendChild(g);
+  }
+</script>
 <script>
   // ---------- Auth flip + segmented toggle ----------
   const authFlip = document.getElementById('authFlip');
@@ -874,7 +881,9 @@
     }
     setAuthHeight();
   }
-  window.addEventListener('load', setupGoogleButtons);
+  // No Client ID: hide the Google button straight away. Otherwise wait for Google to load.
+  if(GOOGLE_CLIENT_ID) window.addEventListener('load', setupGoogleButtons);
+  else setupGoogleButtons();
 
   // ---------- Story panel auto-rotation ----------
   const slides = Array.from(document.querySelectorAll('.story-slide'));

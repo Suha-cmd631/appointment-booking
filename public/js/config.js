@@ -15,7 +15,8 @@ window.BNM_CONFIG = {
       - Online (Render) the server and the website share one address,
         so nothing needs changing here.
     */
-    API_URL: (window.location.port === "5501" || window.location.protocol === "file:")
+    API_URL: (window.location.protocol === "file:" ||
+              (/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) && window.location.port !== "5050"))
         ? "http://localhost:5050"
         : window.location.origin,
 
