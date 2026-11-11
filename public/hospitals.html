@@ -340,6 +340,14 @@ function visitHospital(id){
                 const review =
                     doctor.review || "";
 
+                /* Real patient reviews (newest first), up to 3 */
+                let patientReviews = [];
+                try{
+                    patientReviews = (JSON.parse(localStorage.getItem("bookNMeetReviews") || "[]") || [])
+                        .filter(function(r){ return r.doctorId === doctor.id; })
+                        .slice(0, 3);
+                }catch(e){ patientReviews = []; }
+
                 return `
                     <div class="doctor">
 
@@ -375,10 +383,18 @@ function visitHospital(id){
                                   escapeHtml(about) + '</p>'
                                 : ''}
 
-                            ${review
-                                ? '<p class="review">"' +
-                                  escapeHtml(review) + '"</p>'
-                                : ''}
+                            ${patientReviews.length
+                                ? '<div class="patient-reviews"><p class="patient-reviews-title">What patients say</p>' +
+                                  patientReviews.map(function(r){
+                                      return '<div class="patient-review"><span class="pr-stars">' +
+                                          "★★★★★".slice(0, r.rating) + "☆☆☆☆☆".slice(0, 5 - r.rating) +
+                                          '</span> <span class="pr-name">' + escapeHtml(r.patientName) +
+                                          ', ' + escapeHtml(r.date) + '</span>' +
+                                          (r.comment ? '<p>"' + escapeHtml(r.comment) + '"</p>' : '') + '</div>';
+                                  }).join("") + '</div>'
+                                : (review
+                                    ? '<p class="review">"' + escapeHtml(review) + '"</p>'
+                                    : '')}
 
                         </div>
 
@@ -420,7 +436,8 @@ window.addEventListener("storage", function(event){
     if(
         event.key === "bookNMeetHospitals" ||
         event.key === "bookNMeetDoctors" ||
-        event.key === "bookNMeetRemovedDoctors"
+        event.key === "bookNMeetRemovedDoctors" ||
+        event.key === "bookNMeetReviews"
     ){
 
         renderHospitalCards();

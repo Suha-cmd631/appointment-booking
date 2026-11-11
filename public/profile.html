@@ -684,7 +684,24 @@ function saveProfile(){
    APPOINTMENT HISTORY
 ===================================================== */
 
-function loadAppointmentHistory(){
+let lastHistoryKey = "";
+
+function loadAppointmentHistory(force){
+
+    /* Don't redraw while the patient is writing a review,
+       and only redraw when something changed. */
+    const active = document.activeElement;
+    if(!force && active && active.closest && active.closest(".review-box")){
+        return;
+    }
+    const historyKey =
+        (localStorage.getItem("bookNMeetBookings") || "") + "|" +
+        (localStorage.getItem("bookNMeetReviews") || "") + "|" +
+        (localStorage.getItem("bookNMeetCurrentUser") || "");
+    if(!force && historyKey === lastHistoryKey){
+        return;
+    }
+    lastHistoryKey = historyKey;
 
     const bookings =
         JSON.parse(
@@ -1013,7 +1030,122 @@ function createAppointmentCard(
         card.appendChild(cancelButton);
     }
 
+    /* Token to show at the hospital (with QR code) */
+    if(booking.token && (status === "Pending" || status === "Upcoming")){
+        card.insertBefore(tokenBox(booking), card.querySelector(".cancel-appointment-btn"));
+    }
+
+    /* After the visit: rate the doctor */
+    if(status === "Completed"){
+        card.appendChild(reviewBox(booking));
+    }
+
     container.appendChild(card);
+}
+
+/* =====================================================
+   TOKEN AND DOCTOR REVIEW
+===================================================== */
+
+function tokenBox(booking){
+    const box = document.createElement("div");
+    box.className = "token-box";
+    const api = (window.BNMSync && BNMSync.apiUrl) || "";
+    box.innerHTML =
+        '<img src="' + api + '/api/qr/' + encodeURIComponent(booking.token) +
+        '" alt="QR code for token ' + escapeHTML(booking.token) + '" width="84" height="84">' +
+        '<div><span>Appointment token</span>' +
+        '<strong>' + escapeHTML(booking.token) + '</strong>' +
+        '<small>Show this token or QR code at the hospital reception.</small></div>';
+    return box;
+}
+
+const reviewDrafts = {};
+
+function starsText(n){
+    return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
+}
+
+function reviewBox(booking){
+
+    const reviews = JSON.parse(localStorage.getItem("bookNMeetReviews") || "[]") || [];
+    const mine = reviews.find(r => r.mine && String(r.bookingId) === String(booking.id));
+    const draft = reviewDrafts[booking.id];
+
+    const box = document.createElement("div");
+    box.className = "review-box";
+
+    /* Already reviewed and not editing: show it */
+    if(mine && !(draft && draft.editing)){
+        box.innerHTML =
+            '<div class="review-title">Your review of ' + escapeHTML(booking.doctor || "the doctor") + '</div>' +
+            '<div class="review-stars">' + starsText(mine.rating) + '</div>' +
+            (mine.comment ? '<p class="review-comment">"' + escapeHTML(mine.comment) + '"</p>' : '') +
+            '<button type="button" class="review-edit">Edit review</button>';
+        box.querySelector(".review-edit").addEventListener("click", function(){
+            reviewDrafts[booking.id] = { editing: true, rating: mine.rating, comment: mine.comment || "" };
+            loadAppointmentHistory(true);
+        });
+        return box;
+    }
+
+    const state = draft || (reviewDrafts[booking.id] = { editing: Boolean(mine), rating: 0, comment: "" });
+
+    box.innerHTML =
+        '<div class="review-title">How was your visit with ' + escapeHTML(booking.doctor || "the doctor") + '?</div>' +
+        '<div class="star-input" role="radiogroup" aria-label="Rating">' +
+            [1,2,3,4,5].map(n =>
+                '<button type="button" class="star' + (n <= state.rating ? ' on' : '') + '" data-value="' + n +
+                '" aria-label="' + n + ' star' + (n > 1 ? 's' : '') + '">★</button>').join("") +
+        '</div>' +
+        '<textarea class="review-text" maxlength="500" rows="3" placeholder="Share your experience (optional)"></textarea>' +
+        '<div class="review-actions"><button type="button" class="review-submit">Submit review</button>' +
+        '<span class="review-msg"></span></div>';
+
+    const textarea = box.querySelector(".review-text");
+    textarea.value = state.comment;
+    textarea.addEventListener("input", () => { state.comment = textarea.value; });
+
+    box.querySelectorAll(".star").forEach(star => {
+        star.addEventListener("click", function(){
+            state.rating = Number(star.dataset.value);
+            box.querySelectorAll(".star").forEach(s =>
+                s.classList.toggle("on", Number(s.dataset.value) <= state.rating));
+        });
+    });
+
+    const message = box.querySelector(".review-msg");
+    box.querySelector(".review-submit").addEventListener("click", async function(){
+        if(!state.rating){
+            message.textContent = "Please choose 1 to 5 stars.";
+            message.className = "review-msg error";
+            return;
+        }
+        this.disabled = true;
+        message.textContent = "Saving...";
+        message.className = "review-msg";
+        const result = window.BNMSync
+            ? await BNMSync.call("POST", "/api/reviews", { bookingId: booking.id, rating: state.rating, comment: state.comment })
+            : null;
+        this.disabled = false;
+        if(!result){
+            message.textContent = "Can't reach the server. Please try again.";
+            message.className = "review-msg error";
+            return;
+        }
+        if(!result.data.success){
+            message.textContent = result.data.message || "Review not saved.";
+            message.className = "review-msg error";
+            return;
+        }
+        delete reviewDrafts[booking.id];
+        message.textContent = result.data.message;
+        message.className = "review-msg ok";
+        BNMSync.refreshNow();
+        setTimeout(() => loadAppointmentHistory(true), 300);
+    });
+
+    return box;
 }
 
 function updateBookingStatus(bookingId, newStatus) {
@@ -1041,7 +1173,7 @@ function updateBookingStatus(bookingId, newStatus) {
     }catch(error){
         // nothing more to do: the saved copy was put back
     }
-    loadAppointmentHistory();
+    loadAppointmentHistory(true);
 }
 
 /* =====================================================

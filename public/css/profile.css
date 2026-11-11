@@ -1153,3 +1153,131 @@ a{
 .cancel-appointment-btn:hover{
     background:#fdf1f0;
 }
+
+
+/* ---------- Appointment token ---------- */
+.token-box{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-top:14px;
+    padding:12px 16px;
+    border:2px dashed #1d9c96;
+    border-radius:12px;
+    background:#f0faf9;
+}
+.token-box img{
+    width:84px;
+    height:84px;
+    border-radius:6px;
+    background:#fff;
+    flex-shrink:0;
+}
+.token-box span{
+    display:block;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#6b7785;
+}
+.token-box strong{
+    display:block;
+    font-size:24px;
+    letter-spacing:2px;
+    color:#123a63;
+    margin:2px 0;
+}
+.token-box small{
+    font-size:12px;
+    color:#6b7785;
+}
+
+/* ---------- Doctor review ---------- */
+.review-box{
+    margin-top:14px;
+    padding:14px 16px;
+    border:1px solid #e1e7ee;
+    border-radius:12px;
+    background:#fafcfd;
+}
+.review-title{
+    font-weight:700;
+    color:#123a63;
+    margin-bottom:8px;
+}
+.review-stars{
+    color:#f5a623;
+    font-size:20px;
+    letter-spacing:2px;
+}
+.review-comment{
+    margin:6px 0 0;
+    color:#3c4a57;
+    font-style:italic;
+}
+.star-input{
+    display:flex;
+    gap:4px;
+    margin-bottom:10px;
+}
+.star-input .star{
+    border:none;
+    background:none;
+    font-size:28px;
+    line-height:1;
+    color:#cfd6dd;
+    cursor:pointer;
+    padding:0 2px;
+}
+.star-input .star.on{
+    color:#f5a623;
+}
+.review-text{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px 12px;
+    border:1px solid #d6dee6;
+    border-radius:9px;
+    font-family:inherit;
+    font-size:14px;
+    resize:vertical;
+}
+.review-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:10px;
+    flex-wrap:wrap;
+}
+.review-submit,
+.review-edit{
+    padding:9px 16px;
+    border:none;
+    border-radius:9px;
+    background:#1d9c96;
+    color:#fff;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+}
+.review-edit{
+    margin-top:10px;
+    background:#fff;
+    color:#1d9c96;
+    border:1px solid #1d9c96;
+}
+.review-submit:disabled{
+    opacity:.6;
+    cursor:default;
+}
+.review-msg{
+    font-size:13px;
+    color:#6b7785;
+}
+.review-msg.error{ color:#c0392b; }
+.review-msg.ok{ color:#1e7b34; }
+
+@media (max-width:600px){
+    .token-box{ flex-direction:column; text-align:center; }
+}

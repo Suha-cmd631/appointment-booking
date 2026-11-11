@@ -2,7 +2,7 @@
 // the way a patient and a hospital staff member would.
 
 const { openBrowser, helpers } = require("../helpers/browser");
-const { testEmail, createUser, futureDate, PASSWORD } = require("../helpers/common");
+const { testEmail, createUser, futureDate, PASSWORD, activeDoctor, bookingFor, save } = require("../helpers/common");
 
 let driver, h;
 const patientEmail = testEmail("uipatient");
@@ -190,5 +190,47 @@ describe("Hospital staff", () => {
     test("TC-UI-20: The Settings page shows the hospital's staff join code", async () => {
         await h.go("settings.html");
         await driver.wait(async () => /^[A-Z0-9]{4,}$/.test(await (await h.el("#joinCode")).getAttribute("value")), 10000);
+    });
+});
+
+describe("Token and doctor review", () => {
+
+    let patient, staff, upcoming, done;
+
+    beforeAll(async () => {
+        patient = await createUser({ name: "Ui Reviewer" });
+        staff = await createUser({ role: "staff", hospital: "Trinity Hospital", name: "Ui Staff Two" });
+        const doctor = await activeDoctor("Trinity Hospital");
+        upcoming = bookingFor(patient, doctor, { patientName: "Ui Reviewer", slot: "10:00 AM" });
+        done = bookingFor(patient, doctor, { patientName: "Ui Reviewer", date: upcoming.date, slot: "11:00 AM" });
+        await save("bookNMeetBookings", [upcoming, done], patient.token);
+        await save("bookNMeetBookings", [{ id: done.id, status: "Upcoming" }], staff.token);
+        await save("bookNMeetBookings", [{ id: done.id, status: "Completed" }], staff.token);
+        await h.logOut();
+    });
+
+    test("TC-UI-21: The profile shows the appointment token with a QR code", async () => {
+        await h.go("landing.html");
+        await h.type("#liEmail", patient.email);
+        await h.type("#liPassword", PASSWORD);
+        await h.click("#loginBtn");
+        await h.waitForPage("first.html");
+        await h.go("profile.html");
+        await h.waitForText(".token-box strong", /^TRI-\d{4}-\d{2,}$/);
+        const qrLoaded = await driver.executeScript("const i=document.querySelector('.token-box img');return i.complete && i.naturalWidth > 0;");
+        expect(qrLoaded).toBe(true);
+    });
+
+    test("TC-UI-22: After a completed visit the patient rates the doctor", async () => {
+        await h.click(".review-box .star[data-value='5']");
+        await h.type(".review-text", "Friendly doctor, no waiting.");
+        await h.click(".review-submit");
+        await h.waitForText(".review-box", /Your review of/);
+        expect(await h.text(".review-box")).toContain("Friendly doctor, no waiting.");
+    });
+
+    test("TC-UI-23: The review appears on the hospital page", async () => {
+        await h.go("hospitals.html?hospital=trinity");
+        await h.waitForText("#hospitalDetails", /Friendly doctor, no waiting\./, 15000);
     });
 });

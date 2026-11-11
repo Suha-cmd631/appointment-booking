@@ -17,6 +17,17 @@ const { createClient } = require("@supabase/supabase-js");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
+// Confirmation emails (see backend/mailer.js)
+const mailer = require("./mailer");
+
+// The website's address, used for links in emails
+function siteUrlOf(req) {
+    const fromEnv = String(process.env.SITE_URL || "").replace(/\/+$/, "");
+    if (fromEnv) return fromEnv;
+    const origin = String(req.get("origin") || "");
+    return /^https?:\/\/[^/]+$/.test(origin) ? origin : "";
+}
+
 // Stop early with a clear message if the keys are missing.
 ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY", "SUPABASE_SECRET_KEY"].forEach((name) => {
     if (!process.env[name] || /your-|example/i.test(process.env[name])) {
@@ -322,6 +333,12 @@ app.post("/api/signup", async (req, res) => {
             });
         }
 
+        // Confirmation email to the address they signed up with
+        await mailer.welcome({
+            to: profile.email, name: profile.name, role: profile.role,
+            hospital: profile.hospital, siteUrl: siteUrlOf(req)
+        });
+
         res.status(201).json({
             success: true,
             message: "Account created successfully.",
@@ -598,6 +615,12 @@ app.post("/api/google-complete", async (req, res) => {
             });
         }
 
+        // Confirmation email to the address they signed up with
+        await mailer.welcome({
+            to: profile.email, name: profile.name, role: profile.role,
+            hospital: profile.hospital, siteUrl: siteUrlOf(req)
+        });
+
         res.status(201).json({
             success: true,
             message: "Account created successfully.",
@@ -723,7 +746,9 @@ require("./data")(app, {
     supabaseAdmin,
     cleanText,
     publicUser,
-    serverError
+    serverError,
+    mailer,
+    siteUrlOf
 });
 
 
@@ -747,6 +772,7 @@ if (!process.env.VERCEL) app.listen(PORT, () => {
     console.log("   BOOK N MEET BACKEND");
     console.log("======================================");
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log(mailer.isEmailOn() ? "Emails: ON (sending from " + (process.env.SMTP_USER || "test file") + ")" : "Emails: OFF (add SMTP_USER and SMTP_PASS in .env to send emails)");
     console.log("======================================");
     console.log("");
 });

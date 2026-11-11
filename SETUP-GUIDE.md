@@ -132,6 +132,7 @@ At least 8 characters, a capital letter, a digit and a special character.
 | Server: accounts (sign up, log in, Google, password reset) | `backend/server.js` |
 | Server: hospitals, doctors, schedules, appointments, notifications | `backend/data.js` |
 | `npm run dev` (starts server + website, opens browser) | `backend/dev.js` |
+| Confirmation emails (Gmail) | `backend/mailer.js` |
 | Automatic tests (Jest + Selenium) | `tests/` (settings: `jest.config.js`) |
 | Settings for putting the site online | `render.yaml` |
 | Server address and Google Client ID | `public/js/config.js` |
@@ -147,12 +148,12 @@ Hospital details are changed by that hospital's staff on the admin
 
 ## 6. Testing (Jest + Selenium)
 
-The `tests` folder has 68 automatic tests:
+The `tests` folder has 86 automatic tests:
 
-- **Jest** (`tests/api`, 48 tests) checks the server: sign up and log in
+- **Jest** (`tests/api`, 63 tests) checks the server: sign up and log in
   rules, booking, double-booking, privacy, cancelling, doctors, schedules,
-  settings and join codes.
-- **Selenium WebDriver** (`tests/ui`, 20 tests) opens a real Chrome window
+  settings, join codes, appointment tokens and doctor reviews.
+- **Selenium WebDriver** (`tests/ui`, 23 tests) opens a real Chrome window
   and clicks through the website like a patient and a staff member.
 
 First time only, in the main `appointment-booking` folder:
@@ -165,7 +166,7 @@ Run the tests (the server starts by itself if it is not running):
 
 | Command | What it runs |
 | --- | --- |
-| `npm test` | all 68 tests |
+| `npm test` | all 86 tests |
 | `npm run test:api` | only the Jest server tests |
 | `npm run test:ui` | only the Selenium website tests (Chrome opens) |
 
@@ -197,3 +198,46 @@ one address like `https://book-n-meet.vercel.app`.
 
 Every `git push` to `main` updates the live site by itself.
 (`render.yaml` is kept for Render as a backup option.)
+
+
+## 8. Confirmation emails, appointment tokens and doctor reviews
+
+**What the site does**
+
+- Every appointment gets a **token** like `TRI-1112-07` (hospital, month+day,
+  number). The patient sees it with a QR code on **My Profile** and shows it
+  at the hospital. Staff can type the token in the search box on the admin
+  **Appointments** page to find the appointment.
+- **Emails** go to the email the patient logged in with: account created,
+  appointment request received (with token + QR code), appointment confirmed
+  (with token + QR code), appointment cancelled, and visit completed
+  ("rate your doctor").
+- After a visit is marked **Completed**, the patient can rate the doctor
+  (1 to 5 stars + comment) on **My Profile**. Ratings and comments show on
+  the Hospitals page, and the doctor's rating becomes the real average.
+  Staff get a notification for each new review.
+
+**One-time setup**
+
+1. Run `backend/database/setup.sql` again in Supabase (SQL Editor -> paste ->
+   Run). It adds the token column and the reviews table.
+2. Make (or use) a Gmail account for sending, e.g. `booknmeet.app@gmail.com`.
+3. In that Google account: **Security -> 2-Step Verification -> turn on**.
+4. Open https://myaccount.google.com/apppasswords, type the name
+   `BOOK N MEET`, click **Create**, copy the 16-letter password.
+5. Add to `backend/.env`:
+
+   ```
+   SMTP_USER=booknmeet.app@gmail.com
+   SMTP_PASS=abcd efgh ijkl mnop
+   ```
+
+6. In Vercel: **Settings -> Environment Variables**, add the same
+   `SMTP_USER` and `SMTP_PASS`, and also
+   `SITE_URL=https://appointment-booking-lake-two.vercel.app`
+   (for the links inside emails). Then **Deployments -> ... -> Redeploy**.
+
+When the server starts it prints `Emails: ON` or `Emails: OFF`. Without
+these settings the site still works; only the emails are skipped. Gmail
+allows about 500 emails a day. The first emails may land in Spam - mark
+them "Not spam". Test accounts (`bnmtest.`) never get real emails.

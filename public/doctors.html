@@ -790,6 +790,14 @@ function normalizeDoctor(doctor) {
 
     return {
 
+        rating:
+            doctor.rating ||
+            "",
+
+        reviewCount:
+            doctor.reviewCount ||
+            0,
+
         id:
             doctor.id ||
             doctor.doctorId ||
@@ -1030,6 +1038,12 @@ function loadDoctors() {
                                 "Speciality not provided"
                             )}
 
+                        </div>
+
+                        <div class="doctor-patient-rating">
+                            ${doctor.reviewCount
+                                ? escapeHTML(doctor.rating)
+                                : "No patient reviews yet"}
                         </div>
 
                     </div>

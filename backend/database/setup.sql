@@ -380,3 +380,34 @@ alter table public.hospitals
 update public.hospitals
     set join_code = upper(substr(md5(random()::text || id), 1, 6))
     where join_code is null or join_code = '';
+
+
+-- ===================== PART 4: TOKENS AND DOCTOR REVIEWS =====================
+-- Token: every appointment gets a token like TRI-1112-07 (hospital,
+-- month+day, queue number) that the patient shows at the hospital.
+-- Reviews: after a Completed visit a patient can rate the doctor
+-- (1 to 5 stars) and write a comment. One review per appointment.
+
+alter table public.bookings
+    add column if not exists token text;
+
+create unique index if not exists bookings_token_key
+    on public.bookings (token);
+
+create table if not exists public.reviews (
+    id               text primary key,                 -- 'review-' + booking id
+    booking_id       text not null unique references public.bookings (id) on delete cascade,
+    doctor_id        text not null references public.doctors (id) on delete cascade,
+    hospital_id      text not null references public.hospitals (id) on delete cascade,
+    patient_user_id  uuid references auth.users (id) on delete set null,
+    patient_name     text,
+    rating           integer not null check (rating between 1 and 5),
+    comment          text,
+    created_at       timestamptz not null default now(),
+    updated_at       timestamptz not null default now()
+);
+
+create index if not exists reviews_doctor_idx on public.reviews (doctor_id, created_at desc);
+
+alter table public.reviews enable row level security;
+grant all on public.reviews to service_role;

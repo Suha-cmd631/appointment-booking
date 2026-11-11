@@ -20,7 +20,7 @@
 //                               (admin Settings page).
 // ======================================================
 
-module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverError }) {
+module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverError, mailer, siteUrlOf }) {
 
     // --------------------------------------------------
     // Allowed values
@@ -40,6 +40,7 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
         staffNotifications: "bookNMeetNotifications",
         patientNotifications: "bookNMeetPatientNotifications",
         readNotifications: "bookNMeetReadNotifications",
+        reviews: "bookNMeetReviews",
         currentUser: "bookNMeetCurrentUser"
     };
 
@@ -222,7 +223,15 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
         };
     }
 
-    function doctorOut(d, hospitalName, showContact) {
+    // "★★★★☆" for a number like 4.3
+    function stars(value) {
+        const full = Math.round(value);
+        return "★★★★★".slice(0, full) + "☆☆☆☆☆".slice(0, 5 - full);
+    }
+
+    function doctorOut(d, hospitalName, showContact, reviewInfo) {
+        // Real patient reviews replace the sample rating when there are any
+        const real = reviewInfo && reviewInfo.count > 0;
         return {
             ...(d.extra || {}),
             id: d.id,
@@ -237,8 +246,13 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
             description: d.about || "",
             phone: showContact ? (d.phone || "") : "",
             email: showContact ? (d.email || "") : "",
-            rating: d.rating || "",
-            review: d.review || "",
+            rating: real
+                ? stars(reviewInfo.average) + " " + reviewInfo.average.toFixed(1) +
+                  " (" + reviewInfo.count + (reviewInfo.count === 1 ? " review)" : " reviews)")
+                : (d.rating || ""),
+            review: real ? (reviewInfo.latestComment || d.review || "") : (d.review || ""),
+            ratingValue: real ? Number(reviewInfo.average.toFixed(1)) : null,
+            reviewCount: real ? reviewInfo.count : 0,
             image: d.image || "",
             hospital: hospitalName,
             hospitalName: hospitalName,
@@ -302,10 +316,29 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
             age: b.age || "",
             slot: b.slot,
             status: b.status,
+            token: b.token || "",
             doctorUnavailable: b.doctor_unavailable,
             scheduleConflictNotified: b.schedule_conflict_notified,
             bookedAt: b.booked_at || b.created_at,
             _v: b.updated_at
+        };
+    }
+
+    // Reviews are public, but only with the patient's first name
+    function reviewOut(r, hospitalName, doctorName, user) {
+        const parts = String(r.patient_name || "Patient").trim().split(/\s+/);
+        const shortName = parts[0] + (parts[1] ? " " + parts[1][0].toUpperCase() + "." : "");
+        return {
+            id: r.id,
+            bookingId: user && r.patient_user_id === user.id ? r.booking_id : undefined,
+            doctorId: r.doctor_id,
+            doctor: doctorName || "",
+            hospital: hospitalName || "",
+            rating: r.rating,
+            comment: r.comment || "",
+            patientName: shortName,
+            mine: Boolean(user && r.patient_user_id === user.id),
+            date: String(r.created_at || "").slice(0, 10)
         };
     }
 
@@ -365,15 +398,33 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
             const myHospital = await staffHospital(user);
             const isPatient = user && user.role === "patient";
 
-            const [doctors, schedules, activeBookings] = await Promise.all([
+            const [doctors, schedules, activeBookings, reviewRows] = await Promise.all([
                 run(supabaseAdmin.from("doctors").select("*").order("created_at")),
                 run(supabaseAdmin.from("doctor_schedules").select("*").gte("date", localDate(-30))),
                 run(supabaseAdmin
                     .from("bookings")
                     .select("id, hospital_id, doctor_id, doctor_name, date, slot, status, updated_at")
                     .in("status", ACTIVE_STATUSES)
-                    .gte("date", localDate(-1)))
+                    .gte("date", localDate(-1))),
+                run(supabaseAdmin
+                    .from("reviews").select("*")
+                    .order("created_at", { ascending: false })
+                    .limit(1000))
             ]);
+
+            // Average rating per doctor (reviews are newest first)
+            const reviewInfo = {};
+            reviewRows.forEach((r) => {
+                const info = reviewInfo[r.doctor_id] ||
+                    (reviewInfo[r.doctor_id] = { count: 0, total: 0, latestComment: "" });
+                info.count += 1;
+                info.total += r.rating;
+                if (!info.latestComment && r.comment) info.latestComment = r.comment;
+            });
+            Object.values(reviewInfo).forEach((info) => { info.average = info.total / info.count; });
+
+            const doctorNameOf = {};
+            doctors.forEach((d) => { doctorNameOf[d.id] = d.name; });
 
             // Appointments: slot information for everyone, full
             // details only for the patient who booked them or the
@@ -459,7 +510,8 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
                     [KEYS.hospitals]: hospitalsOut,
                     [KEYS.settings]: settings,
                     [KEYS.doctors]: doctors.map((d) =>
-                        doctorOut(d, nameOf[d.hospital_id], myHospital && myHospital.id === d.hospital_id)),
+                        doctorOut(d, nameOf[d.hospital_id], myHospital && myHospital.id === d.hospital_id, reviewInfo[d.id])),
+                    [KEYS.reviews]: reviewRows.map((r) => reviewOut(r, nameOf[r.hospital_id], doctorNameOf[r.doctor_id], user)),
                     [KEYS.removedDoctors]: doctors.filter((d) => d.removed).map((d) => d.id),
                     [KEYS.schedules]: schedules.map((s) => scheduleOut(s, nameOf[s.hospital_id])),
                     [KEYS.bookings]: bookings,
@@ -508,13 +560,14 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
             }
 
             const upserts = Array.isArray(req.body.upserts) ? req.body.upserts.slice(0, 500) : [];
+            const context = { siteUrl: siteUrlOf(req) };
             const deletes = Array.isArray(req.body.deletes) ? req.body.deletes.slice(0, 500) : [];
 
             const errors = [];
 
             for (const item of upserts) {
                 try {
-                    await handler.upsert(user, item || {});
+                    await handler.upsert(user, item || {}, context);
                 }
                 catch (error) {
                     if (!(error instanceof Refused)) console.error(error);
@@ -555,9 +608,33 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
     // Appointments
     // --------------------------------------------------
 
+    // Token like TRI-1112-07: hospital, month+day, queue number for that
+    // hospital and day.
+    async function nextToken(hospital, date, extra) {
+        const { count, error } = await supabaseAdmin
+            .from("bookings").select("id", { count: "exact", head: true })
+            .eq("hospital_id", hospital.id).eq("date", date);
+        if (error) throw error;
+        const code = String(hospital.id || hospital.name).replace(/[^a-z]/gi, "").slice(0, 3).toUpperCase() || "BNM";
+        const number = (count || 0) + 1 + (extra || 0);
+        return code + "-" + date.slice(5, 7) + date.slice(8, 10) + "-" + String(number).padStart(2, "0");
+    }
+
+    function emailsFor(row) {
+        return [row.booked_by_email, row.email];
+    }
+
+    function mailShape(row, hospitalName) {
+        return {
+            token: row.token, patientName: row.patient_name, hospital: hospitalName,
+            doctor: row.doctor_name, date: row.date, slot: row.slot, status: row.status
+        };
+    }
+
     handlers[KEYS.bookings] = {
 
-        async upsert(user, item) {
+        async upsert(user, item, context) {
+            context = context || {};
 
             const id = cleanId(item.id);
 
@@ -595,8 +672,16 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
                 if (!isDate(item.date) || item.date < localDate(0)) refuse("Please choose today or a future date.");
                 if (!isSlot(item.slot)) refuse("Please select a time slot.");
 
-                const { error } = await supabaseAdmin.from("bookings").insert({
+                let inserted = null;
+                let lastError = null;
+
+                for (let attempt = 0; attempt < 5 && !inserted; attempt++) {
+
+                const token = await nextToken(hospital, item.date, attempt);
+
+                const { data: savedRow, error } = await supabaseAdmin.from("bookings").insert({
                     id,
+                    token,
                     hospital_id: hospital.id,
                     doctor_id: doctor.id,
                     doctor_name: doctor.name,
@@ -612,14 +697,23 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
                     slot: item.slot,
                     status: "Pending",
                     booked_at: cleanText(item.bookedAt, 40) || null
-                });
+                }).select().single();
 
                 if (error) {
+                    // Two bookings got the same token at the same moment: try the next number
+                    if (error.code === "23505" && /token/.test(String(error.message) + String(error.details))) {
+                        lastError = error;
+                        continue;
+                    }
                     if (error.code === "23505") {
                         refuse("Sorry, this time slot was just booked by someone else. Please choose another slot.");
                     }
                     throw error;
                 }
+                inserted = savedRow;
+                }
+
+                if (!inserted) throw lastError || new Error("Could not create a token.");
 
                 // Tell the hospital
                 await supabaseAdmin.from("staff_notifications").insert({
@@ -628,8 +722,11 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
                     type: "appointment",
                     title: "New appointment request",
                     message: patientName + " requested an appointment with " + doctor.name +
-                        " on " + item.date + " at " + item.slot + "."
+                        " on " + item.date + " at " + item.slot + " (token " + inserted.token + ")."
                 });
+
+                // Confirmation email with the token, to the login email (and the patient's email)
+                await mailer.bookingReceived(mailShape(inserted, hospital.name), emailsFor(inserted), context.siteUrl);
 
                 return;
             }
@@ -695,6 +792,25 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
                     refuse("Another appointment already uses this time slot.");
                 }
                 throw error;
+            }
+
+            // Tell the patient by email when the status changed
+            if (changes.status && changes.status !== existing.status) {
+                const hospitals = await getHospitals();
+                const hospital = hospitals.find((h) => h.id === existing.hospital_id);
+                const after = mailShape({ ...existing, ...changes }, hospital ? hospital.name : "");
+                const to = emailsFor(existing);
+                const byPatient = user.role === "patient";
+
+                if (changes.status === "Upcoming") {
+                    await mailer.bookingConfirmed(after, to, context.siteUrl);
+                }
+                else if (changes.status === "Canceled" || changes.status === "Cancelled") {
+                    await mailer.bookingCancelled(after, to, byPatient, context.siteUrl);
+                }
+                else if (changes.status === "Completed") {
+                    await mailer.visitCompleted(after, to, context.siteUrl);
+                }
             }
         }
     };
@@ -1070,6 +1186,105 @@ module.exports = function (app, { supabaseAdmin, cleanText, publicUser, serverEr
     // PUT /api/staff/hospital - hospital details + slot
     // settings, edited on the admin Settings page
     // ==================================================
+
+    // ==================================================
+    // GET /api/qr/<token> - QR code picture of an appointment
+    // token (shown on the patient's profile page)
+    // ==================================================
+
+    app.get("/api/qr/:token", async (req, res) => {
+        const token = String(req.params.token || "").toUpperCase();
+        if (!/^[A-Z]{1,5}-\d{4}-\d{2,4}$/.test(token)) {
+            return res.status(400).json({ success: false, message: "Invalid token." });
+        }
+        try {
+            const png = await require("qrcode").toBuffer(token, { width: 240, margin: 1 });
+            res.set("Cache-Control", "public, max-age=86400").type("png").send(png);
+        }
+        catch (error) {
+            serverError(res, error);
+        }
+    });
+
+
+    // ==================================================
+    // POST /api/reviews - a patient rates the doctor after a
+    // Completed visit (1 to 5 stars + comment). One review per
+    // appointment; sending again updates it.
+    // ==================================================
+
+    app.post("/api/reviews", async (req, res) => {
+
+        try {
+
+            const user = await getRequestUser(req);
+
+            if (!user) {
+                return res.status(401).json({ success: false, code: "session_expired", message: "Please log in again." });
+            }
+
+            if (user.role !== "patient") {
+                return res.status(403).json({ success: false, message: "Only patients can review doctors." });
+            }
+
+            const bookingId = String((req.body && req.body.bookingId) || "").trim();
+            const rating = Number(req.body && req.body.rating);
+            const comment = cleanText(req.body && req.body.comment, 500);
+
+            if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+                return res.status(400).json({ success: false, message: "Please choose a rating from 1 to 5 stars." });
+            }
+
+            const booking = bookingId ? await run(
+                supabaseAdmin.from("bookings").select("*").eq("id", bookingId).maybeSingle()
+            ) : null;
+
+            if (!booking || booking.patient_user_id !== user.id) {
+                return res.status(403).json({ success: false, message: "You can only review your own appointments." });
+            }
+
+            if (booking.status !== "Completed") {
+                return res.status(400).json({ success: false, message: "You can review the doctor after your visit is completed." });
+            }
+
+            if (!booking.doctor_id) {
+                return res.status(400).json({ success: false, message: "This doctor is no longer listed." });
+            }
+
+            const reviewId = "review-" + booking.id;
+            const existing = await run(supabaseAdmin.from("reviews").select("id").eq("id", reviewId).maybeSingle());
+
+            await run(supabaseAdmin.from("reviews").upsert({
+                id: reviewId,
+                booking_id: booking.id,
+                doctor_id: booking.doctor_id,
+                hospital_id: booking.hospital_id,
+                patient_user_id: user.id,
+                patient_name: booking.patient_name || user.name,
+                rating,
+                comment,
+                updated_at: now()
+            }));
+
+            if (!existing) {
+                await supabaseAdmin.from("staff_notifications").insert({
+                    id: "review-" + booking.id + "-" + Date.now(),
+                    hospital_id: booking.hospital_id,
+                    type: "review",
+                    title: "New review for " + booking.doctor_name,
+                    message: (booking.patient_name || "A patient") + " rated " + booking.doctor_name + " " +
+                        rating + " out of 5" + (comment ? ': "' + comment + '"' : ".")
+                });
+            }
+
+            res.json({ success: true, message: existing ? "Your review was updated." : "Thank you! Your review was saved." });
+        }
+
+        catch (error) {
+            serverError(res, error);
+        }
+    });
+
 
     app.put("/api/staff/hospital", async (req, res) => {
 

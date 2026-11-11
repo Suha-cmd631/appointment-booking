@@ -29,8 +29,12 @@ module.exports = async function () {
     }
 
     console.log("\nStarting the server for the tests...");
+    require("fs").mkdirSync(path.join(ROOT, "test-report"), { recursive: true });
+    try { require("fs").unlinkSync(path.join(ROOT, "test-report", "emails.log")); } catch (e) { /* none yet */ }
     const child = spawn(process.execPath, [path.join(ROOT, "backend", "dev.js")], {
-        env: { ...process.env, BNM_NO_BROWSER: "1" },
+        // Emails are written to test-report/emails.log instead of being sent
+        env: { ...process.env, BNM_NO_BROWSER: "1", SMTP_USER: "", SMTP_PASS: "",
+            MAIL_TEST_FILE: path.join(ROOT, "test-report", "emails.log") },
         stdio: "ignore"
     });
     globalThis.__BNM_SERVER__ = child;

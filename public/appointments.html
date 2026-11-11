@@ -250,7 +250,7 @@
                 <input
                     type="text"
                     id="searchInput"
-                    placeholder="Search patient, doctor, email or phone..."
+                    placeholder="Search token, patient, doctor, email or phone..."
                 >
 
             </div>
@@ -1342,8 +1342,16 @@ function applyFilters(
                 ).toLowerCase();
 
 
+            const token =
+                String(
+                    appointment.token ||
+                    ""
+                ).toLowerCase();
+
+
             const matchesSearch =
                 !search ||
+                token.includes(search) ||
                 patientName.includes(search) ||
                 doctor.includes(search) ||
                 email.includes(search) ||
@@ -1669,6 +1677,10 @@ function loadAppointments() {
                     <div class="patient-contact">
                         ${escapeHTML(phone)}
                     </div>
+
+                    ${booking.token
+                        ? '<div class="token-chip">Token ' + escapeHTML(booking.token) + '</div>'
+                        : ''}
 
                 </td>
 

@@ -23,7 +23,7 @@ module.exports = async function () {
         const bookingIds = (bookings || []).map((b) => b.id);
 
         for (const id of bookingIds) {
-            await db.from("staff_notifications").delete().or(`id.eq.booking-${id},id.like.cancel-${id}-%`);
+            await db.from("staff_notifications").delete().or(`id.eq.booking-${id},id.like.cancel-${id}-%,id.like.review-${id}-%`);
             await db.from("patient_notifications").delete().like("id", `%${id}%`);
         }
         if (bookingIds.length) await db.from("bookings").delete().in("id", bookingIds);

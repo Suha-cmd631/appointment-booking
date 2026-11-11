@@ -42,6 +42,7 @@
         "bookNMeetNotifications",
         "bookNMeetPatientNotifications",
         "bookNMeetReadNotifications",
+        "bookNMeetReviews",
         USER_KEY
     ];
 
